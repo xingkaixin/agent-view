@@ -4,7 +4,8 @@ import { Session } from '../types';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
-import { Search, Folder, Clock, MessageSquare, Coins, CircleDollarSign } from 'lucide-react';
+import { Search, Folder, Clock, MessageSquare, Coins, CircleDollarSign, Bot } from 'lucide-react';
+import { ModelConfig } from '../config';
 
 interface SessionListProps {
   sessions: Session[];
@@ -15,7 +16,7 @@ export function SessionList({ sessions }: SessionListProps) {
 
   const filteredSessions = sessions
     .filter(session => session.title.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) => b.time_created - a.time_created);
+    .sort((a, b) => new Date(b.time_created).getTime() - new Date(a.time_created).getTime());
 
   const formatTokens = (n: number) => {
     if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
@@ -39,6 +40,9 @@ export function SessionList({ sessions }: SessionListProps) {
         {filteredSessions.map((session) => {
           const date = new Date(session.time_created).toLocaleString('zh-CN');
           const slug = session._urlSlug || session.id;
+          const agent = session._urlSlug ? session._urlSlug.split('/')[0] : 'opencode';
+          const agentName = ModelConfig.getAgentName(agent) || agent;
+          const agentIcon = ModelConfig.agents[agent.toLowerCase()]?.icon;
 
           return (
             <Link key={session.id} to={`/${slug}`} className="block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl">
@@ -50,17 +54,20 @@ export function SessionList({ sessions }: SessionListProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="flex gap-4 text-[13px] text-[#4f6368] mb-3">
+                    <span className="flex items-center gap-1.5">
+                      {agentIcon ? <img src={agentIcon} alt={agent} className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5"/>} {agentName}
+                    </span>
                     <span className="flex items-center gap-1.5"><Folder className="w-3.5 h-3.5"/> {session.directory}</span>
                     <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5"/> {date}</span>
                   </div>
                   <div className="flex flex-wrap gap-2 text-xs">
-                    <Badge variant="secondary" className="bg-[#e5f1ec] hover:bg-[#c9d8d5] text-[#102124] border-[#c9d8d5] font-normal rounded-full px-2.5">
+                    <Badge variant="secondary" className="bg-[#e5f1ec] text-[#102124] border-[#c9d8d5] font-normal rounded-full px-2.5 hover:bg-[#e5f1ec]">
                       <MessageSquare className="w-3 h-3 mr-1" /> {session.stats.message_count} 消息
                     </Badge>
-                    <Badge variant="secondary" className="bg-[#e5f1ec] hover:bg-[#c9d8d5] text-[#102124] border-[#c9d8d5] font-normal rounded-full px-2.5">
+                    <Badge variant="secondary" className="bg-[#e5f1ec] text-[#102124] border-[#c9d8d5] font-normal rounded-full px-2.5 hover:bg-[#e5f1ec]">
                       <Coins className="w-3 h-3 mr-1" /> {formatTokens(session.stats.total_input_tokens + session.stats.total_output_tokens)}
                     </Badge>
-                    <Badge variant="secondary" className="bg-[#e5f1ec] hover:bg-[#c9d8d5] text-[#102124] border-[#c9d8d5] font-normal rounded-full px-2.5">
+                    <Badge variant="secondary" className="bg-[#e5f1ec] text-[#102124] border-[#c9d8d5] font-normal rounded-full px-2.5 hover:bg-[#e5f1ec]">
                       <CircleDollarSign className="w-3 h-3 mr-1" /> ${session.stats.total_cost.toFixed(4)}
                     </Badge>
                   </div>
