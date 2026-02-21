@@ -4,7 +4,7 @@
   "description": "A tool for visualizing and browsing AI Agent sessions.",
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build": "bun run build:index && vite build && cp -r data dist/data",
     "build:index": "bun run scripts/build-index.ts",
     "build:logo": "bun run scripts/build-logo.ts",
     "dev": "vite",
