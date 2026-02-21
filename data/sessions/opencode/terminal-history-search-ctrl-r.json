@@ -1,0 +1,1194 @@
+{
+  "id": "ses_384a9060affeTbKS56DuFEwmrq",
+  "title": "Terminal history search missing hint in mac? use ctrl+r instead of tab completion",
+  "slug": "quick-nebula",
+  "directory": "/home/kevin/.config",
+  "version": "1.1.51",
+  "time_created": 1771595823605,
+  "time_updated": 1771595962562,
+  "summary_files": 0,
+  "stats": {
+    "total_cost": 0.0356208,
+    "total_input_tokens": 12005,
+    "total_output_tokens": 1639,
+    "message_count": 17
+  },
+  "messages": [
+    {
+      "id": "msg_c7b56f9f5001VkYVapj6jDS1eN",
+      "role": "user",
+      "agent": "build",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1771595823609,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "text",
+          "time_created": 1771597200033,
+          "text": "\n我在终端下输入的历史命令行，我发现我下次输入时不会有那种提示，这是少了什么才这样的，我在mac的终端是是有提示，这样我可以直接tab了，现在我就需要用ctrl+r来检索的方式找我输入过的历史命令。"
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b56f9fc0019TZNOi9fCQWNzM",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595823612,
+      "time_completed": 1771595829866,
+      "tokens": {
+        "input": 241,
+        "output": 169,
+        "reasoning": 0,
+        "cache": {
+          "read": 9728,
+          "write": 0
+        }
+      },
+      "cost": 0.0016244,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 241,
+            "output": 169,
+            "reasoning": 0,
+            "cache": {
+              "read": 9728,
+              "write": 0
+            }
+          },
+          "cost": 0.0016244
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "glob",
+          "callID": "glob:2",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "pattern": "~/.bashrc"
+            },
+            "output": "No files found",
+            "title": "home/kevin/.config",
+            "metadata": {
+              "count": 0,
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595829839,
+              "end": 1771595829862
+            }
+          }
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "glob",
+          "callID": "glob:1",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "pattern": "~/.zshrc"
+            },
+            "output": "No files found",
+            "title": "home/kevin/.config",
+            "metadata": {
+              "count": 0,
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595829833,
+              "end": 1771595829855
+            }
+          }
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "bash",
+          "callID": "bash:0",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "echo $SHELL",
+              "description": "Check current shell"
+            },
+            "output": "/usr/bin/bash\n",
+            "title": "Check current shell",
+            "metadata": {
+              "output": "/usr/bin/bash\n",
+              "exit": 0,
+              "description": "Check current shell",
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595829324,
+              "end": 1771595829327
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "用户描述的是 Linux 终端下历史命令没有自动提示/补全功能，而在 mac 终端（可能是 zsh + zsh-autosuggestions）有这个功能。用户现在需要用 Ctrl+R 来搜索历史命令。\n\n这通常是因为：\n1. 当前 shell 缺少 `zsh-autosuggestions` 或类似的自动建议插件\n2. 或者是 bash 环境，没有配置类似的功能\n\n我需要了解用户当前使用的是什么 shell，然后帮助安装相应的自动建议插件。\n\n首先我应该检查用户当前的 shell 配置。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b57126d001P2kXZ0teDgMhuL",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595829869,
+      "time_completed": 1771595840412,
+      "tokens": {
+        "input": 458,
+        "output": 344,
+        "reasoning": 0,
+        "cache": {
+          "read": 9728,
+          "write": 0
+        }
+      },
+      "cost": 0.0022796,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "stop",
+          "tokens": {
+            "input": 458,
+            "output": 344,
+            "reasoning": 0,
+            "cache": {
+              "read": 9728,
+              "write": 0
+            }
+          },
+          "cost": 0.0022796
+        },
+        {
+          "type": "text",
+          "time_created": 1771597200033,
+          "text": "你当前使用的是 **bash**，macOS 默认用的 **zsh** 自带了命令提示功能。\n\n两个解决方案：\n\n**方案 1：安装 bash 自动提示（保持 bash）**\n```bash\n# 克隆仓库\ngit clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions\n\n# 或者直接安装 fish 风格的 bash 补全\nsudo apt install bash-completion\n```\n\n**方案 2：切换到 zsh（推荐，和 macOS 一致）**\n```bash\n# 安装 zsh 和 autosuggestions\nsudo apt install zsh\nsh -c \"$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"\n\n# 安装自动提示插件\ngit clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions\n\n# 编辑 ~/.zshrc，在 plugins 行添加 autosuggestions\nplugins=(git zsh-autosuggestions)\n```\n\n安装完后重启终端，输入命令时就会出现灰色提示，按右方向键或 End 键即可接受建议。"
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "用户使用的是 bash shell，但没有找到 .bashrc 或 .zshrc 文件（可能是 glob 模式的问题）。\n\n用户想要的是类似 mac 上 zsh 的自动建议功能。在 Linux 上，bash 可以通过 `bash-autosuggestions` 或者切换到 zsh 来实现这个功能。\n\n我推荐用户安装 zsh 和 zsh-autosuggestions 插件，这是最简单的方法。或者如果坚持用 bash，可以安装 bash-autosuggestions。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b581055001RoIbsT6Be8C4az",
+      "role": "user",
+      "agent": "build",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1771595894873,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "text",
+          "time_created": 1771597200033,
+          "text": "\n就用bash的帮我安装"
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b58105d001V1IfaEk28jyXW3",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595894877,
+      "time_completed": 1771595908133,
+      "tokens": {
+        "input": 611,
+        "output": 188,
+        "reasoning": 0,
+        "cache": {
+          "read": 9728,
+          "write": 0
+        }
+      },
+      "cost": 0.0019034,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 611,
+            "output": 188,
+            "reasoning": 0,
+            "cache": {
+              "read": 9728,
+              "write": 0
+            }
+          },
+          "cost": 0.0019034
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "bash",
+          "callID": "bash:3",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "git clone --recursive https://github.com/akinomyoga/ble.sh.git",
+              "description": "Clone ble.sh repository",
+              "timeout": 60000
+            },
+            "output": "Cloning into 'ble.sh'...\nSubmodule 'contrib' (https://github.com/akinomyoga/blesh-contrib) registered for path 'contrib'\nCloning into '/home/kevin/.config/ble.sh/contrib'...\nSubmodule path 'contrib': checked out 'a5429e68d9cf3b07d799ebc03dd7bbc5334c817c'\n",
+            "title": "Clone ble.sh repository",
+            "metadata": {
+              "output": "Cloning into 'ble.sh'...\nSubmodule 'contrib' (https://github.com/akinomyoga/blesh-contrib) registered for path 'contrib'\nCloning into '/home/kevin/.config/ble.sh/contrib'...\nSubmodule path 'contrib': checked out 'a5429e68d9cf3b07d799ebc03dd7bbc5334c817c'\n",
+              "exit": 0,
+              "description": "Clone ble.sh repository",
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595901212,
+              "end": 1771595908130
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "用户想要使用 bash 的自动提示功能。我需要帮用户安装 bash 的自动补全/历史提示功能。\n\n对于 bash，有几个选项：\n1. `bash-completion` - 基本的命令补全\n2. `fzf` - 模糊查找工具，支持历史命令补全，非常强大\n3. `ble.sh` - 提供类似 zsh 的自动建议功能（灰色文字提示）\n\n用户说的是\"下次输入时不会有那种提示\"，\"可以直接 tab\"，这听起来像是想要自动补全/建议功能。\n\n对于 bash，最接近 zsh-autosuggestions 的是 `ble.sh` (Bash Line Editor)。\n\n让我安装和配置 ble.sh。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b584429001EeUcvyYv6H7GBM",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595908137,
+      "time_completed": 1771595911621,
+      "tokens": {
+        "input": 379,
+        "output": 47,
+        "reasoning": 0,
+        "cache": {
+          "read": 10240,
+          "write": 0
+        }
+      },
+      "cost": 0.0013924,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 379,
+            "output": 47,
+            "reasoning": 0,
+            "cache": {
+              "read": 10240,
+              "write": 0
+            }
+          },
+          "cost": 0.0013924
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "bash",
+          "callID": "bash:4",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "cd ble.sh && make",
+              "description": "Build ble.sh",
+              "timeout": 120000
+            },
+            "output": "mkdir -p out\nDEPENDENCIES_PHONY=1 DEPENDENCIES_OUTPUT=\"out/ble.dep\" DEPENDENCIES_TARGET=\"out/ble.sh\" \\\n  FULLVER=0.4.0-devel4 \\\n  BLE_GIT_COMMIT_ID=\"32bb63da\" \\\n  BLE_GIT_BRANCH=\"master\" \\\n  BUILD_GIT_VERSION=\"git version 2.53.0\" \\\n  BUILD_MAKE_VERSION=\"GNU Make 4.4.1\" \\\n  BUILD_GAWK_VERSION=\"GNU Awk 5.3.2, API 4.0, PMA Avon 8-g1, (GNU MPFR 4.2.2, GNU MP 6.3.0)\" \\\n  /usr/bin/gawk -f make/mwg_pp.awk ble.pp >/dev/null\nmkdir -p out/lib\ncp lib/keymap.emacs.sh out/lib/keymap.emacs.sh\ncp lib/keymap.vi.sh out/lib/keymap.vi.sh\ncp lib/keymap.vi_digraph.sh out/lib/keymap.vi_digraph.sh\ncp lib/keymap.vi_digraph.txt out/lib/keymap.vi_digraph.txt\ncp lib/init-term.sh out/lib/init-term.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/init-bind.sh > out/lib/init-bind.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/init-cmap.sh > out/lib/init-cmap.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/init-msys1.sh > out/lib/init-msys1.sh\ncp lib/core-complete.sh out/lib/core-complete.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/core-syntax.sh > out/lib/core-syntax.sh\ncp lib/core-test.sh out/lib/core-test.sh\ncp lib/core-cmdspec.sh out/lib/core-cmdspec.sh\ncp lib/core-debug.sh out/lib/core-debug.sh\ncp lib/core-edit.ignoreeof-messages.txt out/lib/core-edit.ignoreeof-messages.txt\ncp lib/core-decode.emacs-rlfunc.txt out/lib/core-decode.emacs-rlfunc.txt\ncp lib/core-decode.vi_imap-rlfunc.txt out/lib/core-decode.vi_imap-rlfunc.txt\ncp lib/core-decode.vi_nmap-rlfunc.txt out/lib/core-decode.vi_nmap-rlfunc.txt\ncp lib/vim-surround.sh out/lib/vim-surround.sh\ncp lib/vim-arpeggio.sh out/lib/vim-arpeggio.sh\ncp lib/vim-airline.sh out/lib/vim-airline.sh\ncp lib/util.bgproc.sh out/lib/util.bgproc.sh\ncp lib/test-bash.sh out/lib/test-bash.sh\ncp lib/test-main.sh out/lib/test-main.sh\ncp lib/test-util.sh out/lib/test-util.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/test-canvas.sh > out/lib/test-canvas.sh\ncp lib/test-decode.sh out/lib/test-decode.sh\ncp lib/test-edit.sh out/lib/test-edit.sh\ncp lib/test-syntax.sh out/lib/test-syntax.sh\ncp lib/test-complete.sh out/lib/test-complete.sh\ncp lib/test-keymap.vi.sh out/lib/test-keymap.vi.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/benchmark.ksh > out/lib/benchmark.ksh\nmkdir -p out/contrib\nmkdir -p out/contrib/airline\nmkdir -p out/contrib/config\nmkdir -p out/contrib/integration\nmkdir -p out/contrib/layer\nmkdir -p out/contrib/scheme\nmkdir -p out/contrib/syntax\ncp contrib/colorglass.bash out/contrib/colorglass.bash\ncp contrib/histdb.bash out/contrib/histdb.bash\ncp contrib/prompt-defer.bash out/contrib/prompt-defer.bash\ncp contrib/prompt-elapsed.bash out/contrib/prompt-elapsed.bash\ncp contrib/prompt-git.bash out/contrib/prompt-git.bash\ncp contrib/prompt-vim-mode.bash out/contrib/prompt-vim-mode.bash\ncp contrib/airline/alduin.bash out/contrib/airline/alduin.bash\ncp contrib/airline/angr.bash out/contrib/airline/angr.bash\ncp contrib/airline/apprentice.bash out/contrib/airline/apprentice.bash\ncp contrib/airline/atomic.bash out/contrib/airline/atomic.bash\ncp contrib/airline/ayu_dark.bash out/contrib/airline/ayu_dark.bash\ncp contrib/airline/ayu_light.bash out/contrib/airline/ayu_light.bash\ncp contrib/airline/ayu_mirage.bash out/contrib/airline/ayu_mirage.bash\ncp contrib/airline/badwolf.bash out/contrib/airline/badwolf.bash\ncp contrib/airline/base16_3024.bash out/contrib/airline/base16_3024.bash\ncp contrib/airline/base16_adwaita.bash out/contrib/airline/base16_adwaita.bash\ncp contrib/airline/base16_apathy.bash out/contrib/airline/base16_apathy.bash\ncp contrib/airline/base16_ashes.bash out/contrib/airline/base16_ashes.bash\ncp contrib/airline/base16_atelier_cave.bash out/contrib/airline/base16_atelier_cave.bash\ncp contrib/airline/base16_atelier_cave_light.bash out/contrib/airline/base16_atelier_cave_light.bash\ncp contrib/airline/base16_atelier_dune.bash out/contrib/airline/base16_atelier_dune.bash\ncp contrib/airline/base16_atelierdune.bash out/contrib/airline/base16_atelierdune.bash\ncp contrib/airline/base16_atelier_dune_light.bash out/contrib/airline/base16_atelier_dune_light.bash\ncp contrib/airline/base16_atelier_estuary.bash out/contrib/airline/base16_atelier_estuary.bash\ncp contrib/airline/base16_atelier_estuary_light.bash out/contrib/airline/base16_atelier_estuary_light.bash\ncp contrib/airline/base16_atelier_forest.bash out/contrib/airline/base16_atelier_forest.bash\ncp contrib/airline/base16_atelierforest.bash out/contrib/airline/base16_atelierforest.bash\ncp contrib/airline/base16_atelier_forest_light.bash out/contrib/airline/base16_atelier_forest_light.bash\ncp contrib/airline/base16_atelier_heath.bash out/contrib/airline/base16_atelier_heath.bash\ncp contrib/airline/base16_atelierheath.bash out/contrib/airline/base16_atelierheath.bash\ncp contrib/airline/base16_atelier_heath_light.bash out/contrib/airline/base16_atelier_heath_light.bash\ncp contrib/airline/base16_atelier_lakeside.bash out/contrib/airline/base16_atelier_lakeside.bash\ncp contrib/airline/base16_atelierlakeside.bash out/contrib/airline/base16_atelierlakeside.bash\ncp contrib/airline/base16_atelier_lakeside_light.bash out/contrib/airline/base16_atelier_lakeside_light.bash\ncp contrib/airline/base16_atelier_plateau.bash out/contrib/airline/base16_atelier_plateau.bash\ncp contrib/airline/base16_atelier_plateau_light.bash out/contrib/airline/base16_atelier_plateau_light.bash\ncp contrib/airline/base16_atelier_savanna.bash out/contrib/airline/base16_atelier_savanna.bash\ncp contrib/airline/base16_atelier_savanna_light.bash out/contrib/airline/base16_atelier_savanna_light.bash\ncp contrib/airline/base16_atelier_seaside.bash out/contrib/airline/base16_atelier_seaside.bash\ncp contrib/airline/base16_atelierseaside.bash out/contrib/airline/base16_atelierseaside.bash\ncp contrib/airline/base16_atelier_seaside_light.bash out/contrib/airline/base16_atelier_seaside_light.bash\ncp contrib/airline/base16_atelier_sulphurpool.bash out/contrib/airline/base16_atelier_sulphurpool.bash\ncp contrib/airline/base16_atelier_sulphurpool_light.bash out/contrib/airline/base16_atelier_sulphurpool_light.bash\ncp contrib/airline/base16_atlas.bash out/contrib/airline/base16_atlas.bash\ncp contrib/airline/base16.bash out/contrib/airline/base16.bash\ncp contrib/airline/base16_bespin.bash out/contrib/airline/base16_bespin.bash\ncp contrib/airline/base16_black_metal.bash out/contrib/airline/base16_black_metal.bash\ncp contrib/airline/base16_black_metal_bathory.bash out/contrib/airline/base16_black_metal_bathory.bash\ncp contrib/airline/base16_black_metal_burzum.bash out/contrib/airline/base16_black_metal_burzum.bash\ncp contrib/airline/base16_black_metal_dark_funeral.bash out/contrib/airline/base16_black_metal_dark_funeral.bash\ncp contrib/airline/base16_black_metal_gorgoroth.bash out/contrib/airline/base16_black_metal_gorgoroth.bash\ncp contrib/airline/base16_black_metal_immortal.bash out/contrib/airline/base16_black_metal_immortal.bash\ncp contrib/airline/base16_black_metal_khold.bash out/contrib/airline/base16_black_metal_khold.bash\ncp contrib/airline/base16_black_metal_marduk.bash out/contrib/airline/base16_black_metal_marduk.bash\ncp contrib/airline/base16_black_metal_mayhem.bash out/contrib/airline/base16_black_metal_mayhem.bash\ncp contrib/airline/base16_black_metal_nile.bash out/contrib/airline/base16_black_metal_nile.bash\ncp contrib/airline/base16_black_metal_venom.bash out/contrib/airline/base16_black_metal_venom.bash\ncp contrib/airline/base16_brewer.bash out/contrib/airline/base16_brewer.bash\ncp contrib/airline/base16_bright.bash out/contrib/airline/base16_bright.bash\ncp contrib/airline/base16_brogrammer.bash out/contrib/airline/base16_brogrammer.bash\ncp contrib/airline/base16_brushtrees.bash out/contrib/airline/base16_brushtrees.bash\ncp contrib/airline/base16_brushtrees_dark.bash out/contrib/airline/base16_brushtrees_dark.bash\ncp contrib/airline/base16_chalk.bash out/contrib/airline/base16_chalk.bash\ncp contrib/airline/base16_circus.bash out/contrib/airline/base16_circus.bash\ncp contrib/airline/base16_classic.bash out/contrib/airline/base16_classic.bash\ncp contrib/airline/base16_classic_dark.bash out/contrib/airline/base16_classic_dark.bash\ncp contrib/airline/base16_classic_light.bash out/contrib/airline/base16_classic_light.bash\ncp contrib/airline/base16_codeschool.bash out/contrib/airline/base16_codeschool.bash\ncp contrib/airline/base16color.bash out/contrib/airline/base16color.bash\ncp contrib/airline/base16_colors.bash out/contrib/airline/base16_colors.bash\ncp contrib/airline/base16_cupcake.bash out/contrib/airline/base16_cupcake.bash\ncp contrib/airline/base16_cupertino.bash out/contrib/airline/base16_cupertino.bash\ncp contrib/airline/base16_darktooth.bash out/contrib/airline/base16_darktooth.bash\ncp contrib/airline/base16_decaf.bash out/contrib/airline/base16_decaf.bash\ncp contrib/airline/base16_default.bash out/contrib/airline/base16_default.bash\ncp contrib/airline/base16_default_dark.bash out/contrib/airline/base16_default_dark.bash\ncp contrib/airline/base16_default_light.bash out/contrib/airline/base16_default_light.bash\ncp contrib/airline/base16_dracula.bash out/contrib/airline/base16_dracula.bash\ncp contrib/airline/base16_edge_dark.bash out/contrib/airline/base16_edge_dark.bash\ncp contrib/airline/base16_edge_light.bash out/contrib/airline/base16_edge_light.bash\ncp contrib/airline/base16_eighties.bash out/contrib/airline/base16_eighties.bash\ncp contrib/airline/base16_embers.bash out/contrib/airline/base16_embers.bash\ncp contrib/airline/base16_espresso.bash out/contrib/airline/base16_espresso.bash\ncp contrib/airline/base16_flat.bash out/contrib/airline/base16_flat.bash\ncp contrib/airline/base16_framer.bash out/contrib/airline/base16_framer.bash\ncp contrib/airline/base16_fruit_soda.bash out/contrib/airline/base16_fruit_soda.bash\ncp contrib/airline/base16_gigavolt.bash out/contrib/airline/base16_gigavolt.bash\ncp contrib/airline/base16_github.bash out/contrib/airline/base16_github.bash\ncp contrib/airline/base16_google.bash out/contrib/airline/base16_google.bash\ncp contrib/airline/base16_google_dark.bash out/contrib/airline/base16_google_dark.bash\ncp contrib/airline/base16_google_light.bash out/contrib/airline/base16_google_light.bash\ncp contrib/airline/base16_grayscale.bash out/contrib/airline/base16_grayscale.bash\ncp contrib/airline/base16_grayscale_dark.bash out/contrib/airline/base16_grayscale_dark.bash\ncp contrib/airline/base16_grayscale_light.bash out/contrib/airline/base16_grayscale_light.bash\ncp contrib/airline/base16_greenscreen.bash out/contrib/airline/base16_greenscreen.bash\ncp contrib/airline/base16_gruvbox_dark_hard.bash out/contrib/airline/base16_gruvbox_dark_hard.bash\ncp contrib/airline/base16_gruvbox_dark_medium.bash out/contrib/airline/base16_gruvbox_dark_medium.bash\ncp contrib/airline/base16_gruvbox_dark_pale.bash out/contrib/airline/base16_gruvbox_dark_pale.bash\ncp contrib/airline/base16_gruvbox_dark_soft.bash out/contrib/airline/base16_gruvbox_dark_soft.bash\ncp contrib/airline/base16_gruvbox_light_hard.bash out/contrib/airline/base16_gruvbox_light_hard.bash\ncp contrib/airline/base16_gruvbox_light_medium.bash out/contrib/airline/base16_gruvbox_light_medium.bash\ncp contrib/airline/base16_gruvbox_light_soft.bash out/contrib/airline/base16_gruvbox_light_soft.bash\ncp contrib/airline/base16_harmonic16.bash out/contrib/airline/base16_harmonic16.bash\ncp contrib/airline/base16_harmonic_dark.bash out/contrib/airline/base16_harmonic_dark.bash\ncp contrib/airline/base16_harmonic_light.bash out/contrib/airline/base16_harmonic_light.bash\ncp contrib/airline/base16_heetch.bash out/contrib/airline/base16_heetch.bash\ncp contrib/airline/base16_heetch_light.bash out/contrib/airline/base16_heetch_light.bash\ncp contrib/airline/base16_helios.bash out/contrib/airline/base16_helios.bash\ncp contrib/airline/base16_hopscotch.bash out/contrib/airline/base16_hopscotch.bash\ncp contrib/airline/base16_horizon_dark.bash out/contrib/airline/base16_horizon_dark.bash\ncp contrib/airline/base16_horizon_light.bash out/contrib/airline/base16_horizon_light.bash\ncp contrib/airline/base16_horizon_terminal_dark.bash out/contrib/airline/base16_horizon_terminal_dark.bash\ncp contrib/airline/base16_horizon_terminal_light.bash out/contrib/airline/base16_horizon_terminal_light.bash\ncp contrib/airline/base16_ia_dark.bash out/contrib/airline/base16_ia_dark.bash\ncp contrib/airline/base16_ia_light.bash out/contrib/airline/base16_ia_light.bash\ncp contrib/airline/base16_icy.bash out/contrib/airline/base16_icy.bash\ncp contrib/airline/base16_irblack.bash out/contrib/airline/base16_irblack.bash\ncp contrib/airline/base16_isotope.bash out/contrib/airline/base16_isotope.bash\ncp contrib/airline/base16_londontube.bash out/contrib/airline/base16_londontube.bash\ncp contrib/airline/base16_macintosh.bash out/contrib/airline/base16_macintosh.bash\ncp contrib/airline/base16_marrakesh.bash out/contrib/airline/base16_marrakesh.bash\ncp contrib/airline/base16_materia.bash out/contrib/airline/base16_materia.bash\ncp contrib/airline/base16_material.bash out/contrib/airline/base16_material.bash\ncp contrib/airline/base16_material_darker.bash out/contrib/airline/base16_material_darker.bash\ncp contrib/airline/base16_material_lighter.bash out/contrib/airline/base16_material_lighter.bash\ncp contrib/airline/base16_material_palenight.bash out/contrib/airline/base16_material_palenight.bash\ncp contrib/airline/base16_material_vivid.bash out/contrib/airline/base16_material_vivid.bash\ncp contrib/airline/base16_mellow_purple.bash out/contrib/airline/base16_mellow_purple.bash\ncp contrib/airline/base16_mexico_light.bash out/contrib/airline/base16_mexico_light.bash\ncp contrib/airline/base16_mocha.bash out/contrib/airline/base16_mocha.bash\ncp contrib/airline/base16_monokai.bash out/contrib/airline/base16_monokai.bash\ncp contrib/airline/base16_nord.bash out/contrib/airline/base16_nord.bash\ncp contrib/airline/base16_nova.bash out/contrib/airline/base16_nova.bash\ncp contrib/airline/base16_ocean.bash out/contrib/airline/base16_ocean.bash\ncp contrib/airline/base16_oceanicnext.bash out/contrib/airline/base16_oceanicnext.bash\ncp contrib/airline/base16_onedark.bash out/contrib/airline/base16_onedark.bash\ncp contrib/airline/base16_one_light.bash out/contrib/airline/base16_one_light.bash\ncp contrib/airline/base16_outrun_dark.bash out/contrib/airline/base16_outrun_dark.bash\ncp contrib/airline/base16_papercolor_dark.bash out/contrib/airline/base16_papercolor_dark.bash\ncp contrib/airline/base16_papercolor_light.bash out/contrib/airline/base16_papercolor_light.bash\ncp contrib/airline/base16_paraiso.bash out/contrib/airline/base16_paraiso.bash\ncp contrib/airline/base16_phd.bash out/contrib/airline/base16_phd.bash\ncp contrib/airline/base16_pico.bash out/contrib/airline/base16_pico.bash\ncp contrib/airline/base16_pop.bash out/contrib/airline/base16_pop.bash\ncp contrib/airline/base16_porple.bash out/contrib/airline/base16_porple.bash\ncp contrib/airline/base16_railscasts.bash out/contrib/airline/base16_railscasts.bash\ncp contrib/airline/base16_rebecca.bash out/contrib/airline/base16_rebecca.bash\ncp contrib/airline/base16_sandcastle.bash out/contrib/airline/base16_sandcastle.bash\ncp contrib/airline/base16_seti.bash out/contrib/airline/base16_seti.bash\ncp contrib/airline/base16_shapeshifter.bash out/contrib/airline/base16_shapeshifter.bash\ncp contrib/airline/base16_shell.bash out/contrib/airline/base16_shell.bash\ncp contrib/airline/base16_snazzy.bash out/contrib/airline/base16_snazzy.bash\ncp contrib/airline/base16_solarflare.bash out/contrib/airline/base16_solarflare.bash\ncp contrib/airline/base16_solarized.bash out/contrib/airline/base16_solarized.bash\ncp contrib/airline/base16_solarized_dark.bash out/contrib/airline/base16_solarized_dark.bash\ncp contrib/airline/base16_solarized_light.bash out/contrib/airline/base16_solarized_light.bash\ncp contrib/airline/base16_spacemacs.bash out/contrib/airline/base16_spacemacs.bash\ncp contrib/airline/base16_summerfruit.bash out/contrib/airline/base16_summerfruit.bash\ncp contrib/airline/base16_summerfruit_dark.bash out/contrib/airline/base16_summerfruit_dark.bash\ncp contrib/airline/base16_summerfruit_light.bash out/contrib/airline/base16_summerfruit_light.bash\ncp contrib/airline/base16_synth_midnight_dark.bash out/contrib/airline/base16_synth_midnight_dark.bash\ncp contrib/airline/base16_tomorrow.bash out/contrib/airline/base16_tomorrow.bash\ncp contrib/airline/base16_tomorrow_night.bash out/contrib/airline/base16_tomorrow_night.bash\ncp contrib/airline/base16_tomorrow_night_eighties.bash out/contrib/airline/base16_tomorrow_night_eighties.bash\ncp contrib/airline/base16_tube.bash out/contrib/airline/base16_tube.bash\ncp contrib/airline/base16_twilight.bash out/contrib/airline/base16_twilight.bash\ncp contrib/airline/base16_unikitty_dark.bash out/contrib/airline/base16_unikitty_dark.bash\ncp contrib/airline/base16_unikitty_light.bash out/contrib/airline/base16_unikitty_light.bash\ncp contrib/airline/base16_vim.bash out/contrib/airline/base16_vim.bash\ncp contrib/airline/base16_woodland.bash out/contrib/airline/base16_woodland.bash\ncp contrib/airline/base16_xcode_dusk.bash out/contrib/airline/base16_xcode_dusk.bash\ncp contrib/airline/base16_zenburn.bash out/contrib/airline/base16_zenburn.bash\ncp contrib/airline/behelit.bash out/contrib/airline/behelit.bash\ncp contrib/airline/biogoo.bash out/contrib/airline/biogoo.bash\ncp contrib/airline/blood_red.bash out/contrib/airline/blood_red.bash\ncp contrib/airline/bubblegum.bash out/contrib/airline/bubblegum.bash\ncp contrib/airline/cobalt2.bash out/contrib/airline/cobalt2.bash\ncp contrib/airline/cool.bash out/contrib/airline/cool.bash\ncp contrib/airline/cyberpunk.bash out/contrib/airline/cyberpunk.bash\ncp contrib/airline/dark.bash out/contrib/airline/dark.bash\ncp contrib/airline/dark_minimal.bash out/contrib/airline/dark_minimal.bash\ncp contrib/airline/desertink.bash out/contrib/airline/desertink.bash\ncp contrib/airline/deus.bash out/contrib/airline/deus.bash\ncp contrib/airline/distinguished.bash out/contrib/airline/distinguished.bash\ncp contrib/airline/durant.bash out/contrib/airline/durant.bash\ncp contrib/airline/fairyfloss.bash out/contrib/airline/fairyfloss.bash\ncp contrib/airline/fruit_punch.bash out/contrib/airline/fruit_punch.bash\ncp contrib/airline/google_dark.bash out/contrib/airline/google_dark.bash\ncp contrib/airline/google_light.bash out/contrib/airline/google_light.bash\ncp contrib/airline/hybrid.bash out/contrib/airline/hybrid.bash\ncp contrib/airline/hybridline.bash out/contrib/airline/hybridline.bash\ncp contrib/airline/jellybeans.bash out/contrib/airline/jellybeans.bash\ncp contrib/airline/jet.bash out/contrib/airline/jet.bash\ncp contrib/airline/kalisi.bash out/contrib/airline/kalisi.bash\ncp contrib/airline/kolor.bash out/contrib/airline/kolor.bash\ncp contrib/airline/laederon.bash out/contrib/airline/laederon.bash\ncp contrib/airline/landscape.bash out/contrib/airline/landscape.bash\ncp contrib/airline/lessnoise.bash out/contrib/airline/lessnoise.bash\ncp contrib/airline/light.bash out/contrib/airline/light.bash\ncp contrib/airline/lighthaus.bash out/contrib/airline/lighthaus.bash\ncp contrib/airline/lucius.bash out/contrib/airline/lucius.bash\ncp contrib/airline/luna.bash out/contrib/airline/luna.bash\ncp contrib/airline/minimalist.bash out/contrib/airline/minimalist.bash\ncp contrib/airline/molokai.bash out/contrib/airline/molokai.bash\ncp contrib/airline/monochrome.bash out/contrib/airline/monochrome.bash\ncp contrib/airline/murmur.bash out/contrib/airline/murmur.bash\ncp contrib/airline/night_owl.bash out/contrib/airline/night_owl.bash\ncp contrib/airline/nord_minimal.bash out/contrib/airline/nord_minimal.bash\ncp contrib/airline/onedark.bash out/contrib/airline/onedark.bash\ncp contrib/airline/ouo.bash out/contrib/airline/ouo.bash\ncp contrib/airline/owo.bash out/contrib/airline/owo.bash\ncp contrib/airline/papercolor.bash out/contrib/airline/papercolor.bash\ncp contrib/airline/peaksea.bash out/contrib/airline/peaksea.bash\ncp contrib/airline/powerlineish.bash out/contrib/airline/powerlineish.bash\ncp contrib/airline/qwq.bash out/contrib/airline/qwq.bash\ncp contrib/airline/raven.bash out/contrib/airline/raven.bash\ncp contrib/airline/ravenpower.bash out/contrib/airline/ravenpower.bash\ncp contrib/airline/seagull.bash out/contrib/airline/seagull.bash\ncp contrib/airline/selenized.bash out/contrib/airline/selenized.bash\ncp contrib/airline/selenized_bw.bash out/contrib/airline/selenized_bw.bash\ncp contrib/airline/seoul256.bash out/contrib/airline/seoul256.bash\ncp contrib/airline/serene.bash out/contrib/airline/serene.bash\ncp contrib/airline/sierra.bash out/contrib/airline/sierra.bash\ncp contrib/airline/silver.bash out/contrib/airline/silver.bash\ncp contrib/airline/simple.bash out/contrib/airline/simple.bash\ncp contrib/airline/soda.bash out/contrib/airline/soda.bash\ncp contrib/airline/solarized.bash out/contrib/airline/solarized.bash\ncp contrib/airline/solarized_flood.bash out/contrib/airline/solarized_flood.bash\ncp contrib/airline/sol.bash out/contrib/airline/sol.bash\ncp contrib/airline/supernova.bash out/contrib/airline/supernova.bash\ncp contrib/airline/term.bash out/contrib/airline/term.bash\ncp contrib/airline/term_light.bash out/contrib/airline/term_light.bash\ncp contrib/airline/tomorrow.bash out/contrib/airline/tomorrow.bash\ncp contrib/airline/transparent.bash out/contrib/airline/transparent.bash\ncp contrib/airline/ubaryd.bash out/contrib/airline/ubaryd.bash\ncp contrib/airline/understated.bash out/contrib/airline/understated.bash\ncp contrib/airline/violet.bash out/contrib/airline/violet.bash\ncp contrib/airline/wombat.bash out/contrib/airline/wombat.bash\ncp contrib/airline/xtermlight.bash out/contrib/airline/xtermlight.bash\ncp contrib/airline/zenburn.bash out/contrib/airline/zenburn.bash\ncp contrib/config/execmark.bash out/contrib/config/execmark.bash\ncp contrib/config/github265-prompt-path-level-colors.bash out/contrib/config/github265-prompt-path-level-colors.bash\ncp contrib/config/github288-filter-sabbrev-completion.bash out/contrib/config/github288-filter-sabbrev-completion.bash\ncp contrib/config/github296-named-execmark.bash out/contrib/config/github296-named-execmark.bash\ncp contrib/config/github302-perlre-server.bash out/contrib/config/github302-perlre-server.bash\ncp contrib/config/github481-elapsed-mark-without-command.bash out/contrib/config/github481-elapsed-mark-without-command.bash\ncp contrib/config/github483-elapsed-mark-on-error.bash out/contrib/config/github483-elapsed-mark-on-error.bash\ncp contrib/config/github499-append-to-last-modified.bash out/contrib/config/github499-append-to-last-modified.bash\ncp contrib/config/readline.bash out/contrib/config/readline.bash\ncp contrib/integration/bash-completion.bash out/contrib/integration/bash-completion.bash\ncp contrib/integration/bash-preexec.bash out/contrib/integration/bash-preexec.bash\ncp contrib/integration/fzf.common.bash out/contrib/integration/fzf.common.bash\ncp contrib/integration/fzf-completion.bash out/contrib/integration/fzf-completion.bash\ncp contrib/integration/fzf-git.bash out/contrib/integration/fzf-git.bash\ncp contrib/integration/fzf-initialize.bash out/contrib/integration/fzf-initialize.bash\ncp contrib/integration/fzf-key-bindings.bash out/contrib/integration/fzf-key-bindings.bash\ncp contrib/integration/fzf-menu.bash out/contrib/integration/fzf-menu.bash\ncp contrib/integration/nix-completion.bash out/contrib/integration/nix-completion.bash\ncp contrib/integration/skim-completion.bash out/contrib/integration/skim-completion.bash\ncp contrib/integration/skim-initialize.bash out/contrib/integration/skim-initialize.bash\ncp contrib/integration/skim-key-bindings.bash out/contrib/integration/skim-key-bindings.bash\ncp contrib/integration/zoxide.bash out/contrib/integration/zoxide.bash\ncp contrib/layer/pattern.bash out/contrib/layer/pattern.bash\ncp contrib/layer/sample.adapter.bash out/contrib/layer/sample.adapter.bash\ncp contrib/layer/sample.RandomColor2.bash out/contrib/layer/sample.RandomColor2.bash\ncp contrib/layer/sample.RandomColor.bash out/contrib/layer/sample.RandomColor.bash\ncp contrib/scheme/base16.bash out/contrib/scheme/base16.bash\ncp contrib/scheme/catppuccin_mocha.bash out/contrib/scheme/catppuccin_mocha.bash\ncp contrib/scheme/default.bash out/contrib/scheme/default.bash\ncp contrib/syntax/edit.named-command.bash out/contrib/syntax/edit.named-command.bash\ncp contrib/colorglass.base16.dat out/contrib/colorglass.base16.dat\nln -sf integration/bash-preexec.bash out/contrib/bash-preexec.bash\nln -sf integration/fzf-completion.bash out/contrib/fzf-completion.bash\nln -sf integration/fzf-git.bash out/contrib/fzf-git.bash\nln -sf integration/fzf-initialize.bash out/contrib/fzf-initialize.bash\nln -sf integration/fzf-key-bindings.bash out/contrib/fzf-key-bindings.bash\nmkdir -p out/doc\ncp README.md out/doc/README.md\ncp README-ja_JP.md out/doc/README-ja_JP.md\ncp docs/CONTRIBUTING.md out/doc/CONTRIBUTING.md\ncp docs/ChangeLog.md out/doc/ChangeLog.md\ncp docs/Release.md out/doc/Release.md\nmkdir -p out/doc/contrib\nmkdir -p out/doc/contrib/integration\ncp contrib/colorglass.md out/doc/contrib/colorglass.md\ncp contrib/prompt.md out/doc/contrib/prompt.md\ncp contrib/README-ja.md out/doc/contrib/README-ja.md\ncp contrib/README.md out/doc/contrib/README.md\ncp contrib/integration/fzf.md out/doc/contrib/integration/fzf.md\nmkdir -p out/licenses\ncp LICENSE.md out/licenses/LICENSE.md\nmkdir -p out/licenses/contrib\ncp contrib/LICENSE out/licenses/contrib/LICENSE\n",
+            "title": "Build ble.sh",
+            "metadata": {
+              "output": "mkdir -p out\nDEPENDENCIES_PHONY=1 DEPENDENCIES_OUTPUT=\"out/ble.dep\" DEPENDENCIES_TARGET=\"out/ble.sh\" \\\n  FULLVER=0.4.0-devel4 \\\n  BLE_GIT_COMMIT_ID=\"32bb63da\" \\\n  BLE_GIT_BRANCH=\"master\" \\\n  BUILD_GIT_VERSION=\"git version 2.53.0\" \\\n  BUILD_MAKE_VERSION=\"GNU Make 4.4.1\" \\\n  BUILD_GAWK_VERSION=\"GNU Awk 5.3.2, API 4.0, PMA Avon 8-g1, (GNU MPFR 4.2.2, GNU MP 6.3.0)\" \\\n  /usr/bin/gawk -f make/mwg_pp.awk ble.pp >/dev/null\nmkdir -p out/lib\ncp lib/keymap.emacs.sh out/lib/keymap.emacs.sh\ncp lib/keymap.vi.sh out/lib/keymap.vi.sh\ncp lib/keymap.vi_digraph.sh out/lib/keymap.vi_digraph.sh\ncp lib/keymap.vi_digraph.txt out/lib/keymap.vi_digraph.txt\ncp lib/init-term.sh out/lib/init-term.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/init-bind.sh > out/lib/init-bind.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/init-cmap.sh > out/lib/init-cmap.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/init-msys1.sh > out/lib/init-msys1.sh\ncp lib/core-complete.sh out/lib/core-complete.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/core-syntax.sh > out/lib/core-syntax.sh\ncp lib/core-test.sh out/lib/core-test.sh\ncp lib/core-cmdspec.sh out/lib/core-cmdspec.sh\ncp lib/core-debug.sh out/lib/core-debug.sh\ncp lib/core-edit.ignoreeof-messages.txt out/lib/core-edit.ignoreeof-messages.txt\ncp lib/core-decode.emacs-rlfunc.txt out/lib/core-decode.emacs-rlfunc.txt\ncp lib/core-decode.vi_imap-rlfunc.txt out/lib/core-decode.vi_imap-rlfunc.txt\ncp lib/core-decode.vi_nmap-rlfunc.txt out/lib/core-decode.vi_nmap-rlfunc.txt\ncp lib/vim-surround.sh out/lib/vim-surround.sh\ncp lib/vim-arpeggio.sh out/lib/vim-arpeggio.sh\ncp lib/vim-airline.sh out/lib/vim-airline.sh\ncp lib/util.bgproc.sh out/lib/util.bgproc.sh\ncp lib/test-bash.sh out/lib/test-bash.sh\ncp lib/test-main.sh out/lib/test-main.sh\ncp lib/test-util.sh out/lib/test-util.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/test-canvas.sh > out/lib/test-canvas.sh\ncp lib/test-decode.sh out/lib/test-decode.sh\ncp lib/test-edit.sh out/lib/test-edit.sh\ncp lib/test-syntax.sh out/lib/test-syntax.sh\ncp lib/test-complete.sh out/lib/test-complete.sh\ncp lib/test-keymap.vi.sh out/lib/test-keymap.vi.sh\n/usr/bin/gawk -f make/mwg_pp.awk lib/benchmark.ksh > out/lib/benchmark.ksh\nmkdir -p out/contrib\nmkdir -p out/contrib/airline\nmkdir -p out/contrib/config\nmkdir -p out/contrib/integration\nmkdir -p out/contrib/layer\nmkdir -p out/contrib/scheme\nmkdir -p out/contrib/syntax\ncp contrib/colorglass.bash out/contrib/colorglass.bash\ncp contrib/histdb.bash out/contrib/histdb.bash\ncp contrib/prompt-defer.bash out/contrib/prompt-defer.bash\ncp contrib/prompt-elapsed.bash out/contrib/prompt-elapsed.bash\ncp contrib/prompt-git.bash out/contrib/prompt-git.bash\ncp contrib/prompt-vim-mode.bash out/contrib/prompt-vim-mode.bash\ncp contrib/airline/alduin.bash out/contrib/airline/alduin.bash\ncp contrib/airline/angr.bash out/contrib/airline/angr.bash\ncp contrib/airline/apprentice.bash out/contrib/airline/apprentice.bash\ncp contrib/airline/atomic.bash out/contrib/airline/atomic.bash\ncp contrib/airline/ayu_dark.bash out/contrib/airline/ayu_dark.bash\ncp contrib/airline/ayu_light.bash out/contrib/airline/ayu_light.bash\ncp contrib/airline/ayu_mirage.bash out/contrib/airline/ayu_mirage.bash\ncp contrib/airline/badwolf.bash out/contrib/airline/badwolf.bash\ncp contrib/airline/base16_3024.bash out/contrib/airline/base16_3024.bash\ncp contrib/airline/base16_adwaita.bash out/contrib/airline/base16_adwaita.bash\ncp contrib/airline/base16_apathy.bash out/contrib/airline/base16_apathy.bash\ncp contrib/airline/base16_ashes.bash out/contrib/airline/base16_ashes.bash\ncp contrib/airline/base16_atelier_cave.bash out/contrib/airline/base16_atelier_cave.bash\ncp contrib/airline/base16_atelier_cave_light.bash out/contrib/airline/base16_atelier_cave_light.bash\ncp contrib/airline/base16_atelier_dune.bash out/contrib/airline/base16_atelier_dune.bash\ncp contrib/airline/base16_atelierdune.bash out/contrib/airline/base16_atelierdune.bash\ncp contrib/airline/base16_atelier_dune_light.bash out/contrib/airline/base16_atelier_dune_light.bash\ncp contrib/airline/base16_atelier_estuary.bash out/contrib/airline/base16_atelier_estuary.bash\ncp contrib/airline/base16_atelier_estuary_light.bash out/contrib/airline/base16_atelier_estuary_light.bash\ncp contrib/airline/base16_atelier_forest.bash out/contrib/airline/base16_atelier_forest.bash\ncp contrib/airline/base16_atelierforest.bash out/contrib/airline/base16_atelierforest.bash\ncp contrib/airline/base16_atelier_forest_light.bash out/contrib/airline/base16_atelier_forest_light.bash\ncp contrib/airline/base16_atelier_heath.bash out/contrib/airline/base16_atelier_heath.bash\ncp contrib/airline/base16_atelierheath.bash out/contrib/airline/base16_atelierheath.bash\ncp contrib/airline/base16_atelier_heath_light.bash out/contrib/airline/base16_atelier_heath_light.bash\ncp contrib/airline/base16_atelier_lakeside.bash out/contrib/airline/base16_atelier_lakeside.bash\ncp contrib/airline/base16_atelierlakeside.bash out/contrib/airline/base16_atelierlakeside.bash\ncp contrib/airline/base16_atelier_lakeside_light.bash out/contrib/airline/base16_atelier_lakeside_light.bash\ncp contrib/airline/base16_atelier_plateau.bash out/contrib/airline/base16_atelier_plateau.bash\ncp contrib/airline/base16_atelier_plateau_light.bash out/contrib/airline/base16_atelier_plateau_light.bash\ncp contrib/airline/base16_atelier_savanna.bash out/contrib/airline/base16_atelier_savanna.bash\ncp contrib/airline/base16_atelier_savanna_light.bash out/contrib/airline/base16_atelier_savanna_light.bash\ncp contrib/airline/base16_atelier_seaside.bash out/contrib/airline/base16_atelier_seaside.bash\ncp contrib/airline/base16_atelierseaside.bash out/contrib/airline/base16_atelierseaside.bash\ncp contrib/airline/base16_atelier_seaside_light.bash out/contrib/airline/base16_atelier_seaside_light.bash\ncp contrib/airline/base16_atelier_sulphurpool.bash out/contrib/airline/base16_atelier_sulphurpool.bash\ncp contrib/airline/base16_atelier_sulphurpool_light.bash out/contrib/airline/base16_atelier_sulphurpool_light.bash\ncp contrib/airline/base16_atlas.bash out/contrib/airline/base16_atlas.bash\ncp contrib/airline/base16.bash out/contrib/airline/base16.bash\ncp contrib/airline/base16_bespin.bash out/contrib/airline/base16_bespin.bash\ncp contrib/airline/base16_black_metal.bash out/contrib/airline/base16_black_metal.bash\ncp contrib/airline/base16_black_metal_bathory.bash out/contrib/airline/base16_black_metal_bathory.bash\ncp contrib/airline/base16_black_metal_burzum.bash out/contrib/airline/base16_black_metal_burzum.bash\ncp contrib/airline/base16_black_metal_dark_funeral.bash out/contrib/airline/base16_black_metal_dark_funeral.bash\ncp contrib/airline/base16_black_metal_gorgoroth.bash out/contrib/airline/base16_black_metal_gorgoroth.bash\ncp contrib/airline/base16_black_metal_immortal.bash out/contrib/airline/base16_black_metal_immortal.bash\ncp contrib/airline/base16_black_metal_khold.bash out/contrib/airline/base16_black_metal_khold.bash\ncp contrib/airline/base16_black_metal_marduk.bash out/contrib/airline/base16_black_metal_marduk.bash\ncp contrib/airline/base16_black_metal_mayhem.bash out/contrib/airline/base16_black_metal_mayhem.bash\ncp contrib/airline/base16_black_metal_nile.bash out/contrib/airline/base16_black_metal_nile.bash\ncp contrib/airline/base16_black_metal_venom.bash out/contrib/airline/base16_black_metal_venom.bash\ncp contrib/airline/base16_brewer.bash out/contrib/airline/base16_brewer.bash\ncp contrib/airline/base16_bright.bash out/contrib/airline/base16_bright.bash\ncp contrib/airline/base16_brogrammer.bash out/contrib/airline/base16_brogrammer.bash\ncp contrib/airline/base16_brushtrees.bash out/contrib/airline/base16_brushtrees.bash\ncp contrib/airline/base16_brushtrees_dark.bash out/contrib/airline/base16_brushtrees_dark.bash\ncp contrib/airline/base16_chalk.bash out/contrib/airline/base16_chalk.bash\ncp contrib/airline/base16_circus.bash out/contrib/airline/base16_circus.bash\ncp contrib/airline/base16_classic.bash out/contrib/airline/base16_classic.bash\ncp contrib/airline/base16_classic_dark.bash out/contrib/airline/base16_classic_dark.bash\ncp contrib/airline/base16_classic_light.bash out/contrib/airline/base16_classic_light.bash\ncp contrib/airline/base16_codeschool.bash out/contrib/airline/base16_codeschool.bash\ncp contrib/airline/base16color.bash out/contrib/airline/base16color.bash\ncp contrib/airline/base16_colors.bash out/contrib/airline/base16_colors.bash\ncp contrib/airline/base16_cupcake.bash out/contrib/airline/base16_cupcake.bash\ncp contrib/airline/base16_cupertino.bash out/contrib/airline/base16_cupertino.bash\ncp contrib/airline/base16_darktooth.bash out/contrib/airline/base16_darktooth.bash\ncp contrib/airline/base16_decaf.bash out/contrib/airline/base16_decaf.bash\ncp contrib/airline/base16_default.bash out/contrib/airline/base16_default.bash\ncp contrib/airline/base16_default_dark.bash out/contrib/airline/base16_default_dark.bash\ncp contrib/airline/base16_default_light.bash out/contrib/airline/base16_default_light.bash\ncp contrib/airline/base16_dracula.bash out/contrib/airline/base16_dracula.bash\ncp contrib/airline/base16_edge_dark.bash out/contrib/airline/base16_edge_dark.bash\ncp contrib/airline/base16_edge_light.bash out/contrib/airline/base16_edge_light.bash\ncp contrib/airline/base16_eighties.bash out/contrib/airline/base16_eighties.bash\ncp contrib/airline/base16_embers.bash out/contrib/airline/base16_embers.bash\ncp contrib/airline/base16_espresso.bash out/contrib/airline/base16_espresso.bash\ncp contrib/airline/base16_flat.bash out/contrib/airline/base16_flat.bash\ncp contrib/airline/base16_framer.bash out/contrib/airline/base16_framer.bash\ncp contrib/airline/base16_fruit_soda.bash out/contrib/airline/base16_fruit_soda.bash\ncp contrib/airline/base16_gigavolt.bash out/contrib/airline/base16_gigavolt.bash\ncp contrib/airline/base16_github.bash out/contrib/airline/base16_github.bash\ncp contrib/airline/base16_google.bash out/contrib/airline/base16_google.bash\ncp contrib/airline/base16_google_dark.bash out/contrib/airline/base16_google_dark.bash\ncp contrib/airline/base16_google_light.bash out/contrib/airline/base16_google_light.bash\ncp contrib/airline/base16_grayscale.bash out/contrib/airline/base16_grayscale.bash\ncp contrib/airline/base16_grayscale_dark.bash out/contrib/airline/base16_grayscale_dark.bash\ncp contrib/airline/base16_grayscale_light.bash out/contrib/airline/base16_grayscale_light.bash\ncp contrib/airline/base16_greenscreen.bash out/contrib/airline/base16_greenscreen.bash\ncp contrib/airline/base16_gruvbox_dark_hard.bash out/contrib/airline/base16_gruvbox_dark_hard.bash\ncp contrib/airline/base16_gruvbox_dark_medium.bash out/contrib/airline/base16_gruvbox_dark_medium.bash\ncp contrib/airline/base16_gruvbox_dark_pale.bash out/contrib/airline/base16_gruvbox_dark_pale.bash\ncp contrib/airline/base16_gruvbox_dark_soft.bash out/contrib/airline/base16_gruvbox_dark_soft.bash\ncp contrib/airline/base16_gruvbox_light_hard.bash out/contrib/airline/base16_gruvbox_light_hard.bash\ncp contrib/airline/base16_gruvbox_light_medium.bash out/contrib/airline/base16_gruvbox_light_medium.bash\ncp contrib/airline/base16_gruvbox_light_soft.bash out/contrib/airline/base16_gruvbox_light_soft.bash\ncp contrib/airline/base16_harmonic16.bash out/contrib/airline/base16_harmonic16.bash\ncp contrib/airline/base16_harmonic_dark.bash out/contrib/airline/base16_harmonic_dark.bash\ncp contrib/airline/base16_harmonic_light.bash out/contrib/airline/base16_harmonic_light.bash\ncp contrib/airline/base16_heetch.bash out/contrib/airline/base16_heetch.bash\ncp contrib/airline/base16_heetch_light.bash out/contrib/airline/base16_heetch_light.bash\ncp contrib/airline/base16_helios.bash out/contrib/airline/base16_helios.bash\ncp contrib/airline/base16_hopscotch.bash out/contrib/airline/base16_hopscotch.bash\ncp contrib/airline/base16_horizon_dark.bash out/contrib/airline/base16_horizon_dark.bash\ncp contrib/airline/base16_horizon_light.bash out/contrib/airline/base16_horizon_light.bash\ncp contrib/airline/base16_horizon_terminal_dark.bash out/contrib/airline/base16_horizon_terminal_dark.bash\ncp contrib/airline/base16_horizon_terminal_light.bash out/contrib/airline/base16_horizon_terminal_light.bash\ncp contrib/airline/base16_ia_dark.bash out/contrib/airline/base16_ia_dark.bash\ncp contrib/airline/base16_ia_light.bash out/contrib/airline/base16_ia_light.bash\ncp contrib/airline/base16_icy.bash out/contrib/airline/base16_icy.bash\ncp contrib/airline/base16_irblack.bash out/contrib/airline/base16_irblack.bash\ncp contrib/airline/base16_isotope.bash out/contrib/airline/base16_isotope.bash\ncp contrib/airline/base16_londontube.bash out/contrib/airline/base16_londontube.bash\ncp contrib/airline/base16_macintosh.bash out/contrib/airline/base16_macintosh.bash\ncp contrib/airline/base16_marrakesh.bash out/contrib/airline/base16_marrakesh.bash\ncp contrib/airline/base16_materia.bash out/contrib/airline/base16_materia.bash\ncp contrib/airline/base16_material.bash out/contrib/airline/base16_material.bash\ncp contrib/airline/base16_material_darker.bash out/contrib/airline/base16_material_darker.bash\ncp contrib/airline/base16_material_lighter.bash out/contrib/airline/base16_material_lighter.bash\ncp contrib/airline/base16_material_palenight.bash out/contrib/airline/base16_material_palenight.bash\ncp contrib/airline/base16_material_vivid.bash out/contrib/airline/base16_material_vivid.bash\ncp contrib/airline/base16_mellow_purple.bash out/contrib/airline/base16_mellow_purple.bash\ncp contrib/airline/base16_mexico_light.bash out/contrib/airline/base16_mexico_light.bash\ncp contrib/airline/base16_mocha.bash out/contrib/airline/base16_mocha.bash\ncp contrib/airline/base16_monokai.bash out/contrib/airline/base16_monokai.bash\ncp contrib/airline/base16_nord.bash out/contrib/airline/base16_nord.bash\ncp contrib/airline/base16_nova.bash out/contrib/airline/base16_nova.bash\ncp contrib/airline/base16_ocean.bash out/contrib/airline/base16_ocean.bash\ncp contrib/airline/base16_oceanicnext.bash out/contrib/airline/base16_oceanicnext.bash\ncp contrib/airline/base16_onedark.bash out/contrib/airline/base16_onedark.bash\ncp contrib/airline/base16_one_light.bash out/contrib/airline/base16_one_light.bash\ncp contrib/airline/base16_outrun_dark.bash out/contrib/airline/base16_outrun_dark.bash\ncp contrib/airline/base16_papercolor_dark.bash out/contrib/airline/base16_papercolor_dark.bash\ncp contrib/airline/base16_papercolor_light.bash out/contrib/airline/base16_papercolor_light.bash\ncp contrib/airline/base16_paraiso.bash out/contrib/airline/base16_paraiso.bash\ncp contrib/airline/base16_phd.bash out/contrib/airline/base16_phd.bash\ncp contrib/airline/base16_pico.bash out/contrib/airline/base16_pico.bash\ncp contrib/airline/base16_pop.bash out/contrib/airline/base16_pop.bash\ncp contrib/airline/base16_porple.bash out/contrib/airline/base16_porple.bash\ncp contrib/airline/base16_railscasts.bash out/contrib/airline/base16_railscasts.bash\ncp contrib/airline/base16_rebecca.bash out/contrib/airline/base16_rebecca.bash\ncp contrib/airline/base16_sandcastle.bash out/contrib/airline/base16_sandcastle.bash\ncp contrib/airline/base16_seti.bash out/contrib/airline/base16_seti.bash\ncp contrib/airline/base16_shapeshifter.bash out/contrib/airline/base16_shapeshifter.bash\ncp contrib/airline/base16_shell.bash out/contrib/airline/base16_shell.bash\ncp contrib/airline/base16_snazzy.bash out/contrib/airline/base16_snazzy.bash\ncp contrib/airline/base16_solarflare.bash out/contrib/airline/base16_solarflare.bash\ncp contrib/airline/base16_solarized.bash out/contrib/airline/base16_solarized.bash\ncp contrib/airline/base16_solarized_dark.bash out/contrib/airline/base16_solarized_dark.bash\ncp contrib/airline/base16_solarized_light.bash out/contrib/airline/base16_solarized_light.bash\ncp contrib/airline/base16_spacemacs.bash out/contrib/airline/base16_spacemacs.bash\ncp contrib/airline/base16_summerfruit.bash out/contrib/airline/base16_summerfruit.bash\ncp contrib/airline/base16_summerfruit_dark.bash out/contrib/airline/base16_summerfruit_dark.bash\ncp contrib/airline/base16_summerfruit_light.bash out/contrib/airline/base16_summerfruit_light.bash\ncp contrib/airline/base16_synth_midnight_dark.bash out/contrib/airline/base16_synth_midnight_dark.bash\ncp contrib/airline/base16_tomorrow.bash out/contrib/airline/base16_tomorrow.bash\ncp contrib/airline/base16_tomorrow_night.bash out/contrib/airline/base16_tomorrow_night.bash\ncp contrib/airline/base16_tomorrow_night_eighties.bash out/contrib/airline/base16_tomorrow_night_eighties.bash\ncp contrib/airline/base16_tube.bash out/contrib/airline/base16_tube.bash\ncp contrib/airline/base16_twilight.bash out/contrib/airline/base16_twilight.bash\ncp contrib/airline/base16_unikitty_dark.bash out/contrib/airline/base16_unikitty_dark.bash\ncp contrib/airline/base16_unikitty_light.bash out/contrib/airline/base16_unikitty_light.bash\ncp contrib/airline/base16_vim.bash out/contrib/airline/base16_vim.bash\ncp contrib/airline/base16_woodland.bash out/contrib/airline/base16_woodland.bash\ncp contrib/airline/base16_xcode_dusk.bash out/contrib/airline/base16_xcode_dusk.bash\ncp contrib/airline/base16_zenburn.bash out/contrib/airline/base16_zenburn.bash\ncp contrib/airline/behelit.bash out/contrib/airline/behelit.bash\ncp contrib/airline/biogoo.bash out/contrib/airline/biogoo.bash\ncp contrib/airline/blood_red.bash out/contrib/airline/blood_red.bash\ncp contrib/airline/bubblegum.bash out/contrib/airline/bubblegum.bash\ncp contrib/airline/cobalt2.bash out/contrib/airline/cobalt2.bash\ncp contrib/airline/cool.bash out/contrib/airline/cool.bash\ncp contrib/airline/cyberpunk.bash out/contrib/airline/cyberpunk.bash\ncp contrib/airline/dark.bash out/contrib/airline/dark.bash\ncp contrib/airline/dark_minimal.bash out/contrib/airline/dark_minimal.bash\ncp contrib/airline/desertink.bash out/contrib/airline/desertink.bash\ncp contrib/airline/deus.bash out/contrib/airline/deus.bash\ncp contrib/airline/distinguished.bash out/contrib/airline/distinguished.bash\ncp contrib/airline/durant.bash out/contrib/airline/durant.bash\ncp contrib/airline/fairyfloss.bash out/contrib/airline/fairyfloss.bash\ncp contrib/airline/fruit_punch.bash out/contrib/airline/fruit_punch.bash\ncp contrib/airline/google_dark.bash out/contrib/airline/google_dark.bash\ncp contrib/airline/google_light.bash out/contrib/airline/google_light.bash\ncp contrib/airline/hybrid.bash out/contrib/airline/hybrid.bash\ncp contrib/airline/hybridline.bash out/contrib/airline/hybridline.bash\ncp contrib/airline/jellybeans.bash out/contrib/airline/jellybeans.bash\ncp contrib/airline/jet.bash out/contrib/airline/jet.bash\ncp contrib/airline/kalisi.bash out/contrib/airline/kalisi.bash\ncp contrib/airline/kolor.bash out/contrib/airline/kolor.bash\ncp contrib/airline/laederon.bash out/contrib/airline/laederon.bash\ncp contrib/airline/landscape.bash out/contrib/airline/landscape.bash\ncp contrib/airline/lessnoise.bash out/contrib/airline/lessnoise.bash\ncp contrib/airline/light.bash out/contrib/airline/light.bash\ncp contrib/airline/lighthaus.bash out/contrib/airline/lighthaus.bash\ncp contrib/airline/lucius.bash out/contrib/airline/lucius.bash\ncp contrib/airline/luna.bash out/contrib/airline/luna.bash\ncp contrib/airline/minimalist.bash out/contrib/airline/minimalist.bash\ncp contrib/airline/molokai.bash out/contrib/airline/molokai.bash\ncp contrib/airline/monochrome.bash out/contrib/airline/monochrome.bash\ncp contrib/airline/murmur.bash out/contrib/airline/murmur.bash\ncp contrib/airline/night_owl.bash out/contrib/airline/night_owl.bash\ncp contrib/airline/nord_minimal.bash out/contrib/airline/nord_minimal.bash\ncp contrib/airline/onedark.bash out/contrib/airline/onedark.bash\ncp contrib/airline/ouo.bash out/contrib/airline/ouo.bash\ncp contrib/airline/owo.bash out/contrib/airline/owo.bash\ncp contrib/airline/papercolor.bash out/contrib/airline/papercolor.bash\ncp contrib/airline/peaksea.bash out/contrib/airline/peaksea.bash\ncp contrib/airline/powerlineish.bash out/contrib/airline/powerlineish.bash\ncp contrib/airline/qwq.bash out/contrib/airline/qwq.bash\ncp contrib/airline/raven.bash out/contrib/airline/raven.bash\ncp contrib/airline/ravenpower.bash out/contrib/airline/ravenpower.bash\ncp contrib/airline/seagull.bash out/contrib/airline/seagull.bash\ncp contrib/airline/selenized.bash out/contrib/airline/selenized.bash\ncp contrib/airline/selenized_bw.bash out/contrib/airline/selenized_bw.bash\ncp contrib/airline/seoul256.bash out/contrib/airline/seoul256.bash\ncp contrib/airline/serene.bash out/contrib/airline/serene.bash\ncp contrib/airline/sierra.bash out/contrib/airline/sierra.bash\ncp contrib/airline/silver.bash out/contrib/airline/silver.bash\ncp contrib/airline/simple.bash out/contrib/airline/simple.bash\ncp contrib/airline/soda.bash out/contrib/airline/soda.bash\ncp contrib/airline/solarized.bash out/contrib/airline/solarized.bash\ncp contrib/airline/solarized_flood.bash out/contrib/airline/solarized_flood.bash\ncp contrib/airline/sol.bash out/contrib/airline/sol.bash\ncp contrib/airline/supernova.bash out/contrib/airline/supernova.bash\ncp contrib/airline/term.bash out/contrib/airline/term.bash\ncp contrib/airline/term_light.bash out/contrib/airline/term_light.bash\ncp contrib/airline/tomorrow.bash out/contrib/airline/tomorrow.bash\ncp contrib/airline/transparent.bash out/contrib/airline/transparent.bash\ncp contrib/airline/ubaryd.bash out/contrib/airline/ubaryd.bash\ncp contrib/airline/understated.bash out/contrib/airline/understated.bash\ncp contrib/airline/violet.bash out/contrib/airline/violet.bash\ncp contrib/airline/wombat.bash out/contrib/airline/wombat.bash\ncp contrib/airline/xtermlight.bash out/contrib/airline/xtermlight.bash\ncp contrib/airline/zenburn.bash out/contrib/airline/zenburn.bash\ncp contrib/config/execmark.bash out/contrib/config/execmark.bash\ncp contrib/config/github265-prompt-path-level-colors.bash out/contrib/config/github265-prompt-path-level-colors.bash\ncp contrib/config/github288-filter-sabbrev-completion.bash out/contrib/config/github288-filter-sabbrev-completion.bash\ncp contrib/config/github296-named-execmark.bash out/contrib/config/github296-named-execmark.bash\ncp contrib/config/github302-perlre-server.bash out/contrib/config/github302-perlre-server.bash\ncp contrib/config/github481-elapsed-mark-without-command.bash out/contrib/config/github481-elapsed-mark-without-command.bash\ncp contrib/config/github483-elapsed-mark-on-error.bash out/contrib/config/github483-elapsed-mark-on-error.bash\ncp contrib/config/github499-append-to-last-modified.bash out/contrib/config/github499-append-to-last-modified.bash\ncp contrib/config/readline.bash out/contrib/config/readline.bash\ncp contrib/integration/bash-completion.bash out/contrib/integration/bash-completion.bash\ncp contrib/integration/bash-preexec.bash out/contrib/integration/bash-preexec.bash\ncp contrib/integration/fzf.common.bash out/contrib/integration/fzf.common.bash\ncp contrib/integration/fzf-completion.bash out/contrib/integration/fzf-completion.bash\ncp contrib/integration/fzf-git.bash out/contrib/integration/fzf-git.bash\ncp contrib/integration/fzf-initialize.bash out/contrib/integration/fzf-initialize.bash\ncp contrib/integration/fzf-key-bindings.bash out/contrib/integration/fzf-key-bindings.bash\ncp contrib/integration/fzf-menu.bash out/contrib/integration/fzf-menu.bash\ncp contrib/integration/nix-completion.bash out/contrib/integration/nix-completion.bash\ncp contrib/integration/skim-completion.bash out/contrib/integration/skim-completion.bash\ncp contrib/integration/skim-initialize.bash out/contrib/integration/skim-initialize.bash\ncp contrib/integration/skim-key-bindings.bash out/contrib/integration/skim-key-bindings.bash\ncp contrib/integration/zoxide.bash out/contrib/integration/zoxide.bash\ncp contrib/layer/pattern.bash out/contrib/layer/pattern.bash\ncp contrib/layer/sample.adapter.bash out/contrib/layer/sample.adapter.bash\ncp contrib/layer/sample.RandomColor2.bash out/contrib/layer/sample.RandomColor2.bash\ncp contrib/layer/sample.RandomColor.bash out/contrib/layer/sample.RandomColor.bash\ncp contrib/scheme/base16.bash out/contrib/scheme/base16.bash\ncp contrib/scheme/catppuccin_mocha.bash out/contrib/scheme/catppuccin_mocha.bash\ncp contrib/scheme/default.bash out/contrib/scheme/default.bash\ncp contrib/syntax/edit.named-command.bash out/contrib/syntax/edit.named-command.bash\ncp contrib/colorglass.base16.dat out/contrib/colorglass.base16.dat\nln -sf integration/bash-preexec.bash out/contrib/bash-preexec.bash\nln -sf integration/fzf-completion.bash out/contrib/fzf-completion.bash\nln -sf integration/fzf-git.bash out/contrib/fzf-git.bash\nln -sf integration/fzf-initialize.bash out/contrib/fzf-initialize.bash\nln -sf integration/fzf-key-bindings.bash out/contrib/fzf-key-bindings.bash\nmkdir -p out/doc\ncp README.md out/doc/README.md\ncp README-ja_JP.md out/doc/README-ja_JP.md\ncp docs/CONTRIBUTING.md out/doc/CONTRIBUTING.md\ncp docs/ChangeLog.md out/doc/ChangeLog.md\ncp docs/Release.md out/doc/Release.md\nmkdir -p out/doc/contrib\nmkdir -p out/doc/contrib/integration\ncp contrib/colorglass.md out/doc/contrib/colorglass.md\ncp contrib/prompt.md out/doc/contrib/prompt.md\ncp contrib/README-ja.md out/doc/contrib/README-ja.md\ncp contrib/README.md out/doc/contrib/README.md\ncp contrib/integration/fzf.md out/doc/contrib/integration/fzf.md\nmkdir -p out/licenses\ncp LICENSE.md out/licenses/LICENSE.md\nmkdir -p out/licenses/contrib\ncp contrib/LICENSE out/licenses/contrib/LICENSE\n",
+              "exit": 0,
+              "description": "Build ble.sh",
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595910575,
+              "end": 1771595911615
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "好的，ble.sh 克隆成功了。现在需要编译并安装它。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b5851c9001taEtIhnwKzu57c",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595911625,
+      "time_completed": 1771595919927,
+      "tokens": {
+        "input": 7102,
+        "output": 60,
+        "reasoning": 0,
+        "cache": {
+          "read": 10496,
+          "write": 0
+        }
+      },
+      "cost": 0.0054908,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 7102,
+            "output": 60,
+            "reasoning": 0,
+            "cache": {
+              "read": 10496,
+              "write": 0
+            }
+          },
+          "cost": 0.0054908
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "bash",
+          "callID": "bash:5",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "mkdir -p ~/.local/share/blesh && cp -r out/* ~/.local/share/blesh/",
+              "description": "Install ble.sh to local share"
+            },
+            "output": "cp: cannot stat 'out/*': No such file or directory\n",
+            "title": "Install ble.sh to local share",
+            "metadata": {
+              "output": "cp: cannot stat 'out/*': No such file or directory\n",
+              "exit": 1,
+              "description": "Install ble.sh to local share",
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595914314,
+              "end": 1771595919921
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "编译成功了。现在我需要安装 ble.sh 并配置 .bashrc。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b587240001iZyg8dShKf0ckK",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595919936,
+      "time_completed": 1771595922331,
+      "tokens": {
+        "input": 281,
+        "output": 47,
+        "reasoning": 0,
+        "cache": {
+          "read": 17408,
+          "write": 0
+        }
+      },
+      "cost": 0.0020504,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 281,
+            "output": 47,
+            "reasoning": 0,
+            "cache": {
+              "read": 17408,
+              "write": 0
+            }
+          },
+          "cost": 0.0020504
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "glob",
+          "callID": "glob:6",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "pattern": "**/out/ble.sh",
+              "path": "/home/kevin/.config"
+            },
+            "output": "No files found",
+            "title": "home/kevin/.config",
+            "metadata": {
+              "count": 0,
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595922304,
+              "end": 1771595922321
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "看起来 out 目录不在当前工作目录。让我检查 ble.sh 目录。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b587ba0001MPwvUUYy9ydKrV",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595922336,
+      "time_completed": 1771595924211,
+      "tokens": {
+        "input": 88,
+        "output": 46,
+        "reasoning": 0,
+        "cache": {
+          "read": 17664,
+          "write": 0
+        }
+      },
+      "cost": 0.0019572,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 88,
+            "output": 46,
+            "reasoning": 0,
+            "cache": {
+              "read": 17664,
+              "write": 0
+            }
+          },
+          "cost": 0.0019572
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "bash",
+          "callID": "bash:7",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "ls -la ~/.config/ble.sh/",
+              "description": "Check ble.sh directory contents"
+            },
+            "output": "total 1812\ndrwxr-xr-x 1 kevin kevin     374 Feb 20 21:58 .\ndrwxr-xr-x 1 kevin kevin    1400 Feb 20 21:58 ..\ndrwxr-xr-x 1 kevin kevin     100 Feb 20 21:58 archive\n-rw-r--r-- 1 kevin kevin  115836 Feb 20 21:58 ble.pp\n-rw-r--r-- 1 kevin kevin   63228 Feb 20 21:58 blerc.template\ndrwxr-xr-x 1 kevin kevin     458 Feb 20 21:58 contrib\ndrwxr-xr-x 1 kevin kevin      74 Feb 20 21:58 docs\ndrwxr-xr-x 1 kevin kevin     136 Feb 20 21:58 .git\n-rw-r--r-- 1 kevin kevin      42 Feb 20 21:58 .gitattributes\ndrwxr-xr-x 1 kevin kevin      68 Feb 20 21:58 .github\n-rw-r--r-- 1 kevin kevin     668 Feb 20 21:58 .gitignore\n-rw-r--r-- 1 kevin kevin      62 Feb 20 21:58 .gitmodules\n-rw-r--r-- 1 kevin kevin   10605 Feb 20 21:58 GNUmakefile\ndrwxr-xr-x 1 kevin kevin    1348 Feb 20 21:58 lib\n-rw-r--r-- 1 kevin kevin    1529 Feb 20 21:58 LICENSE.md\ndrwxr-xr-x 1 kevin kevin     704 Feb 20 21:58 make\n-rwxr-xr-x 1 kevin kevin   38640 Feb 20 21:58 make_command.sh\n-rw-r--r-- 1 kevin kevin     574 Feb 20 21:58 Makefile\ndrwxr-xr-x 1 kevin kevin    3952 Feb 20 21:58 memo\n-rw-r--r-- 1 kevin kevin 1487840 Feb 20 21:58 note.txt\ndrwxr-xr-x 1 kevin kevin      68 Feb 20 21:58 out\n-rw-r--r-- 1 kevin kevin   52677 Feb 20 21:58 README-ja_JP.md\n-rw-r--r-- 1 kevin kevin   46289 Feb 20 21:58 README.md\ndrwxr-xr-x 1 kevin kevin     312 Feb 20 21:58 src\n-rw-r--r-- 1 kevin kevin     230 Feb 20 21:58 .srcoption\n",
+            "title": "Check ble.sh directory contents",
+            "metadata": {
+              "output": "total 1812\ndrwxr-xr-x 1 kevin kevin     374 Feb 20 21:58 .\ndrwxr-xr-x 1 kevin kevin    1400 Feb 20 21:58 ..\ndrwxr-xr-x 1 kevin kevin     100 Feb 20 21:58 archive\n-rw-r--r-- 1 kevin kevin  115836 Feb 20 21:58 ble.pp\n-rw-r--r-- 1 kevin kevin   63228 Feb 20 21:58 blerc.template\ndrwxr-xr-x 1 kevin kevin     458 Feb 20 21:58 contrib\ndrwxr-xr-x 1 kevin kevin      74 Feb 20 21:58 docs\ndrwxr-xr-x 1 kevin kevin     136 Feb 20 21:58 .git\n-rw-r--r-- 1 kevin kevin      42 Feb 20 21:58 .gitattributes\ndrwxr-xr-x 1 kevin kevin      68 Feb 20 21:58 .github\n-rw-r--r-- 1 kevin kevin     668 Feb 20 21:58 .gitignore\n-rw-r--r-- 1 kevin kevin      62 Feb 20 21:58 .gitmodules\n-rw-r--r-- 1 kevin kevin   10605 Feb 20 21:58 GNUmakefile\ndrwxr-xr-x 1 kevin kevin    1348 Feb 20 21:58 lib\n-rw-r--r-- 1 kevin kevin    1529 Feb 20 21:58 LICENSE.md\ndrwxr-xr-x 1 kevin kevin     704 Feb 20 21:58 make\n-rwxr-xr-x 1 kevin kevin   38640 Feb 20 21:58 make_command.sh\n-rw-r--r-- 1 kevin kevin     574 Feb 20 21:58 Makefile\ndrwxr-xr-x 1 kevin kevin    3952 Feb 20 21:58 memo\n-rw-r--r-- 1 kevin kevin 1487840 Feb 20 21:58 note.txt\ndrwxr-xr-x 1 kevin kevin      68 Feb 20 21:58 out\n-rw-r--r-- 1 kevin kevin   52677 Feb 20 21:58 README-ja_JP.md\n-rw-r--r-- 1 kevin kevin   46289 Feb 20 21:58 README.md\ndrwxr-xr-x 1 kevin kevin     312 Feb 20 21:58 src\n-rw-r--r-- 1 kevin kevin     230 Feb 20 21:58 .srcoption\n",
+              "exit": 0,
+              "description": "Check ble.sh directory contents",
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595924203,
+              "end": 1771595924209
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "让我检查一下 ble.sh 目录是否存在以及它里面的内容。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b5882f7001bIJtgKY9q6Eti7",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595924215,
+      "time_completed": 1771595926129,
+      "tokens": {
+        "input": 788,
+        "output": 44,
+        "reasoning": 0,
+        "cache": {
+          "read": 17664,
+          "write": 0
+        }
+      },
+      "cost": 0.0023712,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 788,
+            "output": 44,
+            "reasoning": 0,
+            "cache": {
+              "read": 17664,
+              "write": 0
+            }
+          },
+          "cost": 0.0023712
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "bash",
+          "callID": "bash:8",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "ls -la ~/.config/ble.sh/out/",
+              "description": "Check out directory contents"
+            },
+            "output": "total 1408\ndrwxr-xr-x 1 kevin kevin      68 Feb 20 21:58 .\ndrwxr-xr-x 1 kevin kevin     374 Feb 20 21:58 ..\n-rw-r--r-- 1 kevin kevin     846 Feb 20 21:58 ble.dep\n-rw-r--r-- 1 kevin kevin 1434784 Feb 20 21:58 ble.sh\ndrwxr-xr-x 1 kevin kevin     494 Feb 20 21:58 contrib\ndrwxr-xr-x 1 kevin kevin     136 Feb 20 21:58 doc\ndrwxr-xr-x 1 kevin kevin    1002 Feb 20 21:58 lib\ndrwxr-xr-x 1 kevin kevin      34 Feb 20 21:58 licenses\n",
+            "title": "Check out directory contents",
+            "metadata": {
+              "output": "total 1408\ndrwxr-xr-x 1 kevin kevin      68 Feb 20 21:58 .\ndrwxr-xr-x 1 kevin kevin     374 Feb 20 21:58 ..\n-rw-r--r-- 1 kevin kevin     846 Feb 20 21:58 ble.dep\n-rw-r--r-- 1 kevin kevin 1434784 Feb 20 21:58 ble.sh\ndrwxr-xr-x 1 kevin kevin     494 Feb 20 21:58 contrib\ndrwxr-xr-x 1 kevin kevin     136 Feb 20 21:58 doc\ndrwxr-xr-x 1 kevin kevin    1002 Feb 20 21:58 lib\ndrwxr-xr-x 1 kevin kevin      34 Feb 20 21:58 licenses\n",
+              "exit": 0,
+              "description": "Check out directory contents",
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595926122,
+              "end": 1771595926127
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "好的，out 目录存在。让我检查一下里面的内容。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b588a75001PybgnjDlmKqU5m",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595926133,
+      "time_completed": 1771595935031,
+      "tokens": {
+        "input": 280,
+        "output": 84,
+        "reasoning": 0,
+        "cache": {
+          "read": 18432,
+          "write": 0
+        }
+      },
+      "cost": 0.0022632,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 280,
+            "output": 84,
+            "reasoning": 0,
+            "cache": {
+              "read": 18432,
+              "write": 0
+            }
+          },
+          "cost": 0.0022632
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "bash",
+          "callID": "bash:9",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "mkdir -p ~/.local/share/blesh && cp -r ~/.config/ble.sh/out/* ~/.local/share/blesh/ && rm -rf ~/.config/ble.sh",
+              "description": "Install ble.sh and cleanup"
+            },
+            "output": "",
+            "title": "Install ble.sh and cleanup",
+            "metadata": {
+              "output": "",
+              "exit": 0,
+              "description": "Install ble.sh and cleanup",
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595929130,
+              "end": 1771595935021
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "完美！out 目录中有 ble.sh 文件。现在我来安装它到 ~/.local/share/blesh，然后配置 .bashrc。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b58ad3e001MkZvPf9ThtM901",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595935038,
+      "time_completed": 1771595942553,
+      "tokens": {
+        "input": 125,
+        "output": 64,
+        "reasoning": 0,
+        "cache": {
+          "read": 18688,
+          "write": 0
+        }
+      },
+      "cost": 0.0021358,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 125,
+            "output": 64,
+            "reasoning": 0,
+            "cache": {
+              "read": 18688,
+              "write": 0
+            }
+          },
+          "cost": 0.0021358
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "bash",
+          "callID": "bash:10",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "cat ~/.bashrc 2>/dev/null | head -20 || echo \"File does not exist or is empty\"",
+              "description": "Check current .bashrc"
+            },
+            "output": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return\n\n# All the default Omarchy aliases and functions\n# (don't mess with these directly, just overwrite them here!)\nsource ~/.local/share/omarchy/default/bash/rc\n\n# Add your own exports, aliases, and functions here.\n#\n# Make an alias for invoking commands you use constantly\n# alias p='python'\n\n. \"$HOME/.local/share/../bin/env\"\n. \"$HOME/.cargo/env\"\n",
+            "title": "Check current .bashrc",
+            "metadata": {
+              "output": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return\n\n# All the default Omarchy aliases and functions\n# (don't mess with these directly, just overwrite them here!)\nsource ~/.local/share/omarchy/default/bash/rc\n\n# Add your own exports, aliases, and functions here.\n#\n# Make an alias for invoking commands you use constantly\n# alias p='python'\n\n. \"$HOME/.local/share/../bin/env\"\n. \"$HOME/.cargo/env\"\n",
+              "exit": 0,
+              "description": "Check current .bashrc",
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595937828,
+              "end": 1771595942551
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "好的，安装完成。现在让我配置 .bashrc 文件。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b58ca9d001L4YbVjNVfBIGR4",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595942557,
+      "time_completed": 1771595947498,
+      "tokens": {
+        "input": 316,
+        "output": 153,
+        "reasoning": 0,
+        "cache": {
+          "read": 18688,
+          "write": 0
+        }
+      },
+      "cost": 0.0025174,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 316,
+            "output": 153,
+            "reasoning": 0,
+            "cache": {
+              "read": 18688,
+              "write": 0
+            }
+          },
+          "cost": 0.0025174
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "edit",
+          "callID": "edit:11",
+          "title": "",
+          "state": {
+            "status": "error",
+            "input": {
+              "filePath": "/home/kevin/.bashrc",
+              "oldString": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return",
+              "newString": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return\n\n# ble.sh (bash line editor) - provides auto-suggestions like zsh\n[[ $- == *i* ]] && source ~/.local/share/blesh/ble.sh --noattach"
+            },
+            "error": "Error: You must read file /home/kevin/.bashrc before overwriting it. Use the Read tool first",
+            "time": {
+              "start": 1771595947489,
+              "end": 1771595947493
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "好的，.bashrc 文件存在。我需要添加 ble.sh 的启动代码。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b58ddef0010wCsM7ZsnGsBwE",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595947503,
+      "time_completed": 1771595949351,
+      "tokens": {
+        "input": 249,
+        "output": 29,
+        "reasoning": 0,
+        "cache": {
+          "read": 18944,
+          "write": 0
+        }
+      },
+      "cost": 0.0021308,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 249,
+            "output": 29,
+            "reasoning": 0,
+            "cache": {
+              "read": 18944,
+              "write": 0
+            }
+          },
+          "cost": 0.0021308
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "read",
+          "callID": "read:12",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "/home/kevin/.bashrc"
+            },
+            "output": "<file>\n00001| # If not running interactively, don't do anything (leave this at the top of this file)\n00002| [[ $- != *i* ]] && return\n00003| \n00004| # All the default Omarchy aliases and functions\n00005| # (don't mess with these directly, just overwrite them here!)\n00006| source ~/.local/share/omarchy/default/bash/rc\n00007| \n00008| # Add your own exports, aliases, and functions here.\n00009| #\n00010| # Make an alias for invoking commands you use constantly\n00011| # alias p='python'\n00012| \n00013| . \"$HOME/.local/share/../bin/env\"\n00014| . \"$HOME/.cargo/env\"\n00015| \n\n(End of file - total 15 lines)\n</file>",
+            "title": "home/kevin/.bashrc",
+            "metadata": {
+              "preview": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return\n\n# All the default Omarchy aliases and functions\n# (don't mess with these directly, just overwrite them here!)\nsource ~/.local/share/omarchy/default/bash/rc\n\n# Add your own exports, aliases, and functions here.\n#\n# Make an alias for invoking commands you use constantly\n# alias p='python'\n\n. \"$HOME/.local/share/../bin/env\"\n. \"$HOME/.cargo/env\"\n",
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595949345,
+              "end": 1771595949349
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "我需要先读取文件。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b58e53300173lxbo4WTYzUGM",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595949363,
+      "time_completed": 1771595954155,
+      "tokens": {
+        "input": 469,
+        "output": 138,
+        "reasoning": 0,
+        "cache": {
+          "read": 18944,
+          "write": 0
+        }
+      },
+      "cost": 0.0025898,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 469,
+            "output": 138,
+            "reasoning": 0,
+            "cache": {
+              "read": 18944,
+              "write": 0
+            }
+          },
+          "cost": 0.0025898
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "edit",
+          "callID": "edit:13",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "/home/kevin/.bashrc",
+              "oldString": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return",
+              "newString": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return\n\n# ble.sh (bash line editor) - provides auto-suggestions like zsh\n[[ $- == *i* ]] && source ~/.local/share/blesh/ble.sh --noattach"
+            },
+            "output": "Edit applied successfully.",
+            "title": "home/kevin/.bashrc",
+            "metadata": {
+              "diagnostics": {
+                "/home/kevin/.config/hypr/lid.sh": []
+              },
+              "diff": "Index: /home/kevin/.bashrc\n===================================================================\n--- /home/kevin/.bashrc\n+++ /home/kevin/.bashrc\n@@ -1,7 +1,10 @@\n # If not running interactively, don't do anything (leave this at the top of this file)\n [[ $- != *i* ]] && return\n \n+# ble.sh (bash line editor) - provides auto-suggestions like zsh\n+[[ $- == *i* ]] && source ~/.local/share/blesh/ble.sh --noattach\n+\n # All the default Omarchy aliases and functions\n # (don't mess with these directly, just overwrite them here!)\n source ~/.local/share/omarchy/default/bash/rc\n \n",
+              "filediff": {
+                "file": "/home/kevin/.bashrc",
+                "before": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return\n\n# All the default Omarchy aliases and functions\n# (don't mess with these directly, just overwrite them here!)\nsource ~/.local/share/omarchy/default/bash/rc\n\n# Add your own exports, aliases, and functions here.\n#\n# Make an alias for invoking commands you use constantly\n# alias p='python'\n\n. \"$HOME/.local/share/../bin/env\"\n. \"$HOME/.cargo/env\"\n",
+                "after": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return\n\n# ble.sh (bash line editor) - provides auto-suggestions like zsh\n[[ $- == *i* ]] && source ~/.local/share/blesh/ble.sh --noattach\n\n# All the default Omarchy aliases and functions\n# (don't mess with these directly, just overwrite them here!)\nsource ~/.local/share/omarchy/default/bash/rc\n\n# Add your own exports, aliases, and functions here.\n#\n# Make an alias for invoking commands you use constantly\n# alias p='python'\n\n. \"$HOME/.local/share/../bin/env\"\n. \"$HOME/.cargo/env\"\n",
+                "additions": 3,
+                "deletions": 0
+              },
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595954145,
+              "end": 1771595954151
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "现在我可以编辑文件了。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b58f7f200121tbXClr4WN3Zu",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595954162,
+      "time_completed": 1771595958273,
+      "tokens": {
+        "input": 371,
+        "output": 112,
+        "reasoning": 0,
+        "cache": {
+          "read": 19200,
+          "write": 0
+        }
+      },
+      "cost": 0.0024786,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "tool-calls",
+          "tokens": {
+            "input": 371,
+            "output": 112,
+            "reasoning": 0,
+            "cache": {
+              "read": 19200,
+              "write": 0
+            }
+          },
+          "cost": 0.0024786
+        },
+        {
+          "type": "tool",
+          "time_created": 1771597200033,
+          "tool": "edit",
+          "callID": "edit:14",
+          "title": "",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "/home/kevin/.bashrc",
+              "oldString": ". \"$HOME/.local/share/../bin/env\"\n. \"$HOME/.cargo/env\"",
+              "newString": ". \"$HOME/.local/share/../bin/env\"\n. \"$HOME/.cargo/env\"\n\n# Attach ble.sh at the end of .bashrc\n[[ ${BLE_VERSION-} ]] && ble-attach"
+            },
+            "output": "Edit applied successfully.",
+            "title": "home/kevin/.bashrc",
+            "metadata": {
+              "diagnostics": {
+                "/home/kevin/.config/hypr/lid.sh": []
+              },
+              "diff": "Index: /home/kevin/.bashrc\n===================================================================\n--- /home/kevin/.bashrc\n+++ /home/kevin/.bashrc\n@@ -14,4 +14,7 @@\n # alias p='python'\n \n . \"$HOME/.local/share/../bin/env\"\n . \"$HOME/.cargo/env\"\n+\n+# Attach ble.sh at the end of .bashrc\n+[[ ${BLE_VERSION-} ]] && ble-attach\n",
+              "filediff": {
+                "file": "/home/kevin/.bashrc",
+                "before": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return\n\n# ble.sh (bash line editor) - provides auto-suggestions like zsh\n[[ $- == *i* ]] && source ~/.local/share/blesh/ble.sh --noattach\n\n# All the default Omarchy aliases and functions\n# (don't mess with these directly, just overwrite them here!)\nsource ~/.local/share/omarchy/default/bash/rc\n\n# Add your own exports, aliases, and functions here.\n#\n# Make an alias for invoking commands you use constantly\n# alias p='python'\n\n. \"$HOME/.local/share/../bin/env\"\n. \"$HOME/.cargo/env\"\n",
+                "after": "# If not running interactively, don't do anything (leave this at the top of this file)\n[[ $- != *i* ]] && return\n\n# ble.sh (bash line editor) - provides auto-suggestions like zsh\n[[ $- == *i* ]] && source ~/.local/share/blesh/ble.sh --noattach\n\n# All the default Omarchy aliases and functions\n# (don't mess with these directly, just overwrite them here!)\nsource ~/.local/share/omarchy/default/bash/rc\n\n# Add your own exports, aliases, and functions here.\n#\n# Make an alias for invoking commands you use constantly\n# alias p='python'\n\n. \"$HOME/.local/share/../bin/env\"\n. \"$HOME/.cargo/env\"\n\n# Attach ble.sh at the end of .bashrc\n[[ ${BLE_VERSION-} ]] && ble-attach\n",
+                "additions": 3,
+                "deletions": 0
+              },
+              "truncated": false
+            },
+            "time": {
+              "start": 1771595958255,
+              "end": 1771595958269
+            }
+          }
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "好的，已经添加了 ble.sh 的初始化代码。我还需要在文件末尾添加 ble-attach。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    },
+    {
+      "id": "msg_c7b590807001BRqMyBluA5dqwr",
+      "role": "assistant",
+      "agent": "build",
+      "mode": "build",
+      "model": "kimi-k2.5",
+      "provider": "moonshotai-cn",
+      "time_created": 1771595958279,
+      "time_completed": 1771595962558,
+      "tokens": {
+        "input": 247,
+        "output": 114,
+        "reasoning": 0,
+        "cache": {
+          "read": 19456,
+          "write": 0
+        }
+      },
+      "cost": 0.0024358,
+      "parts": [
+        {
+          "type": "step-finish",
+          "time_created": 1771597200033,
+          "reason": "stop",
+          "tokens": {
+            "input": 247,
+            "output": 114,
+            "reasoning": 0,
+            "cache": {
+              "read": 19456,
+              "write": 0
+            }
+          },
+          "cost": 0.0024358
+        },
+        {
+          "type": "text",
+          "time_created": 1771597200033,
+          "text": "安装完成！现在重启终端或运行：\n\n```bash\nsource ~/.bashrc\n```\n\n功能说明：\n- 输入命令时，右侧会显示灰色历史提示\n- 按 `→` 或 `End` 接受建议\n- 按 `Ctrl+E` 也可以接受建议\n- 支持语法高亮、更好的补全等功能\n\n效果类似 macOS zsh 的自动提示，但现在是 bash 版本。"
+        },
+        {
+          "type": "reasoning",
+          "time_created": 1771597200033,
+          "text": "好的，完成了。现在需要告诉用户安装完成，并让他们重启终端或者 source .bashrc。"
+        },
+        {
+          "type": "step-start",
+          "time_created": 1771597200033,
+          "reason": null,
+          "tokens": null,
+          "cost": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "sessions": [
+    {
+      "id": "ses_384a48630ffeRD3mE1nge7snux",
+      "slug": "opencode/zed-startup-failure-troubleshooting",
+      "title": "zed 启动失败排查与解决",
+      "directory": "/home/kevin",
+      "time_created": 1771596118479,
+      "time_updated": 1771596317629,
+      "stats": {
+        "total_cost": 0.045831000000000004,
+        "total_input_tokens": 39140,
+        "total_output_tokens": 1433,
+        "message_count": 14
+      }
+    },
+    {
+      "id": "ses_384a9060affeTbKS56DuFEwmrq",
+      "slug": "opencode/terminal-history-search-ctrl-r",
+      "title": "Terminal history search missing hint in mac? use ctrl+r instead of tab completion",
+      "directory": "/home/kevin/.config",
+      "time_created": 1771595823605,
+      "time_updated": 1771595962562,
+      "stats": {
+        "total_cost": 0.0356208,
+        "total_input_tokens": 12005,
+        "total_output_tokens": 1639,
+        "message_count": 17
+      }
+    },
+    {
+      "id": "ses_384ada479ffeYviNR7wjcngizp",
+      "slug": "opencode/omarchy-hyprland-display-switch-lid-mirror-config",
+      "title": "Omarchy HPyterland 显示输出切换与镜像/盖屏行为配置",
+      "directory": "/home/kevin/.config",
+      "time_created": 1771595520902,
+      "time_updated": 1771595661416,
+      "stats": {
+        "total_cost": 0.04364980000000001,
+        "total_input_tokens": 28032,
+        "total_output_tokens": 3047,
+        "message_count": 14
+      }
+    }
+  ],
+  "generated_at": "2026-02-21T05:14:26.003Z"
+}
