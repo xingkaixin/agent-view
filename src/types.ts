@@ -36,6 +36,11 @@ export interface Message {
 export interface SessionInfo {
   id: string;
   slug: string;
+  title: string;
+  directory: string;
+  time_created: number;
+  time_updated?: number;
+  stats: SessionStats;
 }
 
 export interface Session {

@@ -2,13 +2,13 @@ import { Search, Folder, Clock, MessageSquare, Coins, CircleDollarSign, Bot } fr
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ModelConfig } from "../config";
-import { Session } from "../types";
+import { SessionInfo } from "../types";
 import { Badge } from "./ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 
 interface SessionListProps {
-  sessions: Session[];
+  sessions: SessionInfo[];
 }
 
 export function SessionList({ sessions }: SessionListProps) {
@@ -16,7 +16,7 @@ export function SessionList({ sessions }: SessionListProps) {
 
   const filteredSessions = sessions
     .filter((session) => session.title.toLowerCase().includes(searchQuery.toLowerCase()))
-    .toSorted((a, b) => new Date(b.time_created).getTime() - new Date(a.time_created).getTime());
+    .sort((a, b) => new Date(b.time_created).getTime() - new Date(a.time_created).getTime());
 
   const formatTokens = (n: number) => {
     if (n >= 1000000) {
@@ -43,8 +43,8 @@ export function SessionList({ sessions }: SessionListProps) {
       <div className="grid gap-4">
         {filteredSessions.map((session) => {
           const date = new Date(session.time_created).toLocaleString("zh-CN");
-          const slug = session._urlSlug || session.id;
-          const agent = session._urlSlug ? session._urlSlug.split("/")[0] : "opencode";
+          const slug = session.slug || session.id;
+          const agent = session.slug ? session.slug.split("/")[0] : "opencode";
           const agentName = ModelConfig.getAgentName(agent) || agent;
           const agentIcon = ModelConfig.agents[agent.toLowerCase()]?.icon;
 

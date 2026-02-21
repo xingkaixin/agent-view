@@ -2,65 +2,83 @@ import { useEffect, useState } from "react";
 import { Routes, Route, useParams, Link, useLocation } from "react-router-dom";
 import { SessionDetail } from "./components/SessionDetail";
 import { SessionList } from "./components/SessionList";
-import { IndexData, Session } from "./types";
+import { IndexData, Session, SessionInfo } from "./types";
 
-function SessionDetailRoute({ sessionsBySlug }: { sessionsBySlug: Map<string, Session> }) {
+function SessionDetailRoute() {
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const params = useParams();
   const slug = params["*"];
-  const session = slug ? sessionsBySlug.get(slug) : null;
-  if (!session) {
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    async function loadSession() {
+      if (!slug) {return;}
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`/data/sessions/${slug}.json`, {
+          signal: abortController.signal
+        });
+        if (!response.ok) {
+          throw new Error("Session not found");
+        }
+        const data: Session = await response.json();
+        data._urlSlug = slug;
+        setSession(data);
+      } catch (e: any) {
+        if (e.name === "AbortError") return;
+        console.error("Failed to load session:", e);
+        setError("获取会话数据失败");
+      } finally {
+        setLoading(false);
+      }
+    }
+    void loadSession();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [slug]);
+
+  if (!slug) {
     return <div className="p-10 text-center">会话不存在</div>;
   }
+  
+  if (loading) {
+    return <div className="p-10 text-center text-[#7a8b8f]">加载会话内容中...</div>;
+  }
+  
+  if (error || !session) {
+    return <div className="p-10 text-center">{error || "会话不存在"}</div>;
+  }
+
   return <SessionDetail session={session} />;
 }
 
 export default function App() {
-  const [sessions, setSessions] = useState<Map<string, Session>>(new Map());
-  const [sessionsBySlug, setSessionsBySlug] = useState<Map<string, Session>>(new Map());
+  const [sessions, setSessions] = useState<SessionInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const abortController = new AbortController();
+
     async function loadData() {
       try {
-        const indexResponse = await fetch("/data/sessions/index.json");
+        const indexResponse = await fetch(`/data/sessions/index.json?t=${Date.now()}`, {
+          signal: abortController.signal
+        });
         if (!indexResponse.ok) {
           throw new Error("Failed to load index");
         }
         const index: IndexData = await indexResponse.json();
 
-        const sessionPromises = index.sessions.map(async (sessionInfo) => {
-          try {
-            const response = await fetch(`/data/sessions/${sessionInfo.slug}.json`);
-            if (!response.ok) {
-              return null;
-            }
-            const session: Session = await response.json();
-            session._urlSlug = sessionInfo.slug;
-            return session;
-          } catch (e) {
-            console.warn(`Failed to load session ${sessionInfo.slug}:`, e);
-            return null;
-          }
-        });
-
-        const loadedSessions = (await Promise.all(sessionPromises)).filter(
-          (s): s is Session => s !== null,
-        );
-
-        const newSessions = new Map();
-        const newSessionsBySlug = new Map();
-
-        loadedSessions.forEach((session) => {
-          newSessions.set(session.id, session);
-          if (session._urlSlug) {
-            newSessionsBySlug.set(session._urlSlug, session);
-          }
-        });
-
-        setSessions(newSessions);
-        setSessionsBySlug(newSessionsBySlug);
-      } catch (err) {
+        setSessions(index.sessions);
+      } catch (err: any) {
+        if (err.name === "AbortError") return;
         console.error("Failed to load data:", err);
         setError("加载数据失败，请确保已运行 build 生成索引");
       } finally {
@@ -69,11 +87,15 @@ export default function App() {
     }
 
     void loadData();
+
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
   const location = useLocation();
   const pathSlug = location.pathname.replace(/^\//, "");
-  const currentSession = pathSlug ? sessionsBySlug.get(pathSlug) : null;
+  const currentSession = pathSlug ? sessions.find(s => s.slug === pathSlug) : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f4f9f7] via-[#e5f1ec] to-[#ecf4fb] text-[#102124] font-sans">
@@ -93,7 +115,7 @@ export default function App() {
         <div className="flex gap-3 text-sm">
           {!currentSession ? (
             <span className="bg-[#f4f9f7] px-3 py-1.5 rounded-full border border-[#c9d8d5]">
-              📊 {sessions.size} 会话
+              📊 {sessions.length} 会话
             </span>
           ) : (
             <>
@@ -118,8 +140,8 @@ export default function App() {
           <div className="p-10 text-center">{error}</div>
         ) : (
           <Routes>
-            <Route path="/" element={<SessionList sessions={Array.from(sessions.values())} />} />
-            <Route path="/*" element={<SessionDetailRoute sessionsBySlug={sessionsBySlug} />} />
+            <Route path="/" element={<SessionList sessions={sessions} />} />
+            <Route path="/*" element={<SessionDetailRoute />} />
           </Routes>
         )}
       </main>
