@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Session } from '../types';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Input } from './ui/input';
@@ -40,7 +41,7 @@ export function SessionList({ sessions }: SessionListProps) {
           const slug = session._urlSlug || session.id;
 
           return (
-            <a key={session.id} href={`#opencode/${slug}`} className="block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl">
+            <Link key={session.id} to={`/${slug}`} className="block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xl">
               <Card className="hover:shadow-md transition-all hover:-translate-y-0.5 border-[#c9d8d5] shadow-sm cursor-pointer bg-[#fdfdfb]">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base font-semibold leading-relaxed">
@@ -65,7 +66,7 @@ export function SessionList({ sessions }: SessionListProps) {
                   </div>
                 </CardContent>
               </Card>
-            </a>
+            </Link>
           );
         })}
       </div>

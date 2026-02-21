@@ -2,24 +2,26 @@ import { SessionList } from './components/SessionList';
 import { SessionDetail } from './components/SessionDetail';
 import { IndexData, Session } from './types';
 import { useEffect, useState } from 'react';
+import { Routes, Route, useParams, Link, useLocation } from 'react-router-dom';
+
+function SessionDetailRoute({ sessionsBySlug }: { sessionsBySlug: Map<string, Session> }) {
+  const params = useParams();
+  const slug = params["*"];
+  const session = slug ? sessionsBySlug.get(slug) : null;
+  if (!session) return <div className="p-10 text-center">会话不存在</div>;
+  return <SessionDetail session={session} />;
+}
 
 export default function App() {
   const [sessions, setSessions] = useState<Map<string, Session>>(new Map());
   const [sessionsBySlug, setSessionsBySlug] = useState<Map<string, Session>>(new Map());
-  const [currentHash, setCurrentHash] = useState(window.location.hash);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleHashChange = () => setCurrentHash(window.location.hash);
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  useEffect(() => {
     async function loadData() {
       try {
-        const indexResponse = await fetch('data/sessions/index.json');
+        const indexResponse = await fetch('/data/sessions/index.json');
         if (!indexResponse.ok) {
           throw new Error('Failed to load index');
         }
@@ -27,7 +29,7 @@ export default function App() {
 
         const sessionPromises = index.sessions.map(async (sessionInfo) => {
           try {
-            const response = await fetch(`data/sessions/${sessionInfo.slug}.json`);
+            const response = await fetch(`/data/sessions/${sessionInfo.slug}.json`);
             if (!response.ok) return null;
             const session: Session = await response.json();
             session._urlSlug = sessionInfo.slug;
@@ -63,8 +65,9 @@ export default function App() {
     loadData();
   }, []);
 
-  const sessionMatch = currentHash.match(/^#opencode\/(.+)$/);
-  const currentSession = sessionMatch ? sessionsBySlug.get(sessionMatch[1]) : null;
+  const location = useLocation();
+  const pathSlug = location.pathname.replace(/^\//, '');
+  const currentSession = pathSlug ? sessionsBySlug.get(pathSlug) : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f4f9f7] via-[#e5f1ec] to-[#ecf4fb] text-[#102124] font-sans">
@@ -76,9 +79,9 @@ export default function App() {
               <h1 className="text-lg font-semibold">Agent View</h1>
             </>
           ) : (
-            <a href="#" className="text-[#0b7285] text-sm flex items-center gap-1 hover:underline">
+            <Link to="/" className="text-[#0b7285] text-sm flex items-center gap-1 hover:underline">
               ← 返回列表
-            </a>
+            </Link>
           )}
         </div>
         <div className="flex gap-3 text-sm">
@@ -107,10 +110,11 @@ export default function App() {
           </div>
         ) : error ? (
           <div className="p-10 text-center">{error}</div>
-        ) : currentSession ? (
-          <SessionDetail session={currentSession} />
         ) : (
-          <SessionList sessions={Array.from(sessions.values())} />
+          <Routes>
+            <Route path="/" element={<SessionList sessions={Array.from(sessions.values())} />} />
+            <Route path="/*" element={<SessionDetailRoute sessionsBySlug={sessionsBySlug} />} />
+          </Routes>
         )}
       </main>
     </div>
