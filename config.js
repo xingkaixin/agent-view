@@ -90,3 +90,6 @@ const ModelConfig = {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = ModelConfig;
 }
+if (typeof window !== "undefined") {
+  window.ModelConfig = ModelConfig;
+}
