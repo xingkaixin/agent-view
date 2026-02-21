@@ -5,7 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", -apple-system, sans-serif;
+  --font-sans:
+    "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", -apple-system, sans-serif;
 
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));

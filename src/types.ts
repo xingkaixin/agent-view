@@ -12,19 +12,19 @@ export interface MessageTokens {
 }
 
 export interface MessagePart {
-  type: 'text' | 'tool' | 'reasoning';
+  type: "text" | "tool" | "reasoning";
   text?: string;
   tool?: string;
   title?: string;
   state?: {
-    status?: 'running' | 'completed' | 'error';
-    input?: any;
+    status?: "running" | "completed" | "error";
+    input?: unknown;
     output?: string;
   };
 }
 
 export interface Message {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   time_created: string;
   mode?: string;
   model?: string;

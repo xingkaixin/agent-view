@@ -1,14 +1,16 @@
-import { SessionList } from './components/SessionList';
-import { SessionDetail } from './components/SessionDetail';
-import { IndexData, Session } from './types';
-import { useEffect, useState } from 'react';
-import { Routes, Route, useParams, Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Routes, Route, useParams, Link, useLocation } from "react-router-dom";
+import { SessionDetail } from "./components/SessionDetail";
+import { SessionList } from "./components/SessionList";
+import { IndexData, Session } from "./types";
 
 function SessionDetailRoute({ sessionsBySlug }: { sessionsBySlug: Map<string, Session> }) {
   const params = useParams();
   const slug = params["*"];
   const session = slug ? sessionsBySlug.get(slug) : null;
-  if (!session) return <div className="p-10 text-center">会话不存在</div>;
+  if (!session) {
+    return <div className="p-10 text-center">会话不存在</div>;
+  }
   return <SessionDetail session={session} />;
 }
 
@@ -21,16 +23,18 @@ export default function App() {
   useEffect(() => {
     async function loadData() {
       try {
-        const indexResponse = await fetch('/data/sessions/index.json');
+        const indexResponse = await fetch("/data/sessions/index.json");
         if (!indexResponse.ok) {
-          throw new Error('Failed to load index');
+          throw new Error("Failed to load index");
         }
         const index: IndexData = await indexResponse.json();
 
         const sessionPromises = index.sessions.map(async (sessionInfo) => {
           try {
             const response = await fetch(`/data/sessions/${sessionInfo.slug}.json`);
-            if (!response.ok) return null;
+            if (!response.ok) {
+              return null;
+            }
             const session: Session = await response.json();
             session._urlSlug = sessionInfo.slug;
             return session;
@@ -40,12 +44,14 @@ export default function App() {
           }
         });
 
-        const loadedSessions = (await Promise.all(sessionPromises)).filter((s): s is Session => s !== null);
+        const loadedSessions = (await Promise.all(sessionPromises)).filter(
+          (s): s is Session => s !== null,
+        );
 
         const newSessions = new Map();
         const newSessionsBySlug = new Map();
 
-        loadedSessions.forEach(session => {
+        loadedSessions.forEach((session) => {
           newSessions.set(session.id, session);
           if (session._urlSlug) {
             newSessionsBySlug.set(session._urlSlug, session);
@@ -55,18 +61,18 @@ export default function App() {
         setSessions(newSessions);
         setSessionsBySlug(newSessionsBySlug);
       } catch (err) {
-        console.error('Failed to load data:', err);
-        setError('加载数据失败，请确保已运行 build 生成索引');
+        console.error("Failed to load data:", err);
+        setError("加载数据失败，请确保已运行 build 生成索引");
       } finally {
         setLoading(false);
       }
     }
 
-    loadData();
+    void loadData();
   }, []);
 
   const location = useLocation();
-  const pathSlug = location.pathname.replace(/^\//, '');
+  const pathSlug = location.pathname.replace(/^\//, "");
   const currentSession = pathSlug ? sessionsBySlug.get(pathSlug) : null;
 
   return (
