@@ -1,16 +1,13 @@
 {
   "version": 2,
   "name": "agent-view",
-  "builds": [
+  "buildCommand": "echo 'No build step needed'",
+  "outputDirectory": ".",
+  "framework": null,
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
