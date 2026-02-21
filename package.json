@@ -2,13 +2,19 @@
   "name": "agent-view",
   "version": "0.1.0",
   "description": "A tool for visualizing and browsing AI Agent sessions.",
+  "type": "module",
   "scripts": {
-    "build": "bun run build.js",
-    "dev": "bun run build && bunx --bun serve . -l 3000",
-    "start": "bunx --bun serve . -l ${PORT:-3000}"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "build:logo": "bun run scripts/build-logo.ts",
+    "build:index": "node build.js"
+  },
+  "dependencies": {
+    "sharp": "^0.33.0"
   },
   "devDependencies": {
-    "serve": "^14.2.4"
+    "vite": "^7.3.1"
   },
   "engines": {
     "bun": ">=1.0.0"

@@ -12,18 +12,18 @@ const ModelConfig = {
   providers: {
     kimi: {
       name: "Kimi",
-      icon: "icon/provider/kimi.svg",
+      icon: "/icon/provider/kimi.svg",
     },
     // 可以添加更多厂商
-    // 'openai': { name: 'OpenAI', icon: 'icon/provider/openai.svg' },
-    // 'anthropic': { name: 'Anthropic', icon: 'icon/provider/anthropic.svg' },
+    // 'openai': { name: 'OpenAI', icon: '/icon/provider/openai.svg' },
+    // 'anthropic': { name: 'Anthropic', icon: '/icon/provider/anthropic.svg' },
   },
 
   // Agent 图标配置
   agents: {
     opencode: {
       name: "OpenCode",
-      icon: "icon/agent/opencode.ico",
+      icon: "/icon/agent/opencode.png",
     },
   },
 
