@@ -16,7 +16,7 @@ export function SessionList({ sessions }: SessionListProps) {
 
   const filteredSessions = sessions
     .filter((session) => session.title.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) => new Date(b.time_created).getTime() - new Date(a.time_created).getTime());
+    .toSorted((a, b) => new Date(b.time_created).getTime() - new Date(a.time_created).getTime());
 
   const formatTokens = (n: number) => {
     if (n >= 1000000) {

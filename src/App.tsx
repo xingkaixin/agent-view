@@ -15,12 +15,14 @@ function SessionDetailRoute() {
     const abortController = new AbortController();
 
     async function loadSession() {
-      if (!slug) {return;}
+      if (!slug) {
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
         const response = await fetch(`/data/sessions/${slug}.json`, {
-          signal: abortController.signal
+          signal: abortController.signal,
         });
         if (!response.ok) {
           throw new Error("Session not found");
@@ -28,8 +30,10 @@ function SessionDetailRoute() {
         const data: Session = await response.json();
         data._urlSlug = slug;
         setSession(data);
-      } catch (e: any) {
-        if (e.name === "AbortError") return;
+      } catch (e: unknown) {
+        if (e instanceof Error && e.name === "AbortError") {
+          return;
+        }
         console.error("Failed to load session:", e);
         setError("获取会话数据失败");
       } finally {
@@ -46,11 +50,11 @@ function SessionDetailRoute() {
   if (!slug) {
     return <div className="p-10 text-center">会话不存在</div>;
   }
-  
+
   if (loading) {
     return <div className="p-10 text-center text-[#7a8b8f]">加载会话内容中...</div>;
   }
-  
+
   if (error || !session) {
     return <div className="p-10 text-center">{error || "会话不存在"}</div>;
   }
@@ -69,7 +73,7 @@ export default function App() {
     async function loadData() {
       try {
         const indexResponse = await fetch(`/data/sessions/index.json?t=${Date.now()}`, {
-          signal: abortController.signal
+          signal: abortController.signal,
         });
         if (!indexResponse.ok) {
           throw new Error("Failed to load index");
@@ -77,8 +81,10 @@ export default function App() {
         const index: IndexData = await indexResponse.json();
 
         setSessions(index.sessions);
-      } catch (err: any) {
-        if (err.name === "AbortError") return;
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
         console.error("Failed to load data:", err);
         setError("加载数据失败，请确保已运行 build 生成索引");
       } finally {
@@ -95,7 +101,7 @@ export default function App() {
 
   const location = useLocation();
   const pathSlug = location.pathname.replace(/^\//, "");
-  const currentSession = pathSlug ? sessions.find(s => s.slug === pathSlug) : null;
+  const currentSession = pathSlug ? sessions.find((s) => s.slug === pathSlug) : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f4f9f7] via-[#e5f1ec] to-[#ecf4fb] text-[#102124] font-sans">
