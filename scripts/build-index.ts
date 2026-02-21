@@ -1,11 +1,11 @@
 // Build script to generate session index
 import { readdirSync, readFileSync, writeFileSync, statSync } from 'fs';
-import { join, relative, dirname } from 'path';
+import { join, relative } from 'path';
 
 const SESSIONS_DIR = './data/sessions';
 const OUTPUT_FILE = './data/sessions/index.json';
 
-function findJsonFiles(dir, files = []) {
+function findJsonFiles(dir: string, files: string[] = []): string[] {
   const items = readdirSync(dir);
   
   for (const item of items) {
@@ -25,7 +25,7 @@ function findJsonFiles(dir, files = []) {
 function buildIndex() {
   const files = findJsonFiles(SESSIONS_DIR);
   
-  const sessions = [];
+  const sessions: any[] = [];
   
   for (const file of files) {
     const content = readFileSync(file, 'utf-8');

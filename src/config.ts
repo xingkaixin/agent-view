@@ -1,12 +1,12 @@
 // 模型配置 - 定义模型对应的厂商和图标
-const ModelConfig = {
+export const ModelConfig = {
   // 模型到厂商的映射
   modelToProvider: {
     "kimi-k2.5": "kimi",
     // 可以添加更多模型映射
     // 'gpt-4': 'openai',
     // 'claude-3-opus': 'anthropic',
-  },
+  } as Record<string, string>,
 
   // 厂商信息
   providers: {
@@ -17,7 +17,7 @@ const ModelConfig = {
     // 可以添加更多厂商
     // 'openai': { name: 'OpenAI', icon: '/icon/provider/openai.svg' },
     // 'anthropic': { name: 'Anthropic', icon: '/icon/provider/anthropic.svg' },
-  },
+  } as Record<string, { name: string; icon: string }>,
 
   // Agent 图标配置
   agents: {
@@ -25,10 +25,10 @@ const ModelConfig = {
       name: "OpenCode",
       icon: "/icon/agent/opencode.png",
     },
-  },
+  } as Record<string, { name: string; icon: string }>,
 
   // 获取模型对应的厂商信息
-  getProvider(modelName) {
+  getProvider(modelName: string) {
     const providerKey = this.modelToProvider[modelName];
     if (providerKey) {
       return {
@@ -39,17 +39,8 @@ const ModelConfig = {
     return null;
   },
 
-  // 获取模型对应的图标 HTML
-  getModelIconHtml(modelName) {
-    const provider = this.getProvider(modelName);
-    if (provider && provider.icon) {
-      return `<img src="${provider.icon}" alt="${provider.name}" class="provider-icon" />`;
-    }
-    return "🧠";
-  },
-
   // 获取模型显示名称
-  getModelDisplayName(modelName) {
+  getModelDisplayName(modelName: string) {
     const provider = this.getProvider(modelName);
     if (provider) {
       return `${provider.name} ${modelName}`;
@@ -64,32 +55,11 @@ const ModelConfig = {
   },
 
   // 获取 Agent 显示名称
-  getAgentName(agentName) {
+  getAgentName(agentName: string) {
     let agent = this.agents[agentName];
     if (!agent) {
       agent = this.agents[agentName.toLowerCase()];
     }
     return agent ? agent.name : agentName;
   },
-
-  // 获取 Agent 图标 HTML
-  getAgentIconHtml(agentName) {
-    // 尝试精确匹配，然后尝试小写匹配
-    let agent = this.agents[agentName];
-    if (!agent) {
-      agent = this.agents[agentName.toLowerCase()];
-    }
-    if (agent && agent.icon) {
-      return `<img src="${agent.icon}" alt="${agent.name}" class="agent-icon" />`;
-    }
-    return "🤖";
-  },
 };
-
-// 导出配置
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = ModelConfig;
-}
-if (typeof window !== "undefined") {
-  window.ModelConfig = ModelConfig;
-}
