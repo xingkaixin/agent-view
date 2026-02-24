@@ -3,6 +3,8 @@ export const ModelConfig = {
   // 模型到厂商的映射
   modelToProvider: {
     "kimi-k2.5": "kimi",
+    "glm-4.7": "zhipu",
+    "minimax-m2.5": "mimimax",
     // 可以添加更多模型映射
     // 'gpt-4': 'openai',
     // 'claude-3-opus': 'anthropic',
@@ -14,6 +16,38 @@ export const ModelConfig = {
       name: "Kimi",
       icon: "/icon/provider/kimi.svg",
     },
+    zhipu: {
+      name: "Zhipu",
+      icon: "/icon/provider/zhipu-color.svg",
+    },
+    minimax: {
+      name: "MiniMax",
+      icon: "/icon/provider/minimax-color.svg",
+    },
+    openai: {
+      name: "OpenAI",
+      icon: "/icon/provider/openai.svg",
+    },
+    qwen: {
+      name: "Qwen",
+      icon: "/icon/provider/qwen-color.svg",
+    },
+    gemini: {
+      name: "Gemini",
+      icon: "/icon/provider/gemini-color.svg",
+    },
+    doubao: {
+      name: "Doubao",
+      icon: "/icon/provider/doubao-color.svg",
+    },
+    claude: {
+      name: "Claude",
+      icon: "/icon/provider/claude-color.svg",
+    },
+    deepseek: {
+      name: "DeepSeek",
+      icon: "/icon/provider/deepseek-color.svg",
+    },
     // 可以添加更多厂商
     // 'openai': { name: 'OpenAI', icon: '/icon/provider/openai.svg' },
     // 'anthropic': { name: 'Anthropic', icon: '/icon/provider/anthropic.svg' },
@@ -24,6 +58,18 @@ export const ModelConfig = {
     opencode: {
       name: "OpenCode",
       icon: "/icon/agent/opencode.png",
+    },
+    codex: {
+      name: "Codex",
+      icon: "/icon/agent/codex.svg",
+    },
+    kimi: {
+      name: "Kimi-Cli",
+      icon: "/icon/agent/kimi.svg",
+    },
+    claudecode: {
+      name: "Claude Code",
+      icon: "/icon/agent/claudecode.svg",
     },
   } as Record<string, { name: string; icon: string }>,
 

@@ -23,6 +23,8 @@ interface SessionDetailProps {
 export function SessionDetail({ session }: SessionDetailProps) {
   const date = new Date(session.time_created).toLocaleString("zh-CN");
   const stats = session.stats;
+  const sessionSlug = session._urlSlug || session.slug || "";
+  const sessionAgentKey = sessionSlug.split("/")[0] || ModelConfig.getDefaultAgentKey() || "opencode";
 
   const formatTokens = (n: number) => {
     if (n >= 1000000) {
@@ -82,19 +84,32 @@ export function SessionDetail({ session }: SessionDetailProps) {
 
       <div className="flex flex-col gap-4">
         {session.messages.map((msg, index) => (
-          <MessageItem key={index} msg={msg} formatTokens={formatTokens} />
+          <MessageItem
+            key={index}
+            msg={msg}
+            formatTokens={formatTokens}
+            sessionAgentKey={sessionAgentKey}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-function MessageItem({ msg, formatTokens }: { msg: Message; formatTokens: (n: number) => string }) {
+function MessageItem({
+  msg,
+  formatTokens,
+  sessionAgentKey,
+}: {
+  msg: Message;
+  formatTokens: (n: number) => string;
+  sessionAgentKey: string;
+}) {
   const role = msg.role;
   const time = new Date(msg.time_created).toLocaleString("zh-CN");
 
   const getAgentRoleHtml = () => {
-    const agentKey = ModelConfig.getDefaultAgentKey() || "opencode";
+    const agentKey = sessionAgentKey.toLowerCase();
     const agentName = ModelConfig.getAgentName(agentKey);
     const agentIcon = ModelConfig.agents[agentKey]?.icon;
     return (
