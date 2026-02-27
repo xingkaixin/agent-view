@@ -1,13 +1,18 @@
 /* eslint-disable react/no-array-index-key */
 import {
+  BookOpenText,
   Bot,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  FilePenLine,
+  FileSearch,
   LoaderCircle,
   Lightbulb,
-  TerminalSquare,
+  NotebookPen,
+  SquareTerminal,
   UserRound,
+  Wrench,
   XCircle,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -23,9 +28,20 @@ type ToolStatus = "running" | "completed" | "error";
 
 interface NormalizedToolState {
   status: ToolStatus;
+  inputValue: unknown;
+  outputValue: unknown;
   inputText: string;
   outputText: string;
   command: string;
+}
+
+interface ToolDisplayStrategy {
+  Icon: typeof LoaderCircle;
+  title: string;
+  secondaryText?: string;
+  expandable: boolean;
+  showInputPreview: boolean;
+  outputText: string;
 }
 
 const TOOL_STATUS_META: Record<
@@ -121,9 +137,120 @@ function normalizeToolState(part: MessagePart): NormalizedToolState {
   return {
     status,
     command,
+    inputValue,
+    outputValue,
     inputText: toDisplayText(inputValue),
     outputText: toDisplayText(outputValue),
   };
+}
+
+function toRecord(value: unknown) {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value as Record<string, unknown>;
+  }
+  return {};
+}
+
+function toPlainText(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function normalizeEscapedNewlines(text: string) {
+  return text.replace(/\\n/g, "\n");
+}
+
+function formatToolOutput(value: unknown) {
+  const text = toDisplayText(value);
+  const normalized = normalizeEscapedNewlines(text);
+  return normalized || "No output captured.";
+}
+
+function buildDefaultToolStrategy(tool: MessagePart, state: NormalizedToolState): ToolDisplayStrategy {
+  const preview = state.command || state.inputText || "{}";
+  const compactPreview = preview.replace(/\s+/g, " ").trim();
+  const previewText = compactPreview.length > 72 ? `${compactPreview.slice(0, 72)}...` : compactPreview;
+
+  return {
+    Icon: SquareTerminal,
+    title: tool.title || tool.tool || "Tool",
+    secondaryText: previewText ? `(${previewText})` : undefined,
+    expandable: true,
+    showInputPreview: true,
+    outputText: formatToolOutput(state.outputValue),
+  };
+}
+
+function buildOpencodeToolStrategy(tool: MessagePart, state: NormalizedToolState): ToolDisplayStrategy {
+  const defaultStrategy = buildDefaultToolStrategy(tool, state);
+  const toolKey = (tool.tool || "").toLowerCase();
+  const input = toRecord(state.inputValue);
+
+  if (toolKey === "glob") {
+    const pattern = toPlainText(input.pattern);
+    return {
+      ...defaultStrategy,
+      Icon: FileSearch,
+      title: tool.tool || "glob",
+      secondaryText: pattern || undefined,
+      showInputPreview: false,
+      outputText: formatToolOutput(state.outputValue),
+    };
+  }
+
+  if (toolKey === "bash") {
+    const description = toPlainText(input.description);
+    const command = toPlainText(input.command);
+    const secondaryText = description
+      ? `${description}${command ? ` (${command})` : ""}`
+      : command
+        ? `(${command})`
+        : undefined;
+    return {
+      ...defaultStrategy,
+      Icon: SquareTerminal,
+      title: tool.tool || "bash",
+      secondaryText,
+      showInputPreview: false,
+      outputText: formatToolOutput(state.outputValue),
+    };
+  }
+
+  if (toolKey === "read") {
+    return { ...defaultStrategy, Icon: BookOpenText };
+  }
+
+  if (toolKey === "edit") {
+    return { ...defaultStrategy, Icon: FilePenLine };
+  }
+
+  if (toolKey === "write") {
+    return { ...defaultStrategy, Icon: NotebookPen };
+  }
+
+  if (toolKey === "skill") {
+    const name = toPlainText(input.name);
+    return {
+      ...defaultStrategy,
+      Icon: Wrench,
+      title: tool.tool || "skill",
+      secondaryText: name || undefined,
+      expandable: false,
+      showInputPreview: false,
+    };
+  }
+
+  return defaultStrategy;
+}
+
+function getToolDisplayStrategy(
+  sessionAgentKey: string,
+  tool: MessagePart,
+  state: NormalizedToolState,
+): ToolDisplayStrategy {
+  if (sessionAgentKey.toLowerCase() === "opencode") {
+    return buildOpencodeToolStrategy(tool, state);
+  }
+  return buildDefaultToolStrategy(tool, state);
 }
 
 function formatTokens(n: number) {
@@ -244,11 +371,7 @@ function MessageItem({
   const modelLabel = msg.model || null;
 
   return (
-    <article
-      className={`mx-auto max-w-4xl border-l-2 pl-4 ${
-        isUser ? "border-transparent" : "border-[var(--console-thread)]"
-      }`}
-    >
+    <article className="mx-auto max-w-4xl border-l-2 border-[var(--console-thread)] pl-4">
       <div className="flex gap-4">
         <div className="shrink-0 pt-1">
           <div className="flex size-8 items-center justify-center rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)]">
@@ -274,7 +397,9 @@ function MessageItem({
           </div>
 
           {reasoningParts.length > 0 && <ReasoningSection parts={reasoningParts} />}
-          {toolParts.length > 0 && <ToolsSection parts={toolParts} />}
+          {toolParts.length > 0 && (
+            <ToolsSection parts={toolParts} sessionAgentKey={sessionAgentKey} />
+          )}
 
           {textParts.length > 0 && (
             <div className="rounded-sm border border-[var(--console-border)] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
@@ -331,7 +456,7 @@ function ReasoningSection({ parts }: { parts: MessagePart[] }) {
       >
         <span className="console-mono flex items-center gap-2 text-xs font-medium text-[var(--console-muted)]">
           <Lightbulb className="size-3.5" />
-          Thinking ({parts.length} section{parts.length > 1 ? "s" : ""})
+          Thinking
         </span>
         <span className="text-[var(--console-muted)]">
           {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -348,12 +473,18 @@ function ReasoningSection({ parts }: { parts: MessagePart[] }) {
   );
 }
 
-function ToolsSection({ parts }: { parts: MessagePart[] }) {
+function ToolsSection({
+  parts,
+  sessionAgentKey,
+}: {
+  parts: MessagePart[];
+  sessionAgentKey: string;
+}) {
   return (
     <div className="space-y-2">
       <div className="space-y-2">
         {parts.map((tool, i) => (
-          <ToolItem key={i} tool={tool} />
+          <ToolItem key={i} tool={tool} sessionAgentKey={sessionAgentKey} />
         ))}
       </div>
     </div>
@@ -362,43 +493,63 @@ function ToolsSection({ parts }: { parts: MessagePart[] }) {
 
 function ToolItem({
   tool,
+  sessionAgentKey,
 }: {
   tool: MessagePart;
+  sessionAgentKey: string;
 }) {
   const [expanded, setExpanded] = useState(false);
   const state = normalizeToolState(tool);
+  const strategy = getToolDisplayStrategy(sessionAgentKey, tool, state);
   const statusMeta = TOOL_STATUS_META[state.status];
   const StatusIcon = statusMeta.icon;
-  const toolName = tool.title || tool.tool || "Tool";
-  const preview = state.command || state.inputText || "{}";
-  const output = state.outputText || "No output captured.";
-
-  const compactPreview = preview.replace(/\s+/g, " ").trim();
-  const previewText = compactPreview.length > 72 ? `${compactPreview.slice(0, 72)}...` : compactPreview;
+  const ToolIcon = strategy.Icon;
 
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          className="inline-flex max-w-full items-center gap-2 rounded-sm border border-[var(--console-border-strong)] bg-white px-3 py-1.5 text-left shadow-[2px_2px_0_0_rgba(15,23,42,0.05)] transition-colors hover:bg-[var(--console-surface-muted)]"
-          onClick={() => setExpanded(!expanded)}
+        <div
+          className={`inline-flex max-w-full items-center gap-2 rounded-sm border border-[var(--console-border-strong)] bg-white px-3 py-1.5 text-left shadow-[2px_2px_0_0_rgba(15,23,42,0.05)] ${
+            strategy.expandable ? "transition-colors hover:bg-[var(--console-surface-muted)]" : ""
+          }`}
         >
-          <TerminalSquare className="size-3.5 text-[var(--console-accent)]" />
-          <span className="console-mono text-xs font-semibold text-[var(--console-text)]">
-            {toolName}
-          </span>
-          <span className="console-mono line-clamp-1 text-xs text-[var(--console-muted)]">
-            ({previewText})
-          </span>
-          <span className="text-[var(--console-muted)]">
-            {expanded ? (
-              <ChevronUp className="size-3.5" />
-            ) : (
-              <ChevronDown className="size-3.5" />
-            )}
-          </span>
-        </button>
+          {strategy.expandable ? (
+            <button
+              type="button"
+              className="contents"
+              onClick={() => setExpanded(!expanded)}
+            >
+              <ToolIcon className="size-3.5 text-[var(--console-accent)]" />
+              <span className="console-mono text-xs font-semibold text-[var(--console-text)]">
+                {strategy.title}
+              </span>
+              {strategy.secondaryText ? (
+                <span className="console-mono line-clamp-1 text-xs text-[var(--console-muted)]">
+                  {strategy.secondaryText}
+                </span>
+              ) : null}
+              <span className="text-[var(--console-muted)]">
+                {expanded ? (
+                  <ChevronUp className="size-3.5" />
+                ) : (
+                  <ChevronDown className="size-3.5" />
+                )}
+              </span>
+            </button>
+          ) : (
+            <>
+              <ToolIcon className="size-3.5 text-[var(--console-accent)]" />
+              <span className="console-mono text-xs font-semibold text-[var(--console-text)]">
+                {strategy.title}
+              </span>
+              {strategy.secondaryText ? (
+                <span className="console-mono line-clamp-1 text-xs text-[var(--console-muted)]">
+                  {strategy.secondaryText}
+                </span>
+              ) : null}
+            </>
+          )}
+        </div>
         <span
           className={`console-mono inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${statusMeta.className}`}
         >
@@ -407,24 +558,26 @@ function ToolItem({
         </span>
       </div>
 
-      {expanded ? (
+      {strategy.expandable && expanded ? (
         <div className="overflow-hidden rounded-sm border border-[var(--console-border)] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
           <div className="border-b border-[var(--console-border)] bg-[var(--console-surface-muted)] px-3 py-1.5">
             <span className="console-mono text-xs text-[var(--console-muted)]">Output</span>
           </div>
           <div className="p-3">
             <pre className="console-mono max-h-[420px] overflow-x-auto whitespace-pre-wrap break-all rounded-sm border border-[var(--console-border)] bg-[#fafafa] p-3 text-xs leading-relaxed text-[var(--console-text)]">
-              {output}
+              {strategy.outputText}
             </pre>
           </div>
-          <div className="border-t border-[var(--console-border)] bg-[#fafafa] px-3 py-2">
-            <span className="console-mono text-[11px] text-[var(--console-muted)]">
-              Input Preview
-            </span>
-            <pre className="console-mono mt-1 max-h-[200px] overflow-x-auto whitespace-pre-wrap break-all text-xs leading-relaxed text-[var(--console-muted)]">
-              {state.inputText || "{}"}
-            </pre>
-          </div>
+          {strategy.showInputPreview ? (
+            <div className="border-t border-[var(--console-border)] bg-[#fafafa] px-3 py-2">
+              <span className="console-mono text-[11px] text-[var(--console-muted)]">
+                Input Preview
+              </span>
+              <pre className="console-mono mt-1 max-h-[200px] overflow-x-auto whitespace-pre-wrap break-all text-xs leading-relaxed text-[var(--console-muted)]">
+                {state.inputText || "{}"}
+              </pre>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>
