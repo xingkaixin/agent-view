@@ -15,7 +15,9 @@ import {
   Wrench,
   XCircle,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ReactMarkdown from "react-markdown";
 import { ModelConfig } from "../config";
 import { Session, Message, MessagePart } from "../types";
@@ -30,9 +32,18 @@ interface NormalizedToolState {
   status: ToolStatus;
   inputValue: unknown;
   outputValue: unknown;
+  errorValue: unknown;
+  metadataValue: unknown;
   inputText: string;
-  outputText: string;
   command: string;
+}
+
+type ToolOutputLanguage = string;
+
+interface ToolOutputContent {
+  text: string;
+  language: ToolOutputLanguage;
+  isCode: boolean;
 }
 
 interface ToolDisplayStrategy {
@@ -41,7 +52,7 @@ interface ToolDisplayStrategy {
   secondaryText?: string;
   expandable: boolean;
   showInputPreview: boolean;
-  outputText: string;
+  outputContent: ToolOutputContent;
 }
 
 const TOOL_STATUS_META: Record<
@@ -130,8 +141,10 @@ function normalizeToolState(part: MessagePart): NormalizedToolState {
       ? rawStatus
       : "completed";
 
-  const inputValue = rawState.input ?? rawState.arguments ?? {};
+  const inputValue = parseInputCandidate(rawState.input ?? rawState.arguments ?? {});
   const outputValue = rawState.output ?? rawState.result ?? "";
+  const errorValue = rawState.error ?? "";
+  const metadataValue = rawState.metadata ?? {};
   const command = extractCommand(inputValue);
 
   return {
@@ -139,8 +152,9 @@ function normalizeToolState(part: MessagePart): NormalizedToolState {
     command,
     inputValue,
     outputValue,
+    errorValue,
+    metadataValue,
     inputText: toDisplayText(inputValue),
-    outputText: toDisplayText(outputValue),
   };
 }
 
@@ -155,6 +169,10 @@ function toPlainText(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function toStringValue(value: unknown) {
+  return typeof value === "string" ? value : "";
+}
+
 function normalizeEscapedNewlines(text: string) {
   return text.replace(/\\n/g, "\n");
 }
@@ -163,6 +181,103 @@ function formatToolOutput(value: unknown) {
   const text = toDisplayText(value);
   const normalized = normalizeEscapedNewlines(text);
   return normalized || "No output captured.";
+}
+
+function getOutputOrErrorText(state: NormalizedToolState) {
+  const outputText = formatToolOutput(state.outputValue);
+  if (outputText !== "No output captured.") {
+    return outputText;
+  }
+
+  const errorText = formatToolOutput(state.errorValue);
+  if (errorText !== "No output captured.") {
+    return errorText;
+  }
+
+  return "No output captured.";
+}
+
+function getFilePathFromInput(inputValue: unknown) {
+  const input = toRecord(inputValue);
+  const filePath = toPlainText(input.filePath);
+  return filePath || "";
+}
+
+function detectLanguageByFilePath(filePath: string): ToolOutputLanguage {
+  const fileName = filePath.split("/").pop()?.toLowerCase() || "";
+  if (fileName === ".bashrc" || fileName === ".zshrc" || fileName === ".profile") {
+    return "bash";
+  }
+
+  const extension = fileName.includes(".") ? fileName.split(".").pop() : "";
+  switch (extension) {
+    case "ts":
+      return "typescript";
+    case "tsx":
+      return "tsx";
+    case "js":
+      return "javascript";
+    case "jsx":
+      return "jsx";
+    case "sh":
+    case "bash":
+    case "zsh":
+      return "bash";
+    case "html":
+      return "html";
+    case "css":
+      return "css";
+    case "yaml":
+    case "yml":
+      return "yaml";
+    case "json":
+      return "json";
+    case "md":
+      return "markdown";
+    case "toml":
+      return "toml";
+    case "conf":
+      return "ini";
+    default:
+      return "text";
+  }
+}
+
+function extractReadContent(rawOutput: unknown) {
+  const rawText = formatToolOutput(rawOutput);
+  if (rawText === "No output captured.") {
+    return rawText;
+  }
+
+  const withoutWrapper = rawText
+    .replace(/^<file>\s*/i, "")
+    .replace(/\s*<\/file>\s*$/i, "");
+  const lines = withoutWrapper
+    .split("\n")
+    .filter((line) => !/^\(End of file - total \d+ lines\)$/.test(line.trim()))
+    .map((line) => line.replace(/^\d+\|\s?/, ""));
+  const cleaned = lines.join("\n").trimEnd();
+  return cleaned || "No output captured.";
+}
+
+function extractEditDiff(state: NormalizedToolState) {
+  const metadata = toRecord(state.metadataValue);
+  const diffText = toStringValue(metadata.diff);
+  if (diffText.trim()) {
+    return normalizeEscapedNewlines(diffText);
+  }
+  return getOutputOrErrorText(state);
+}
+
+function extractWriteContent(state: NormalizedToolState) {
+  const input = toRecord(state.inputValue);
+  if (state.status === "completed") {
+    const contentText = toStringValue(input.content);
+    if (contentText.trim()) {
+      return normalizeEscapedNewlines(contentText);
+    }
+  }
+  return getOutputOrErrorText(state);
 }
 
 function buildDefaultToolStrategy(
@@ -180,7 +295,11 @@ function buildDefaultToolStrategy(
     secondaryText: previewText ? `(${previewText})` : undefined,
     expandable: true,
     showInputPreview: true,
-    outputText: formatToolOutput(state.outputValue),
+    outputContent: {
+      text: getOutputOrErrorText(state),
+      language: "text",
+      isCode: false,
+    },
   };
 }
 
@@ -200,7 +319,29 @@ function buildOpencodeToolStrategy(
       title: tool.tool || "glob",
       secondaryText: pattern || undefined,
       showInputPreview: false,
-      outputText: formatToolOutput(state.outputValue),
+      outputContent: {
+        text: getOutputOrErrorText(state),
+        language: "text",
+        isCode: false,
+      },
+    };
+  }
+
+  if (toolKey === "grep") {
+    const path = toPlainText(input.path);
+    const pattern = toPlainText(input.pattern);
+    const details = [path, pattern].filter(Boolean).join(" · ");
+    return {
+      ...defaultStrategy,
+      Icon: FileSearch,
+      title: tool.tool || "grep",
+      secondaryText: details || undefined,
+      showInputPreview: false,
+      outputContent: {
+        text: getOutputOrErrorText(state),
+        language: "text",
+        isCode: false,
+      },
     };
   }
 
@@ -218,20 +359,61 @@ function buildOpencodeToolStrategy(
       title: tool.tool || "bash",
       secondaryText,
       showInputPreview: false,
-      outputText: formatToolOutput(state.outputValue),
+      outputContent: {
+        text: getOutputOrErrorText(state),
+        language: "text",
+        isCode: false,
+      },
     };
   }
 
   if (toolKey === "read") {
-    return { ...defaultStrategy, Icon: BookOpenText };
+    const filePath = getFilePathFromInput(state.inputValue);
+    return {
+      ...defaultStrategy,
+      Icon: BookOpenText,
+      title: tool.tool || "read",
+      secondaryText: filePath || undefined,
+      showInputPreview: false,
+      outputContent: {
+        text: extractReadContent(state.outputValue),
+        language: detectLanguageByFilePath(filePath),
+        isCode: true,
+      },
+    };
   }
 
   if (toolKey === "edit") {
-    return { ...defaultStrategy, Icon: FilePenLine };
+    const filePath = getFilePathFromInput(state.inputValue);
+    return {
+      ...defaultStrategy,
+      Icon: FilePenLine,
+      title: tool.tool || "edit",
+      secondaryText: filePath || undefined,
+      showInputPreview: false,
+      outputContent: {
+        text: extractEditDiff(state),
+        language: "diff",
+        isCode: true,
+      },
+    };
   }
 
   if (toolKey === "write") {
-    return { ...defaultStrategy, Icon: NotebookPen };
+    const filePath = getFilePathFromInput(state.inputValue);
+    const isSuccessfulWrite = state.status === "completed";
+    return {
+      ...defaultStrategy,
+      Icon: NotebookPen,
+      title: tool.tool || "write",
+      secondaryText: filePath || undefined,
+      showInputPreview: false,
+      outputContent: {
+        text: extractWriteContent(state),
+        language: detectLanguageByFilePath(filePath),
+        isCode: isSuccessfulWrite,
+      },
+    };
   }
 
   if (toolKey === "skill") {
@@ -503,6 +685,73 @@ function ToolsSection({
   );
 }
 
+function renderToolOutput(outputContent: ToolOutputContent): ReactNode {
+  const outputText = outputContent.text || "No output captured.";
+  if (!outputContent.isCode || outputContent.language === "text") {
+    return (
+      <pre className="console-mono max-h-[420px] overflow-auto whitespace-pre-wrap break-all rounded-sm border border-[var(--console-border)] bg-[#fafafa] p-3 text-xs leading-relaxed text-[var(--console-text)]">
+        {outputText}
+      </pre>
+    );
+  }
+
+  if (outputContent.language === "diff") {
+    const lines = outputText.split("\n");
+    const getLineClassName = (line: string) => {
+      if (/^(Index:|diff\s|===)/.test(line)) {
+        return "text-[var(--console-text)] bg-[#f3f4f6]";
+      }
+      if (line.startsWith("@@")) {
+        return "text-[#7c3aed] bg-[#f5f3ff]";
+      }
+      if (line.startsWith("+++ ") || line.startsWith("--- ")) {
+        return "text-[#1d4ed8] bg-[#eff6ff]";
+      }
+      if (line.startsWith("+")) {
+        return "text-[#15803d] bg-[#f0fdf4]";
+      }
+      if (line.startsWith("-")) {
+        return "text-[#b91c1c] bg-[#fef2f2]";
+      }
+      return "text-[var(--console-text)]";
+    };
+
+    return (
+      <pre className="console-mono max-h-[420px] overflow-auto whitespace-pre rounded-sm border border-[var(--console-border)] bg-[#fafafa] p-3 text-xs leading-relaxed">
+        {lines.map((line, index) => (
+          <span
+            key={`${index}-${line.slice(0, 24)}`}
+            className={`block rounded-[2px] px-1 ${getLineClassName(line)}`}
+          >
+            {line || " "}
+          </span>
+        ))}
+      </pre>
+    );
+  }
+
+  return (
+    <div className="max-h-[420px] overflow-auto rounded-sm border border-[var(--console-border)] bg-[#fafafa]">
+      <SyntaxHighlighter
+        language={outputContent.language}
+        style={oneLight}
+        customStyle={{
+          margin: 0,
+          padding: "0.75rem",
+          borderRadius: 0,
+          background: "transparent",
+          fontSize: "0.75rem",
+          lineHeight: 1.55,
+        }}
+        codeTagProps={{ className: "console-mono" }}
+        wrapLongLines
+      >
+        {outputText}
+      </SyntaxHighlighter>
+    </div>
+  );
+}
+
 function ToolItem({ tool, sessionAgentKey }: { tool: MessagePart; sessionAgentKey: string }) {
   const [expanded, setExpanded] = useState(false);
   const state = normalizeToolState(tool);
@@ -513,24 +762,30 @@ function ToolItem({ tool, sessionAgentKey }: { tool: MessagePart; sessionAgentKe
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-start gap-2">
         <div
-          className={`inline-flex max-w-full items-center gap-2 rounded-sm border border-[var(--console-border-strong)] bg-white px-3 py-1.5 text-left shadow-[2px_2px_0_0_rgba(15,23,42,0.05)] ${
+          className={`w-full md:w-[560px] rounded-sm border border-[var(--console-border-strong)] bg-white px-3 py-2 text-left shadow-[2px_2px_0_0_rgba(15,23,42,0.05)] ${
             strategy.expandable ? "transition-colors hover:bg-[var(--console-surface-muted)]" : ""
           }`}
         >
           {strategy.expandable ? (
-            <button type="button" className="contents" onClick={() => setExpanded(!expanded)}>
-              <ToolIcon className="size-3.5 text-[var(--console-accent)]" />
-              <span className="console-mono text-xs font-semibold text-[var(--console-text)]">
-                {strategy.title}
-              </span>
-              {strategy.secondaryText ? (
-                <span className="console-mono line-clamp-1 text-xs text-[var(--console-muted)]">
-                  {strategy.secondaryText}
+            <button
+              type="button"
+              className="flex w-full items-start gap-2 text-left"
+              onClick={() => setExpanded(!expanded)}
+            >
+              <ToolIcon className="mt-0.5 size-3.5 shrink-0 text-[var(--console-accent)]" />
+              <span className="min-w-0 flex-1">
+                <span className="console-mono block text-xs font-semibold text-[var(--console-text)]">
+                  {strategy.title}
                 </span>
-              ) : null}
-              <span className="text-[var(--console-muted)]">
+                {strategy.secondaryText ? (
+                  <span className="console-mono mt-0.5 block whitespace-pre-wrap break-words text-xs leading-relaxed text-[var(--console-muted)]">
+                    {strategy.secondaryText}
+                  </span>
+                ) : null}
+              </span>
+              <span className="mt-0.5 shrink-0 text-[var(--console-muted)]">
                 {expanded ? (
                   <ChevronUp className="size-3.5" />
                 ) : (
@@ -539,17 +794,19 @@ function ToolItem({ tool, sessionAgentKey }: { tool: MessagePart; sessionAgentKe
               </span>
             </button>
           ) : (
-            <>
-              <ToolIcon className="size-3.5 text-[var(--console-accent)]" />
-              <span className="console-mono text-xs font-semibold text-[var(--console-text)]">
-                {strategy.title}
-              </span>
-              {strategy.secondaryText ? (
-                <span className="console-mono line-clamp-1 text-xs text-[var(--console-muted)]">
-                  {strategy.secondaryText}
+            <div className="flex items-start gap-2">
+              <ToolIcon className="mt-0.5 size-3.5 shrink-0 text-[var(--console-accent)]" />
+              <span className="min-w-0 flex-1">
+                <span className="console-mono block text-xs font-semibold text-[var(--console-text)]">
+                  {strategy.title}
                 </span>
-              ) : null}
-            </>
+                {strategy.secondaryText ? (
+                  <span className="console-mono mt-0.5 block whitespace-pre-wrap break-words text-xs leading-relaxed text-[var(--console-muted)]">
+                    {strategy.secondaryText}
+                  </span>
+                ) : null}
+              </span>
+            </div>
           )}
         </div>
         <span
@@ -565,11 +822,7 @@ function ToolItem({ tool, sessionAgentKey }: { tool: MessagePart; sessionAgentKe
           <div className="border-b border-[var(--console-border)] bg-[var(--console-surface-muted)] px-3 py-1.5">
             <span className="console-mono text-xs text-[var(--console-muted)]">Output</span>
           </div>
-          <div className="p-3">
-            <pre className="console-mono max-h-[420px] overflow-x-auto whitespace-pre-wrap break-all rounded-sm border border-[var(--console-border)] bg-[#fafafa] p-3 text-xs leading-relaxed text-[var(--console-text)]">
-              {strategy.outputText}
-            </pre>
-          </div>
+          <div className="p-3">{renderToolOutput(strategy.outputContent)}</div>
           {strategy.showInputPreview ? (
             <div className="border-t border-[var(--console-border)] bg-[#fafafa] px-3 py-2">
               <span className="console-mono text-[11px] text-[var(--console-muted)]">
