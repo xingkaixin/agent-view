@@ -165,10 +165,14 @@ function formatToolOutput(value: unknown) {
   return normalized || "No output captured.";
 }
 
-function buildDefaultToolStrategy(tool: MessagePart, state: NormalizedToolState): ToolDisplayStrategy {
+function buildDefaultToolStrategy(
+  tool: MessagePart,
+  state: NormalizedToolState,
+): ToolDisplayStrategy {
   const preview = state.command || state.inputText || "{}";
   const compactPreview = preview.replace(/\s+/g, " ").trim();
-  const previewText = compactPreview.length > 72 ? `${compactPreview.slice(0, 72)}...` : compactPreview;
+  const previewText =
+    compactPreview.length > 72 ? `${compactPreview.slice(0, 72)}...` : compactPreview;
 
   return {
     Icon: SquareTerminal,
@@ -180,7 +184,10 @@ function buildDefaultToolStrategy(tool: MessagePart, state: NormalizedToolState)
   };
 }
 
-function buildOpencodeToolStrategy(tool: MessagePart, state: NormalizedToolState): ToolDisplayStrategy {
+function buildOpencodeToolStrategy(
+  tool: MessagePart,
+  state: NormalizedToolState,
+): ToolDisplayStrategy {
   const defaultStrategy = buildDefaultToolStrategy(tool, state);
   const toolKey = (tool.tool || "").toLowerCase();
   const input = toRecord(state.inputValue);
@@ -306,7 +313,8 @@ function formatMessageTime(rawTime: unknown) {
 
 export function SessionDetail({ session }: SessionDetailProps) {
   const sessionSlug = session._urlSlug || session.slug || "";
-  const sessionAgentKey = sessionSlug.split("/")[0] || ModelConfig.getDefaultAgentKey() || "opencode";
+  const sessionAgentKey =
+    sessionSlug.split("/")[0] || ModelConfig.getDefaultAgentKey() || "opencode";
   const visibleMessages = useMemo(
     () => session.messages.filter((msg) => hasVisibleContent(msg)),
     [session.messages],
@@ -375,7 +383,11 @@ function MessageItem({
       <div className="flex gap-4">
         <div className="shrink-0 pt-1">
           <div className="flex size-8 items-center justify-center rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)]">
-            {isUser ? <UserRound className="size-4 text-[var(--console-muted)]" /> : getAgentAvatar()}
+            {isUser ? (
+              <UserRound className="size-4 text-[var(--console-muted)]" />
+            ) : (
+              getAgentAvatar()
+            )}
           </div>
         </div>
         <div className="min-w-0 flex-1 space-y-3">
@@ -491,13 +503,7 @@ function ToolsSection({
   );
 }
 
-function ToolItem({
-  tool,
-  sessionAgentKey,
-}: {
-  tool: MessagePart;
-  sessionAgentKey: string;
-}) {
+function ToolItem({ tool, sessionAgentKey }: { tool: MessagePart; sessionAgentKey: string }) {
   const [expanded, setExpanded] = useState(false);
   const state = normalizeToolState(tool);
   const strategy = getToolDisplayStrategy(sessionAgentKey, tool, state);
@@ -514,11 +520,7 @@ function ToolItem({
           }`}
         >
           {strategy.expandable ? (
-            <button
-              type="button"
-              className="contents"
-              onClick={() => setExpanded(!expanded)}
-            >
+            <button type="button" className="contents" onClick={() => setExpanded(!expanded)}>
               <ToolIcon className="size-3.5 text-[var(--console-accent)]" />
               <span className="console-mono text-xs font-semibold text-[var(--console-text)]">
                 {strategy.title}

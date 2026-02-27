@@ -142,7 +142,12 @@
 
 @layer utilities {
   .console-ui {
-    font-family: "IBM Plex Sans", "Avenir Next", "PingFang SC", -apple-system, sans-serif;
+    font-family:
+      "IBM Plex Sans",
+      "Avenir Next",
+      "PingFang SC",
+      -apple-system,
+      sans-serif;
   }
 
   .console-mono {

@@ -1,8 +1,13 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ModelConfig } from "./config";
-import { DetailLanding, type LandingAgentItem, type LandingSession } from "./components/DetailLanding";
+import packageJson from "../package.json";
+import {
+  DetailLanding,
+  type LandingAgentItem,
+  type LandingSession,
+} from "./components/DetailLanding";
 import { SessionDetail } from "./components/SessionDetail";
+import { ModelConfig } from "./config";
 import { IndexData, Session, SessionInfo } from "./types";
 
 type ViewState =
@@ -146,7 +151,10 @@ export default function App() {
   const validAgentKeys = useMemo(() => new Set(Object.keys(ModelConfig.agents)), []);
 
   const normalizedSessions = useMemo(
-    () => sessions.map((item) => normalizeSession(item)).filter((item): item is LandingSession => item != null),
+    () =>
+      sessions
+        .map((item) => normalizeSession(item))
+        .filter((item): item is LandingSession => item != null),
     [sessions],
   );
 
@@ -195,9 +203,13 @@ export default function App() {
 
   const activeAgentKey = viewState.activeAgentKey;
   const activeSessionPath =
-    viewState.mode === "session" ? `${viewState.activeAgentKey}/${viewState.activeSessionSlug}` : null;
+    viewState.mode === "session"
+      ? `${viewState.activeAgentKey}/${viewState.activeSessionSlug}`
+      : null;
 
-  const currentSessionInfo = activeSessionPath ? sessionByPath.get(activeSessionPath) || null : null;
+  const currentSessionInfo = activeSessionPath
+    ? sessionByPath.get(activeSessionPath) || null
+    : null;
   const sidebarSessions = activeAgentKey ? sessionsByAgent[activeAgentKey] || [] : [];
 
   useEffect(() => {
@@ -253,7 +265,9 @@ export default function App() {
   }
 
   if (viewState.mode === "session") {
-    const displaySessionId = (currentSessionInfo?.id || activeSessionPath || "").replace(/[^a-zA-Z0-9]/g, "").slice(0, 8);
+    const displaySessionId = (currentSessionInfo?.id || activeSessionPath || "")
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .slice(0, 8);
     const updatedTime = currentSessionInfo?.time_updated || currentSessionInfo?.time_created;
     title = currentSessionInfo?.title || "Conversation";
     subtitle = `ID: #${displaySessionId || "UNKNOWN"} · Last updated ${formatRelativeTime(updatedTime)}`;
@@ -323,10 +337,12 @@ export default function App() {
               alt="Agent View Logo"
               className="h-6 w-6 rounded-sm border border-[var(--console-border)] bg-white p-0.5"
             />
-            <span className="console-mono text-sm font-semibold uppercase tracking-[0.05em]">Agent View</span>
+            <span className="console-mono text-sm font-semibold uppercase tracking-[0.05em]">
+              Agent View
+            </span>
           </Link>
           <span className="console-mono rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] px-2 py-1 text-xs text-[var(--console-muted)]">
-            v0.2.0
+            v{packageJson.version}
           </span>
         </div>
       </header>
@@ -335,7 +351,9 @@ export default function App() {
         <aside className="hidden w-64 shrink-0 flex-col border-r border-[var(--console-border)] bg-[var(--console-sidebar-bg)] lg:flex">
           <div className="console-scrollbar flex-1 space-y-8 overflow-y-auto px-4 py-6">
             <section>
-              <h3 className="console-mono mb-3 text-xs font-bold uppercase text-[var(--console-text)]">AGENT</h3>
+              <h3 className="console-mono mb-3 text-xs font-bold uppercase text-[var(--console-text)]">
+                AGENT
+              </h3>
               <ul className="space-y-1">
                 {agentItems.map((agent) => {
                   const isSelected = agent.key === activeAgentKey;
@@ -349,9 +367,17 @@ export default function App() {
                             : "border-transparent text-[var(--console-muted)] hover:border-[var(--console-border)] hover:bg-[var(--console-surface-muted)]"
                         }`}
                       >
-                        <img src={agent.icon} alt={agent.name} className="size-3.5 object-contain" />
-                        <span className="console-mono line-clamp-1 flex-1 text-xs">{agent.name}</span>
-                        <span className="console-mono text-[11px] text-[var(--console-muted)]">{agent.count}</span>
+                        <img
+                          src={agent.icon}
+                          alt={agent.name}
+                          className="size-3.5 object-contain"
+                        />
+                        <span className="console-mono line-clamp-1 flex-1 text-xs">
+                          {agent.name}
+                        </span>
+                        <span className="console-mono text-[11px] text-[var(--console-muted)]">
+                          {agent.count}
+                        </span>
                       </Link>
                     </li>
                   );
@@ -360,7 +386,9 @@ export default function App() {
             </section>
 
             <section>
-              <h3 className="console-mono mb-3 text-xs font-bold uppercase text-[var(--console-text)]">SESSIONS</h3>
+              <h3 className="console-mono mb-3 text-xs font-bold uppercase text-[var(--console-text)]">
+                SESSIONS
+              </h3>
               <ul className="space-y-1">
                 {!activeAgentKey ? (
                   <li>
@@ -406,13 +434,17 @@ export default function App() {
                 <span className="console-mono rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] px-1.5 py-0.5 text-[10px] font-bold uppercase text-[var(--console-muted)]">
                   {viewState.mode === "session" ? "Session" : "Landing"}
                 </span>
-                <h1 className="console-mono text-xl font-semibold tracking-tight text-[var(--console-text)]">{title}</h1>
+                <h1 className="console-mono text-xl font-semibold tracking-tight text-[var(--console-text)]">
+                  {title}
+                </h1>
               </div>
               <p className="console-mono mt-1 text-xs text-[var(--console-muted)]">{subtitle}</p>
             </div>
           </section>
 
-          <section className="console-scrollbar bg-grid min-h-0 flex-1 overflow-y-auto px-4 py-6 md:px-8">{content}</section>
+          <section className="console-scrollbar bg-grid min-h-0 flex-1 overflow-y-auto px-4 py-6 md:px-8">
+            {content}
+          </section>
         </main>
       </div>
     </div>

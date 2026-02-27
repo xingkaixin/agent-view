@@ -48,15 +48,7 @@ function formatRelativeTime(timestamp?: number) {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
-function LandingCard({
-  label,
-  value,
-  hint,
-}: {
-  label: string;
-  value: string;
-  hint?: string;
-}) {
+function LandingCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
     <div className="rounded-sm border border-[var(--console-border)] bg-white p-4">
       <p className="console-mono text-[11px] uppercase tracking-wider text-[var(--console-muted)]">
@@ -96,7 +88,8 @@ function RecentSessions({ sessions }: { sessions: LandingSession[] }) {
             >
               <p className="line-clamp-1 text-sm text-[var(--console-text)]">{session.title}</p>
               <p className="console-mono mt-0.5 text-[11px] text-[var(--console-muted)]">
-                /{session.fullPath} · {formatRelativeTime(session.time_updated || session.time_created)}
+                /{session.fullPath} ·{" "}
+                {formatRelativeTime(session.time_updated || session.time_created)}
               </p>
             </Link>
           </li>
