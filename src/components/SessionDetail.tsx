@@ -371,7 +371,7 @@ function MessageItem({
   const modelLabel = msg.model || null;
 
   return (
-    <article className="mx-auto max-w-4xl border-l-2 border-[var(--console-thread)] pl-4">
+    <article className="w-full max-w-4xl border-l-2 border-[var(--console-thread)] pl-4">
       <div className="flex gap-4">
         <div className="shrink-0 pt-1">
           <div className="flex size-8 items-center justify-center rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)]">
