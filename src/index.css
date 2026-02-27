@@ -85,6 +85,28 @@
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
     --radius: 0.5rem;
+
+    --console-bg: #f7f7f7;
+    --console-sidebar-bg: #fbfbfb;
+    --console-surface-muted: #f5f5f5;
+    --console-border: #e5e5e5;
+    --console-border-strong: #d4d4d4;
+    --console-text: #1a1a1a;
+    --console-muted: #666666;
+    --console-accent: #2d2d2d;
+    --console-accent-strong: #1f1f1f;
+    --console-thread: #e8e8e8;
+    --console-thinking-bg: #f9f9f9;
+    --console-thinking-border: #ebebeb;
+    --console-success: #15803d;
+    --console-success-bg: #dcfce7;
+    --console-success-border: #bbf7d0;
+    --console-warning: #b45309;
+    --console-warning-bg: #fef3c7;
+    --console-warning-border: #fde68a;
+    --console-error: #b91c1c;
+    --console-error-bg: #fee2e2;
+    --console-error-border: #fecaca;
   }
 
   .dark {
@@ -116,4 +138,89 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer utilities {
+  .console-ui {
+    font-family: "IBM Plex Sans", "Avenir Next", "PingFang SC", -apple-system, sans-serif;
+  }
+
+  .console-mono {
+    font-family:
+      "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  }
+
+  .bg-grid {
+    background-size: 40px 40px;
+    background-image:
+      linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  }
+}
+
+.console-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.console-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.console-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+
+.console-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.console-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+.console-markdown > * + * {
+  margin-top: 0.75rem;
+}
+
+.console-markdown p {
+  margin: 0;
+}
+
+.console-markdown ul,
+.console-markdown ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.console-markdown a {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+.console-markdown code {
+  font-family:
+    "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  background: #f5f5f5;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.125rem;
+  padding: 0.08rem 0.32rem;
+}
+
+.console-markdown pre {
+  margin: 0;
+  border: 1px solid #e5e7eb;
+  background: #fafafa;
+  border-radius: 0.125rem;
+  overflow-x: auto;
+  padding: 0.75rem;
+}
+
+.console-markdown pre code {
+  border: none;
+  background: transparent;
+  padding: 0;
 }
