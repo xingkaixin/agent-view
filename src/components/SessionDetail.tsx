@@ -321,7 +321,7 @@ export function SessionDetail({ session }: SessionDetailProps) {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="mx-auto w-full max-w-5xl space-y-8 px-2 md:px-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="flex flex-col gap-8">
         {visibleMessages.map((msg, index) => (
           <MessageItem
@@ -371,7 +371,7 @@ function MessageItem({
   const modelLabel = msg.model || null;
 
   return (
-    <article className="w-full max-w-4xl border-l-2 border-[var(--console-thread)] pl-4">
+    <article className="w-full border-l-2 border-[var(--console-thread)] pl-4 pr-3 md:pr-5">
       <div className="flex gap-4">
         <div className="shrink-0 pt-1">
           <div className="flex size-8 items-center justify-center rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)]">
