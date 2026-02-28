@@ -15,6 +15,7 @@ import {
   Wrench,
   XCircle,
 } from "lucide-react";
+import { diffLines, type Change } from "diff";
 import { type ReactNode, useMemo, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -40,11 +41,29 @@ interface NormalizedToolState {
 
 type ToolOutputLanguage = string;
 
-interface ToolOutputContent {
+interface PlainToolOutputContent {
+  kind: "plain";
   text: string;
   language: ToolOutputLanguage;
   isCode: boolean;
 }
+
+interface DiffLineItem {
+  type: "context" | "add" | "remove";
+  text: string;
+}
+
+interface DiffBlock {
+  label: string;
+  lines: DiffLineItem[];
+}
+
+interface StructuredDiffToolOutputContent {
+  kind: "structured-diff";
+  blocks: DiffBlock[];
+}
+
+type ToolOutputContent = PlainToolOutputContent | StructuredDiffToolOutputContent;
 
 interface ToolDisplayStrategy {
   Icon: typeof LoaderCircle;
@@ -124,11 +143,65 @@ function parseInputCandidate(inputValue: unknown) {
   }
 }
 
+function extractToolTextSegments(value: unknown): string[] {
+  if (typeof value === "string") {
+    return [value];
+  }
+
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => extractToolTextSegments(item));
+  }
+
+  if (value && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    const textValue = record.text;
+    if (typeof textValue === "string") {
+      return [textValue];
+    }
+    const contentValue = record.content;
+    if (contentValue !== undefined) {
+      return extractToolTextSegments(contentValue);
+    }
+  }
+
+  return [];
+}
+
+function stripSystemTag(text: string) {
+  return text.replace(/^<system>/i, "").replace(/<\/system>$/i, "").trim();
+}
+
+function joinToolText(value: unknown, includeSystem = true) {
+  const segments = extractToolTextSegments(value)
+    .map((segment) => segment.trim())
+    .filter((segment) => {
+      if (includeSystem) {
+        return Boolean(segment);
+      }
+      return Boolean(segment) && !/^<system>[\s\S]*<\/system>$/i.test(segment);
+    });
+
+  if (segments.length === 0) {
+    return "";
+  }
+
+  return segments
+    .map((segment) =>
+      includeSystem && /^<system>[\s\S]*<\/system>$/i.test(segment) ? stripSystemTag(segment) : segment,
+    )
+    .join("\n");
+}
+
 function extractCommand(inputValue: unknown) {
   const parsed = parseInputCandidate(inputValue);
-  if (parsed && typeof parsed === "object" && "cmd" in parsed) {
-    const cmd = (parsed as { cmd?: unknown }).cmd;
-    return typeof cmd === "string" ? cmd : "";
+  if (parsed && typeof parsed === "object") {
+    const input = parsed as { cmd?: unknown; command?: unknown };
+    if (typeof input.cmd === "string") {
+      return input.cmd;
+    }
+    if (typeof input.command === "string") {
+      return input.command;
+    }
   }
   return "";
 }
@@ -141,9 +214,9 @@ function normalizeToolState(part: MessagePart): NormalizedToolState {
       ? rawStatus
       : "completed";
 
-  const inputValue = parseInputCandidate(rawState.input ?? rawState.arguments ?? {});
   const outputValue = rawState.output ?? rawState.result ?? "";
   const errorValue = rawState.error ?? "";
+  const inputValue = parseInputCandidate(rawState.input ?? rawState.arguments ?? {});
   const metadataValue = rawState.metadata ?? {};
   const command = extractCommand(inputValue);
 
@@ -225,7 +298,8 @@ function normalizeEscapedNewlines(text: string) {
 }
 
 function formatToolOutput(value: unknown) {
-  const text = toDisplayText(value);
+  const structuredText = joinToolText(value);
+  const text = structuredText || toDisplayText(value);
   const normalized = normalizeEscapedNewlines(text);
   return normalized || "No output captured.";
 }
@@ -246,7 +320,7 @@ function getOutputOrErrorText(state: NormalizedToolState) {
 
 function getFilePathFromInput(inputValue: unknown) {
   const input = toRecord(inputValue);
-  const filePath = toPlainText(input.filePath);
+  const filePath = toPlainText(input.filePath) || toPlainText(input.path);
   return filePath || "";
 }
 
@@ -291,7 +365,7 @@ function detectLanguageByFilePath(filePath: string): ToolOutputLanguage {
 }
 
 function extractReadContent(rawOutput: unknown) {
-  const rawText = formatToolOutput(rawOutput);
+  const rawText = joinToolText(rawOutput, false) || formatToolOutput(rawOutput);
   if (rawText === "No output captured.") {
     return rawText;
   }
@@ -302,9 +376,78 @@ function extractReadContent(rawOutput: unknown) {
   const lines = withoutWrapper
     .split("\n")
     .filter((line) => !/^\(End of file - total \d+ lines\)$/.test(line.trim()))
-    .map((line) => line.replace(/^\d+\|\s?/, ""));
+    .map((line) => line.replace(/^\d+\|\s?/, "").replace(/^\s*\d+\t/, ""));
   const cleaned = lines.join("\n").trimEnd();
   return cleaned || "No output captured.";
+}
+
+function createDiffBlock(oldValue: string, newValue: string) {
+  const oldLines = normalizeEscapedNewlines(oldValue).split("\n");
+  const newLines = normalizeEscapedNewlines(newValue).split("\n");
+  const diffLines = ["@@", ...oldLines.map((line) => `- ${line}`), ...newLines.map((line) => `+ ${line}`)];
+  return diffLines.join("\n");
+}
+
+function splitDiffChunkLines(value: string) {
+  const normalized = normalizeEscapedNewlines(value);
+  const lines = normalized.split("\n");
+  if (normalized.endsWith("\n")) {
+    lines.pop();
+  }
+  return lines;
+}
+
+function diffPartsToLines(parts: Change[]): DiffLineItem[] {
+  return parts.flatMap((part) => {
+    const type: DiffLineItem["type"] = part.added ? "add" : part.removed ? "remove" : "context";
+    return splitDiffChunkLines(part.value).map((line) => ({
+      type,
+      text: line,
+    }));
+  });
+}
+
+function getKimiEditEntries(inputValue: unknown) {
+  const input = toRecord(inputValue);
+  const rawEdit = input.edit;
+  if (Array.isArray(rawEdit)) {
+    return rawEdit;
+  }
+  if (rawEdit && typeof rawEdit === "object") {
+    return [rawEdit];
+  }
+  return [];
+}
+
+function getDiffBlockLabel(filePath: string) {
+  const normalizedPath = filePath.trim();
+  if (!normalizedPath) {
+    return "edit";
+  }
+
+  const fileName = normalizedPath.split("/").pop() || normalizedPath;
+  return fileName === normalizedPath ? fileName : `${fileName} · ${normalizedPath}`;
+}
+
+function buildKimiEditDiffBlocks(state: NormalizedToolState, filePath: string): DiffBlock[] {
+  const edits = getKimiEditEntries(state.inputValue);
+  const label = getDiffBlockLabel(filePath);
+
+  return edits
+    .map((entry) => {
+      const edit = toRecord(entry);
+      const oldValue = toStringValue(edit.old);
+      const newValue = toStringValue(edit.new);
+      if (!oldValue.trim() && !newValue.trim()) {
+        return null;
+      }
+
+      return {
+        label,
+        lines: diffPartsToLines(diffLines(normalizeEscapedNewlines(oldValue), normalizeEscapedNewlines(newValue))),
+      };
+    })
+    .filter((block): block is DiffBlock => block != null && block.lines.length > 0);
 }
 
 function extractEditDiff(state: NormalizedToolState) {
@@ -313,6 +456,24 @@ function extractEditDiff(state: NormalizedToolState) {
   if (diffText.trim()) {
     return normalizeEscapedNewlines(diffText);
   }
+
+  const edits = getKimiEditEntries(state.inputValue);
+  const generatedDiff = edits
+    .map((entry) => {
+      const edit = toRecord(entry);
+      const oldValue = toStringValue(edit.old);
+      const newValue = toStringValue(edit.new);
+      if (!oldValue.trim() && !newValue.trim()) {
+        return "";
+      }
+      return createDiffBlock(oldValue, newValue);
+    })
+    .filter(Boolean)
+    .join("\n\n");
+  if (generatedDiff.trim()) {
+    return generatedDiff;
+  }
+
   return getOutputOrErrorText(state);
 }
 
@@ -325,6 +486,125 @@ function extractWriteContent(state: NormalizedToolState) {
     }
   }
   return getOutputOrErrorText(state);
+}
+
+function buildKimiToolStrategy(tool: MessagePart, state: NormalizedToolState): ToolDisplayStrategy {
+  const defaultStrategy = buildDefaultToolStrategy(tool, state);
+  const toolKey = (tool.tool || "").toLowerCase();
+  const input = toRecord(state.inputValue);
+
+  if (toolKey === "glob") {
+    const pattern = toPlainText(input.pattern);
+    return {
+      ...defaultStrategy,
+      Icon: FileSearch,
+      title: tool.title || "glob",
+      secondaryText: pattern || undefined,
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: getOutputOrErrorText(state),
+        language: "text",
+        isCode: false,
+      },
+    };
+  }
+
+  if (toolKey === "grep") {
+    const path = toPlainText(input.path);
+    const pattern = toPlainText(input.pattern);
+    const details = [path, pattern].filter(Boolean).join(" · ");
+    return {
+      ...defaultStrategy,
+      Icon: FileSearch,
+      title: tool.title || "grep",
+      secondaryText: details || undefined,
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: getOutputOrErrorText(state),
+        language: "text",
+        isCode: false,
+      },
+    };
+  }
+
+  if (toolKey === "shell") {
+    const command = toPlainText(input.command);
+    return {
+      ...defaultStrategy,
+      Icon: SquareTerminal,
+      title: tool.title || "bash",
+      secondaryText: command ? `(${command})` : undefined,
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: getOutputOrErrorText(state),
+        language: "text",
+        isCode: false,
+      },
+    };
+  }
+
+  if (toolKey === "readfile") {
+    const filePath = getFilePathFromInput(state.inputValue);
+    return {
+      ...defaultStrategy,
+      Icon: BookOpenText,
+      title: tool.title || "read",
+      secondaryText: filePath || undefined,
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: extractReadContent(state.outputValue),
+        language: detectLanguageByFilePath(filePath),
+        isCode: true,
+      },
+    };
+  }
+
+  if (toolKey === "strreplacefile") {
+    const filePath = getFilePathFromInput(state.inputValue);
+    const diffBlocks = buildKimiEditDiffBlocks(state, filePath);
+    return {
+      ...defaultStrategy,
+      Icon: FilePenLine,
+      title: tool.title || "edit",
+      secondaryText: filePath || undefined,
+      showInputPreview: false,
+      outputContent:
+        diffBlocks.length > 0
+          ? {
+              kind: "structured-diff",
+              blocks: diffBlocks,
+            }
+          : {
+              kind: "plain",
+              text: extractEditDiff(state),
+              language: "diff",
+              isCode: true,
+            },
+    };
+  }
+
+  if (toolKey === "writefile") {
+    const filePath = getFilePathFromInput(state.inputValue);
+    return {
+      ...defaultStrategy,
+      Icon: NotebookPen,
+      title: tool.title || "write",
+      secondaryText: filePath || undefined,
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: extractWriteContent(state),
+        language: detectLanguageByFilePath(filePath),
+        isCode: state.status === "completed",
+      },
+    };
+  }
+
+  return defaultStrategy;
 }
 
 function buildDefaultToolStrategy(
@@ -343,6 +623,7 @@ function buildDefaultToolStrategy(
     expandable: true,
     showInputPreview: true,
     outputContent: {
+      kind: "plain",
       text: getOutputOrErrorText(state),
       language: "text",
       isCode: false,
@@ -367,6 +648,7 @@ function buildOpencodeToolStrategy(
       secondaryText: pattern || undefined,
       showInputPreview: false,
       outputContent: {
+        kind: "plain",
         text: getOutputOrErrorText(state),
         language: "text",
         isCode: false,
@@ -385,6 +667,7 @@ function buildOpencodeToolStrategy(
       secondaryText: details || undefined,
       showInputPreview: false,
       outputContent: {
+        kind: "plain",
         text: getOutputOrErrorText(state),
         language: "text",
         isCode: false,
@@ -407,6 +690,7 @@ function buildOpencodeToolStrategy(
       secondaryText,
       showInputPreview: false,
       outputContent: {
+        kind: "plain",
         text: getOutputOrErrorText(state),
         language: "text",
         isCode: false,
@@ -423,6 +707,7 @@ function buildOpencodeToolStrategy(
       secondaryText: filePath || undefined,
       showInputPreview: false,
       outputContent: {
+        kind: "plain",
         text: extractReadContent(state.outputValue),
         language: detectLanguageByFilePath(filePath),
         isCode: true,
@@ -439,6 +724,7 @@ function buildOpencodeToolStrategy(
       secondaryText: filePath || undefined,
       showInputPreview: false,
       outputContent: {
+        kind: "plain",
         text: extractEditDiff(state),
         language: "diff",
         isCode: true,
@@ -456,6 +742,7 @@ function buildOpencodeToolStrategy(
       secondaryText: filePath || undefined,
       showInputPreview: false,
       outputContent: {
+        kind: "plain",
         text: extractWriteContent(state),
         language: detectLanguageByFilePath(filePath),
         isCode: isSuccessfulWrite,
@@ -483,8 +770,12 @@ function getToolDisplayStrategy(
   tool: MessagePart,
   state: NormalizedToolState,
 ): ToolDisplayStrategy {
-  if (sessionAgentKey.toLowerCase() === "opencode") {
+  const normalizedAgentKey = sessionAgentKey.toLowerCase();
+  if (normalizedAgentKey === "opencode") {
     return buildOpencodeToolStrategy(tool, state);
+  }
+  if (normalizedAgentKey === "kimi") {
+    return buildKimiToolStrategy(tool, state);
   }
   return buildDefaultToolStrategy(tool, state);
 }
@@ -737,7 +1028,66 @@ function ToolsSection({
   );
 }
 
+function getUnifiedDiffLineClassName(line: string) {
+  if (/^(Index:|diff\s|===)/.test(line)) {
+    return "text-[var(--console-text)] bg-[#f3f4f6]";
+  }
+  if (line.startsWith("@@")) {
+    return "text-[#7c3aed] bg-[#f5f3ff]";
+  }
+  if (line.startsWith("+++ ") || line.startsWith("--- ")) {
+    return "text-[#1d4ed8] bg-[#eff6ff]";
+  }
+  if (line.startsWith("+")) {
+    return "text-[#15803d] bg-[#f0fdf4]";
+  }
+  if (line.startsWith("-")) {
+    return "text-[#b91c1c] bg-[#fef2f2]";
+  }
+  return "text-[var(--console-text)]";
+}
+
+function getStructuredDiffLineClassName(type: DiffLineItem["type"]) {
+  if (type === "add") {
+    return "text-[#15803d] bg-[#f0fdf4]";
+  }
+  if (type === "remove") {
+    return "text-[#b91c1c] bg-[#fef2f2]";
+  }
+  return "text-[var(--console-text)]";
+}
+
 function renderToolOutput(outputContent: ToolOutputContent): ReactNode {
+  if (outputContent.kind === "structured-diff") {
+    return (
+      <div className="space-y-3">
+        {outputContent.blocks.map((block, blockIndex) => (
+          <div
+            key={`${block.label}-${blockIndex}`}
+            className="overflow-hidden rounded-sm border border-[var(--console-border)] bg-[#fafafa]"
+          >
+            <div className="border-b border-[var(--console-border)] bg-[var(--console-surface-muted)] px-3 py-1.5">
+              <span className="console-mono text-[11px] font-semibold text-[var(--console-muted)]">
+                {block.label}
+              </span>
+            </div>
+            <pre className="console-mono max-h-[280px] overflow-auto whitespace-pre p-3 text-xs leading-relaxed">
+              {block.lines.map((line, index) => (
+                <span
+                  key={`${block.label}-${index}-${line.text.slice(0, 24)}`}
+                  className={`block rounded-[2px] px-1 ${getStructuredDiffLineClassName(line.type)}`}
+                >
+                  {line.type === "add" ? "+" : line.type === "remove" ? "-" : " "}
+                  {line.text || " "}
+                </span>
+              ))}
+            </pre>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   const outputText = outputContent.text || "No output captured.";
   if (!outputContent.isCode || outputContent.language === "text") {
     return (
@@ -749,31 +1099,13 @@ function renderToolOutput(outputContent: ToolOutputContent): ReactNode {
 
   if (outputContent.language === "diff") {
     const lines = outputText.split("\n");
-    const getLineClassName = (line: string) => {
-      if (/^(Index:|diff\s|===)/.test(line)) {
-        return "text-[var(--console-text)] bg-[#f3f4f6]";
-      }
-      if (line.startsWith("@@")) {
-        return "text-[#7c3aed] bg-[#f5f3ff]";
-      }
-      if (line.startsWith("+++ ") || line.startsWith("--- ")) {
-        return "text-[#1d4ed8] bg-[#eff6ff]";
-      }
-      if (line.startsWith("+")) {
-        return "text-[#15803d] bg-[#f0fdf4]";
-      }
-      if (line.startsWith("-")) {
-        return "text-[#b91c1c] bg-[#fef2f2]";
-      }
-      return "text-[var(--console-text)]";
-    };
 
     return (
       <pre className="console-mono max-h-[420px] overflow-auto whitespace-pre rounded-sm border border-[var(--console-border)] bg-[#fafafa] p-3 text-xs leading-relaxed">
         {lines.map((line, index) => (
           <span
             key={`${index}-${line.slice(0, 24)}`}
-            className={`block rounded-[2px] px-1 ${getLineClassName(line)}`}
+            className={`block rounded-[2px] px-1 ${getUnifiedDiffLineClassName(line)}`}
           >
             {line || " "}
           </span>
