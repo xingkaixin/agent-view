@@ -5,46 +5,7 @@ import {
   getCodexPatchEntries,
   summarizeCodexPatchEntries,
 } from "../session-detail/codex-patch";
-
-function detectLanguageByFilePath(filePath: string) {
-  const fileName = filePath.split("/").pop()?.toLowerCase() || "";
-  if (fileName === ".bashrc" || fileName === ".zshrc" || fileName === ".profile") {
-    return "bash";
-  }
-
-  const extension = fileName.includes(".") ? fileName.split(".").pop() : "";
-  switch (extension) {
-    case "ts":
-      return "typescript";
-    case "tsx":
-      return "tsx";
-    case "js":
-      return "javascript";
-    case "jsx":
-      return "jsx";
-    case "sh":
-    case "bash":
-    case "zsh":
-      return "bash";
-    case "html":
-      return "html";
-    case "css":
-      return "css";
-    case "yaml":
-    case "yml":
-      return "yaml";
-    case "json":
-      return "json";
-    case "md":
-      return "markdown";
-    case "toml":
-      return "toml";
-    case "conf":
-      return "ini";
-    default:
-      return "text";
-  }
-}
+import { detectLanguageByFilePath } from "../tool-output/language";
 
 function buildInput(content: unknown[]) {
   return { kind: "apply_patch", content };
@@ -187,7 +148,7 @@ describe("codex patch helpers", () => {
     });
   });
 
-  it("无扩展名路径会回退为 text", () => {
+  it("Dockerfile 会映射到 docker", () => {
     const entries = getCodexPatchEntries(
       buildInput([
         {
@@ -205,7 +166,7 @@ describe("codex patch helpers", () => {
       return;
     }
 
-    expect(output.sections[0]?.language).toBe("text");
+    expect(output.sections[0]?.language).toBe("docker");
   });
 
   it("真实样本会渲染为 3 个 section", () => {

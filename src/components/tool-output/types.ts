@@ -35,7 +35,26 @@ export interface FileSectionsToolOutputContent {
   sections: FileSectionItem[];
 }
 
+export interface QuestionListOptionItem {
+  label: string;
+  description?: string;
+  recommended?: boolean;
+}
+
+export interface QuestionListItem {
+  header?: string;
+  question: string;
+  options: QuestionListOptionItem[];
+  answers: string[];
+}
+
+export interface QuestionListToolOutputContent {
+  kind: "question-list";
+  questions: QuestionListItem[];
+}
+
 export type ToolOutputContent =
   | PlainToolOutputContent
   | StructuredDiffToolOutputContent
-  | FileSectionsToolOutputContent;
+  | FileSectionsToolOutputContent
+  | QuestionListToolOutputContent;

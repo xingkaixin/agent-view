@@ -1,6 +1,7 @@
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { FileSectionsOutput } from "./FileSectionsOutput";
+import { QuestionListOutput } from "./QuestionListOutput";
 import { StructuredDiffOutput } from "./StructuredDiffOutput";
 import { ToolOutputContent } from "./types";
 import { UnifiedDiffOutput } from "./UnifiedDiffOutput";
@@ -16,6 +17,10 @@ export function ToolOutputRenderer({ outputContent }: ToolOutputRendererProps) {
 
   if (outputContent.kind === "file-sections") {
     return <FileSectionsOutput sections={outputContent.sections} />;
+  }
+
+  if (outputContent.kind === "question-list") {
+    return <QuestionListOutput questions={outputContent.questions} />;
   }
 
   const outputText = outputContent.text || "No output captured.";

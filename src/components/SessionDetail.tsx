@@ -3,6 +3,7 @@ import { diffLines, type Change } from "diff";
 import {
   BookOpenText,
   Bot,
+  CircleHelp,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
@@ -26,13 +27,15 @@ import {
   getCodexPatchEntries,
   summarizeCodexPatchEntries,
 } from "./session-detail/codex-patch";
-import { ToolOutputRenderer } from "./tool-output/ToolOutputRenderer";
 import {
-  DiffBlock,
-  DiffLineItem,
-  ToolOutputContent,
-  ToolOutputLanguage,
-} from "./tool-output/types";
+  buildCodexExecCommandDisplay,
+  buildCodexRequestUserInputDisplay,
+  buildCodexWriteStdinDisplay,
+  ToolDetailItem,
+} from "./session-detail/codex-tool";
+import { detectLanguageByFilePath } from "./tool-output/language";
+import { ToolOutputRenderer } from "./tool-output/ToolOutputRenderer";
+import { DiffBlock, DiffLineItem, ToolOutputContent } from "./tool-output/types";
 
 interface SessionDetailProps {
   session: Session;
@@ -54,6 +57,7 @@ interface ToolDisplayStrategy {
   Icon: typeof LoaderCircle;
   title: string;
   secondaryText?: string;
+  details: ToolDetailItem[];
   expandable: boolean;
   showInputPreview: boolean;
   outputContent: ToolOutputContent;
@@ -265,46 +269,6 @@ function getFilePathFromInput(inputValue: unknown) {
   const input = toRecord(inputValue);
   const filePath = toPlainText(input.filePath) || toPlainText(input.path);
   return filePath || "";
-}
-
-function detectLanguageByFilePath(filePath: string): ToolOutputLanguage {
-  const fileName = filePath.split("/").pop()?.toLowerCase() || "";
-  if (fileName === ".bashrc" || fileName === ".zshrc" || fileName === ".profile") {
-    return "bash";
-  }
-
-  const extension = fileName.includes(".") ? fileName.split(".").pop() : "";
-  switch (extension) {
-    case "ts":
-      return "typescript";
-    case "tsx":
-      return "tsx";
-    case "js":
-      return "javascript";
-    case "jsx":
-      return "jsx";
-    case "sh":
-    case "bash":
-    case "zsh":
-      return "bash";
-    case "html":
-      return "html";
-    case "css":
-      return "css";
-    case "yaml":
-    case "yml":
-      return "yaml";
-    case "json":
-      return "json";
-    case "md":
-      return "markdown";
-    case "toml":
-      return "toml";
-    case "conf":
-      return "ini";
-    default:
-      return "text";
-  }
 }
 
 function extractReadContent(rawOutput: unknown) {
@@ -567,6 +531,7 @@ function buildDefaultToolStrategy(
     Icon: SquareTerminal,
     title: tool.title || tool.tool || "Tool",
     secondaryText: previewText ? `(${previewText})` : undefined,
+    details: [],
     expandable: true,
     showInputPreview: true,
     outputContent: {
@@ -585,6 +550,66 @@ function buildCodexToolStrategy(
   const defaultStrategy = buildDefaultToolStrategy(tool, state);
   const toolKey = (tool.tool || "").toLowerCase();
 
+  if (toolKey === "exec_command") {
+    const display = buildCodexExecCommandDisplay(
+      state.inputValue,
+      getOutputOrErrorText(state),
+      detectLanguageByFilePath,
+    );
+    return {
+      ...defaultStrategy,
+      Icon: SquareTerminal,
+      title: "bash",
+      secondaryText: display.secondaryText,
+      details: display.details,
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: display.outputAnalysis.text,
+        language: display.outputAnalysis.language,
+        isCode: display.outputAnalysis.isCode,
+      },
+    };
+  }
+
+  if (toolKey === "write_stdin") {
+    const display = buildCodexWriteStdinDisplay(
+      state.inputValue,
+      getOutputOrErrorText(state),
+      detectLanguageByFilePath,
+    );
+    return {
+      ...defaultStrategy,
+      Icon: SquareTerminal,
+      title: "bash",
+      secondaryText: display.secondaryText,
+      details: display.details,
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: display.outputAnalysis.text,
+        language: display.outputAnalysis.language,
+        isCode: display.outputAnalysis.isCode,
+      },
+    };
+  }
+
+  if (toolKey === "request_user_input") {
+    const display = buildCodexRequestUserInputDisplay(
+      state.inputValue,
+      getOutputOrErrorText(state),
+    );
+    return {
+      ...defaultStrategy,
+      Icon: CircleHelp,
+      title: "ask",
+      secondaryText: display.secondaryText,
+      details: display.details,
+      showInputPreview: false,
+      outputContent: display.outputContent,
+    };
+  }
+
   if (toolKey === "patch") {
     const entries = getCodexPatchEntries(state.inputValue);
     const summary = summarizeCodexPatchEntries(entries);
@@ -593,6 +618,7 @@ function buildCodexToolStrategy(
       Icon: FilePenLine,
       title: tool.title || "patch",
       secondaryText: summary || undefined,
+      details: [],
       showInputPreview: false,
       outputContent: buildCodexPatchOutputContent(
         entries,
@@ -1069,7 +1095,26 @@ function ToolItem({ tool, sessionAgentKey }: { tool: MessagePart; sessionAgentKe
           <div className="border-b border-[var(--console-border)] bg-[var(--console-surface-muted)] px-3 py-1.5">
             <span className="console-mono text-xs text-[var(--console-muted)]">Output</span>
           </div>
-          <div className="p-3">
+          <div className="space-y-3 p-3">
+            {strategy.details.length > 0 ? (
+              <div className="rounded-sm border border-[var(--console-border)] bg-[#fafafa] px-3 py-2">
+                <div className="space-y-2">
+                  {strategy.details.map((detail) => (
+                    <div
+                      key={`${detail.label}:${detail.value}`}
+                      className="flex flex-col gap-1 md:flex-row md:items-start md:gap-3"
+                    >
+                      <span className="console-mono shrink-0 text-[11px] font-semibold uppercase tracking-wide text-[var(--console-muted)] md:w-24">
+                        {detail.label}
+                      </span>
+                      <span className="console-mono whitespace-pre-wrap break-all text-xs leading-relaxed text-[var(--console-text)]">
+                        {detail.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <ToolOutputRenderer outputContent={strategy.outputContent} />
           </div>
           {strategy.showInputPreview ? (
