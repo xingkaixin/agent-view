@@ -1,3 +1,4 @@
+import { diffLines, type Change } from "diff";
 /* eslint-disable react/no-array-index-key */
 import {
   BookOpenText,
@@ -15,13 +16,17 @@ import {
   Wrench,
   XCircle,
 } from "lucide-react";
-import { diffLines, type Change } from "diff";
-import { type ReactNode, useMemo, useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { ModelConfig } from "../config";
 import { Session, Message, MessagePart } from "../types";
+import { ToolOutputRenderer } from "./tool-output/ToolOutputRenderer";
+import {
+  DiffBlock,
+  DiffLineItem,
+  ToolOutputContent,
+  ToolOutputLanguage,
+} from "./tool-output/types";
 
 interface SessionDetailProps {
   session: Session;
@@ -38,32 +43,6 @@ interface NormalizedToolState {
   inputText: string;
   command: string;
 }
-
-type ToolOutputLanguage = string;
-
-interface PlainToolOutputContent {
-  kind: "plain";
-  text: string;
-  language: ToolOutputLanguage;
-  isCode: boolean;
-}
-
-interface DiffLineItem {
-  type: "context" | "add" | "remove";
-  text: string;
-}
-
-interface DiffBlock {
-  label: string;
-  lines: DiffLineItem[];
-}
-
-interface StructuredDiffToolOutputContent {
-  kind: "structured-diff";
-  blocks: DiffBlock[];
-}
-
-type ToolOutputContent = PlainToolOutputContent | StructuredDiffToolOutputContent;
 
 interface ToolDisplayStrategy {
   Icon: typeof LoaderCircle;
@@ -168,7 +147,10 @@ function extractToolTextSegments(value: unknown): string[] {
 }
 
 function stripSystemTag(text: string) {
-  return text.replace(/^<system>/i, "").replace(/<\/system>$/i, "").trim();
+  return text
+    .replace(/^<system>/i, "")
+    .replace(/<\/system>$/i, "")
+    .trim();
 }
 
 function joinToolText(value: unknown, includeSystem = true) {
@@ -187,7 +169,9 @@ function joinToolText(value: unknown, includeSystem = true) {
 
   return segments
     .map((segment) =>
-      includeSystem && /^<system>[\s\S]*<\/system>$/i.test(segment) ? stripSystemTag(segment) : segment,
+      includeSystem && /^<system>[\s\S]*<\/system>$/i.test(segment)
+        ? stripSystemTag(segment)
+        : segment,
     )
     .join("\n");
 }
@@ -370,9 +354,7 @@ function extractReadContent(rawOutput: unknown) {
     return rawText;
   }
 
-  const withoutWrapper = rawText
-    .replace(/^<file>\s*/i, "")
-    .replace(/\s*<\/file>\s*$/i, "");
+  const withoutWrapper = rawText.replace(/^<file>\s*/i, "").replace(/\s*<\/file>\s*$/i, "");
   const lines = withoutWrapper
     .split("\n")
     .filter((line) => !/^\(End of file - total \d+ lines\)$/.test(line.trim()))
@@ -384,7 +366,11 @@ function extractReadContent(rawOutput: unknown) {
 function createDiffBlock(oldValue: string, newValue: string) {
   const oldLines = normalizeEscapedNewlines(oldValue).split("\n");
   const newLines = normalizeEscapedNewlines(newValue).split("\n");
-  const diffLines = ["@@", ...oldLines.map((line) => `- ${line}`), ...newLines.map((line) => `+ ${line}`)];
+  const diffLines = [
+    "@@",
+    ...oldLines.map((line) => `- ${line}`),
+    ...newLines.map((line) => `+ ${line}`),
+  ];
   return diffLines.join("\n");
 }
 
@@ -444,7 +430,9 @@ function buildKimiEditDiffBlocks(state: NormalizedToolState, filePath: string): 
 
       return {
         label,
-        lines: diffPartsToLines(diffLines(normalizeEscapedNewlines(oldValue), normalizeEscapedNewlines(newValue))),
+        lines: diffPartsToLines(
+          diffLines(normalizeEscapedNewlines(oldValue), normalizeEscapedNewlines(newValue)),
+        ),
       };
     })
     .filter((block): block is DiffBlock => block != null && block.lines.length > 0);
@@ -1028,114 +1016,6 @@ function ToolsSection({
   );
 }
 
-function getUnifiedDiffLineClassName(line: string) {
-  if (/^(Index:|diff\s|===)/.test(line)) {
-    return "text-[var(--console-text)] bg-[#f3f4f6]";
-  }
-  if (line.startsWith("@@")) {
-    return "text-[#7c3aed] bg-[#f5f3ff]";
-  }
-  if (line.startsWith("+++ ") || line.startsWith("--- ")) {
-    return "text-[#1d4ed8] bg-[#eff6ff]";
-  }
-  if (line.startsWith("+")) {
-    return "text-[#15803d] bg-[#f0fdf4]";
-  }
-  if (line.startsWith("-")) {
-    return "text-[#b91c1c] bg-[#fef2f2]";
-  }
-  return "text-[var(--console-text)]";
-}
-
-function getStructuredDiffLineClassName(type: DiffLineItem["type"]) {
-  if (type === "add") {
-    return "text-[#15803d] bg-[#f0fdf4]";
-  }
-  if (type === "remove") {
-    return "text-[#b91c1c] bg-[#fef2f2]";
-  }
-  return "text-[var(--console-text)]";
-}
-
-function renderToolOutput(outputContent: ToolOutputContent): ReactNode {
-  if (outputContent.kind === "structured-diff") {
-    return (
-      <div className="space-y-3">
-        {outputContent.blocks.map((block, blockIndex) => (
-          <div
-            key={`${block.label}-${blockIndex}`}
-            className="overflow-hidden rounded-sm border border-[var(--console-border)] bg-[#fafafa]"
-          >
-            <div className="border-b border-[var(--console-border)] bg-[var(--console-surface-muted)] px-3 py-1.5">
-              <span className="console-mono text-[11px] font-semibold text-[var(--console-muted)]">
-                {block.label}
-              </span>
-            </div>
-            <pre className="console-mono max-h-[280px] overflow-auto whitespace-pre p-3 text-xs leading-relaxed">
-              {block.lines.map((line, index) => (
-                <span
-                  key={`${block.label}-${index}-${line.text.slice(0, 24)}`}
-                  className={`block rounded-[2px] px-1 ${getStructuredDiffLineClassName(line.type)}`}
-                >
-                  {line.type === "add" ? "+" : line.type === "remove" ? "-" : " "}
-                  {line.text || " "}
-                </span>
-              ))}
-            </pre>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  const outputText = outputContent.text || "No output captured.";
-  if (!outputContent.isCode || outputContent.language === "text") {
-    return (
-      <pre className="console-mono max-h-[420px] overflow-auto whitespace-pre-wrap break-all rounded-sm border border-[var(--console-border)] bg-[#fafafa] p-3 text-xs leading-relaxed text-[var(--console-text)]">
-        {outputText}
-      </pre>
-    );
-  }
-
-  if (outputContent.language === "diff") {
-    const lines = outputText.split("\n");
-
-    return (
-      <pre className="console-mono max-h-[420px] overflow-auto whitespace-pre rounded-sm border border-[var(--console-border)] bg-[#fafafa] p-3 text-xs leading-relaxed">
-        {lines.map((line, index) => (
-          <span
-            key={`${index}-${line.slice(0, 24)}`}
-            className={`block rounded-[2px] px-1 ${getUnifiedDiffLineClassName(line)}`}
-          >
-            {line || " "}
-          </span>
-        ))}
-      </pre>
-    );
-  }
-
-  return (
-    <div className="max-h-[420px] overflow-auto rounded-sm border border-[var(--console-border)] bg-[#fafafa]">
-      <SyntaxHighlighter
-        language={outputContent.language}
-        style={oneLight}
-        customStyle={{
-          margin: 0,
-          padding: "0.75rem",
-          borderRadius: 0,
-          background: "transparent",
-          fontSize: "0.75rem",
-          lineHeight: 1.55,
-        }}
-        codeTagProps={{ className: "console-mono" }}
-        wrapLongLines
-      >
-        {outputText}
-      </SyntaxHighlighter>
-    </div>
-  );
-}
-
 function ToolItem({ tool, sessionAgentKey }: { tool: MessagePart; sessionAgentKey: string }) {
   const [expanded, setExpanded] = useState(false);
   const state = normalizeToolState(tool);
@@ -1206,7 +1086,9 @@ function ToolItem({ tool, sessionAgentKey }: { tool: MessagePart; sessionAgentKe
           <div className="border-b border-[var(--console-border)] bg-[var(--console-surface-muted)] px-3 py-1.5">
             <span className="console-mono text-xs text-[var(--console-muted)]">Output</span>
           </div>
-          <div className="p-3">{renderToolOutput(strategy.outputContent)}</div>
+          <div className="p-3">
+            <ToolOutputRenderer outputContent={strategy.outputContent} />
+          </div>
           {strategy.showInputPreview ? (
             <div className="border-t border-[var(--console-border)] bg-[#fafafa] px-3 py-2">
               <span className="console-mono text-[11px] text-[var(--console-muted)]">
