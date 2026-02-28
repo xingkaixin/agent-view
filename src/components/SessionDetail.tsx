@@ -21,6 +21,11 @@ import ReactMarkdown from "react-markdown";
 import { ModelConfig } from "../config";
 import { Session, Message, MessagePart } from "../types";
 import { buildMessageBlocks, extractMessageText, hasVisibleContent } from "./session-detail/blocks";
+import {
+  buildCodexPatchOutputContent,
+  getCodexPatchEntries,
+  summarizeCodexPatchEntries,
+} from "./session-detail/codex-patch";
 import { ToolOutputRenderer } from "./tool-output/ToolOutputRenderer";
 import {
   DiffBlock,
@@ -573,6 +578,33 @@ function buildDefaultToolStrategy(
   };
 }
 
+function buildCodexToolStrategy(
+  tool: MessagePart,
+  state: NormalizedToolState,
+): ToolDisplayStrategy {
+  const defaultStrategy = buildDefaultToolStrategy(tool, state);
+  const toolKey = (tool.tool || "").toLowerCase();
+
+  if (toolKey === "patch") {
+    const entries = getCodexPatchEntries(state.inputValue);
+    const summary = summarizeCodexPatchEntries(entries);
+    return {
+      ...defaultStrategy,
+      Icon: FilePenLine,
+      title: tool.title || "patch",
+      secondaryText: summary || undefined,
+      showInputPreview: false,
+      outputContent: buildCodexPatchOutputContent(
+        entries,
+        getOutputOrErrorText(state),
+        detectLanguageByFilePath,
+      ),
+    };
+  }
+
+  return defaultStrategy;
+}
+
 function buildOpencodeToolStrategy(
   tool: MessagePart,
   state: NormalizedToolState,
@@ -715,6 +747,9 @@ function getToolDisplayStrategy(
   const normalizedAgentKey = sessionAgentKey.toLowerCase();
   if (normalizedAgentKey === "opencode") {
     return buildOpencodeToolStrategy(tool, state);
+  }
+  if (normalizedAgentKey === "codex") {
+    return buildCodexToolStrategy(tool, state);
   }
   if (normalizedAgentKey === "kimi") {
     return buildKimiToolStrategy(tool, state);

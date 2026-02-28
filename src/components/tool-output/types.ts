@@ -22,4 +22,20 @@ export interface StructuredDiffToolOutputContent {
   blocks: DiffBlock[];
 }
 
-export type ToolOutputContent = PlainToolOutputContent | StructuredDiffToolOutputContent;
+export interface FileSectionItem {
+  label: string;
+  operation: "write" | "edit";
+  language: ToolOutputLanguage;
+  isCode: boolean;
+  text: string;
+}
+
+export interface FileSectionsToolOutputContent {
+  kind: "file-sections";
+  sections: FileSectionItem[];
+}
+
+export type ToolOutputContent =
+  | PlainToolOutputContent
+  | StructuredDiffToolOutputContent
+  | FileSectionsToolOutputContent;

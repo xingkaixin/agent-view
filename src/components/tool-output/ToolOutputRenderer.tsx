@@ -1,5 +1,6 @@
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { FileSectionsOutput } from "./FileSectionsOutput";
 import { StructuredDiffOutput } from "./StructuredDiffOutput";
 import { ToolOutputContent } from "./types";
 import { UnifiedDiffOutput } from "./UnifiedDiffOutput";
@@ -11,6 +12,10 @@ interface ToolOutputRendererProps {
 export function ToolOutputRenderer({ outputContent }: ToolOutputRendererProps) {
   if (outputContent.kind === "structured-diff") {
     return <StructuredDiffOutput blocks={outputContent.blocks} />;
+  }
+
+  if (outputContent.kind === "file-sections") {
+    return <FileSectionsOutput sections={outputContent.sections} />;
   }
 
   const outputText = outputContent.text || "No output captured.";
