@@ -14,7 +14,9 @@
 ## 支持 Agent
 
 - OpenCode
-- （可扩展支持 Claude Code、Codex 等）
+- Claude Code
+- Codex
+- Kimi-Cli
 
 ## 目录结构
 
@@ -36,8 +38,8 @@
 ## 使用方法
 
 1. 将会话 JSON 文件放入 `data/sessions/` 目录
-2. 运行构建脚本生成索引：`node build.js`
-3. 使用任意静态服务器运行：`npx serve .`
+2. 运行构建脚本生成索引：`bun run build:index`
+3. 使用任意静态服务器运行：`bun run build`
 
 ## URL 路由
 

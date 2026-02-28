@@ -20,6 +20,7 @@ import { useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { ModelConfig } from "../config";
 import { Session, Message, MessagePart } from "../types";
+import { buildMessageBlocks, extractMessageText, hasVisibleContent } from "./session-detail/blocks";
 import { ToolOutputRenderer } from "./tool-output/ToolOutputRenderer";
 import {
   DiffBlock,
@@ -228,53 +229,6 @@ function toPlainText(value: unknown) {
 
 function toStringValue(value: unknown) {
   return typeof value === "string" ? value : "";
-}
-
-function extractMessageText(value: unknown): string {
-  if (typeof value === "string") {
-    return value;
-  }
-
-  if (Array.isArray(value)) {
-    return value
-      .map((item) => {
-        if (typeof item === "string") {
-          return item;
-        }
-        if (item && typeof item === "object") {
-          const record = item as Record<string, unknown>;
-          const text = extractMessageText(record.text);
-          if (text.trim()) {
-            return text;
-          }
-          const content = extractMessageText(record.content);
-          if (content.trim()) {
-            return content;
-          }
-        }
-        return "";
-      })
-      .filter(Boolean)
-      .join("\n\n");
-  }
-
-  if (value && typeof value === "object") {
-    const record = value as Record<string, unknown>;
-    const text = extractMessageText(record.text);
-    if (text.trim()) {
-      return text;
-    }
-    const content = extractMessageText(record.content);
-    if (content.trim()) {
-      return content;
-    }
-  }
-
-  return "";
-}
-
-function hasNonEmptyMessageText(value: unknown) {
-  return Boolean(extractMessageText(value).trim());
 }
 
 function normalizeEscapedNewlines(text: string) {
@@ -778,18 +732,6 @@ function formatTokens(n: number) {
   return n.toString();
 }
 
-function hasVisibleContent(msg: Message) {
-  return msg.parts.some((part) => {
-    if (part.type === "text") {
-      return hasNonEmptyMessageText(part.text);
-    }
-    if (part.type === "reasoning") {
-      return hasNonEmptyMessageText(part.text);
-    }
-    return part.type === "tool";
-  });
-}
-
 function formatMessageTime(rawTime: unknown) {
   if (typeof rawTime === "number" && rawTime <= 0) {
     return "Unknown time";
@@ -867,11 +809,7 @@ function MessageItem({
   const role = msg.role;
   const time = formatMessageTime(msg.time_created);
   const isUser = role === "user";
-  const textParts = msg.parts.filter((p) => p.type === "text" && hasNonEmptyMessageText(p.text));
-  const toolParts = msg.parts.filter((p) => p.type === "tool");
-  const reasoningParts = msg.parts.filter(
-    (p) => p.type === "reasoning" && hasNonEmptyMessageText(p.text),
-  );
+  const blocks = buildMessageBlocks(msg.parts);
 
   const getAgentAvatar = () => {
     const agentKey = sessionAgentKey.toLowerCase();
@@ -921,20 +859,30 @@ function MessageItem({
             )}
           </div>
 
-          {reasoningParts.length > 0 && <ReasoningSection parts={reasoningParts} />}
-          {toolParts.length > 0 && (
-            <ToolsSection parts={toolParts} sessionAgentKey={sessionAgentKey} />
-          )}
+          {blocks.map((block, index) => {
+            if (block.type === "reasoning") {
+              return <ReasoningSection key={index} parts={block.parts} />;
+            }
 
-          {textParts.length > 0 && (
-            <div className="rounded-sm border border-[var(--console-border)] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-              <div className="console-markdown text-sm leading-relaxed text-[var(--console-text)]">
-                {textParts.map((part, i) => (
-                  <ReactMarkdown key={i}>{extractMessageText(part.text)}</ReactMarkdown>
-                ))}
+            if (block.type === "tool") {
+              return (
+                <ToolsSection key={index} parts={block.parts} sessionAgentKey={sessionAgentKey} />
+              );
+            }
+
+            return (
+              <div
+                key={index}
+                className="rounded-sm border border-[var(--console-border)] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+              >
+                <div className="console-markdown text-sm leading-relaxed text-[var(--console-text)]">
+                  {block.parts.map((part, partIndex) => (
+                    <ReactMarkdown key={partIndex}>{extractMessageText(part.text)}</ReactMarkdown>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })}
 
           {!isUser && (msg.tokens || msg.cost) && (
             <div className="flex flex-wrap gap-2">
