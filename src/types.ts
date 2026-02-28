@@ -13,13 +13,13 @@ export interface MessageTokens {
 
 export interface MessagePart {
   type: "text" | "tool" | "reasoning";
-  text?: string;
+  text?: unknown;
   tool?: string;
   title?: string;
   state?: {
     status?: "running" | "completed" | "error";
     input?: unknown;
-    output?: string;
+    output?: unknown;
   };
 }
 
