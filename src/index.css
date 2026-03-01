@@ -205,6 +205,12 @@
   text-decoration: underline;
 }
 
+.console-markdown-link {
+  color: inherit;
+  cursor: text;
+  text-decoration: none;
+}
+
 .console-markdown code {
   font-family:
     "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, Monaco, Consolas, monospace;

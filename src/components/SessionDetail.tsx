@@ -18,7 +18,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { type Components } from "react-markdown";
 import { ModelConfig } from "../config";
 import { Session, Message, MessagePart } from "../types";
 import { buildMessageBlocks, extractMessageText, hasVisibleContent } from "./session-detail/blocks";
@@ -86,6 +86,14 @@ const TOOL_STATUS_META: Record<
     icon: LoaderCircle,
   },
 };
+
+const messageMarkdownComponents: Components = {
+  a: ({ children }) => <span className="console-markdown-link">{children}</span>,
+};
+
+function MessageMarkdown({ text }: { text: string }) {
+  return <ReactMarkdown components={messageMarkdownComponents}>{text}</ReactMarkdown>;
+}
 
 function toDisplayText(value: unknown) {
   if (value == null) {
@@ -938,7 +946,7 @@ function MessageItem({
               >
                 <div className="console-markdown text-sm leading-relaxed text-[var(--console-text)]">
                   {block.parts.map((part, partIndex) => (
-                    <ReactMarkdown key={partIndex}>{extractMessageText(part.text)}</ReactMarkdown>
+                    <MessageMarkdown key={partIndex} text={extractMessageText(part.text)} />
                   ))}
                 </div>
               </div>
