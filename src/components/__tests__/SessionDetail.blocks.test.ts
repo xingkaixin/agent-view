@@ -100,6 +100,33 @@ describe("buildMessageBlocks", () => {
 
     expect(blocks.map((block) => block.type)).toEqual(["reasoning", "text", "tool", "text"]);
   });
+
+  it("plan 会被识别为可见 block", () => {
+    const blocks = buildMessageBlocks([{ type: "plan" }]);
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]?.type).toBe("plan");
+  });
+
+  it("plan 不会与相邻 plan 合并", () => {
+    const blocks = buildMessageBlocks([{ type: "plan" }, { type: "plan" }]);
+
+    expect(blocks).toHaveLength(2);
+    expect(blocks.map((block) => block.type)).toEqual(["plan", "plan"]);
+    expect(blocks[0]?.parts).toHaveLength(1);
+    expect(blocks[1]?.parts).toHaveLength(1);
+  });
+
+  it("按原始顺序保留 reasoning -> plan -> text -> tool", () => {
+    const blocks = buildMessageBlocks([
+      { type: "reasoning", text: "分析中" },
+      { type: "plan", input: "# 计划" },
+      { type: "text", text: "准备执行" },
+      { type: "tool", tool: "exec_command" },
+    ]);
+
+    expect(blocks.map((block) => block.type)).toEqual(["reasoning", "plan", "text", "tool"]);
+  });
 });
 
 describe("hasVisibleContent", () => {
@@ -117,6 +144,12 @@ describe("hasVisibleContent", () => {
       { type: "reasoning", text: "" },
       { type: "tool", tool: "ReadFile" },
     ]);
+
+    expect(hasVisibleContent(msg)).toBe(true);
+  });
+
+  it("仅有空 plan 时返回 true", () => {
+    const msg = createMessage([{ type: "plan" }]);
 
     expect(hasVisibleContent(msg)).toBe(true);
   });

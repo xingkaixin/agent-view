@@ -194,10 +194,75 @@
   margin: 0;
 }
 
+.console-markdown h1,
+.console-markdown h2,
+.console-markdown h3,
+.console-markdown h4,
+.console-markdown h5,
+.console-markdown h6 {
+  margin: 0;
+  color: var(--console-text);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.console-markdown h1 {
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.console-markdown h2 {
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+}
+
+.console-markdown h3 {
+  font-size: 1.1rem;
+}
+
+.console-markdown h4,
+.console-markdown h5,
+.console-markdown h6 {
+  font-size: 1rem;
+}
+
 .console-markdown ul,
 .console-markdown ol {
   margin: 0.5rem 0;
   padding-left: 1.25rem;
+}
+
+.console-markdown ul {
+  list-style: disc;
+}
+
+.console-markdown ol {
+  list-style: decimal;
+}
+
+.console-markdown li + li {
+  margin-top: 0.25rem;
+}
+
+.console-markdown li > p {
+  margin: 0;
+}
+
+.console-markdown strong {
+  font-weight: 700;
+}
+
+.console-markdown blockquote {
+  margin: 0;
+  border-left: 3px solid var(--console-border-strong);
+  padding-left: 0.875rem;
+  color: var(--console-muted);
+}
+
+.console-markdown hr {
+  margin: 1rem 0;
+  border: 0;
+  border-top: 1px solid var(--console-border);
 }
 
 .console-markdown a {

@@ -12,10 +12,13 @@ export interface MessageTokens {
 }
 
 export interface MessagePart {
-  type: "text" | "tool" | "reasoning";
+  type: "text" | "tool" | "reasoning" | "plan";
   text?: unknown;
   tool?: string;
   title?: string;
+  input?: unknown;
+  output?: unknown;
+  approval_status?: "success" | "fail";
   state?: {
     status?: "running" | "completed" | "error";
     input?: unknown;

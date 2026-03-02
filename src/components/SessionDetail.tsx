@@ -3,6 +3,7 @@ import { diffLines, type Change } from "diff";
 import {
   BookOpenText,
   Bot,
+  CalendarRange,
   CircleHelp,
   CheckCircle2,
   ChevronDown,
@@ -22,6 +23,7 @@ import ReactMarkdown, { type Components } from "react-markdown";
 import { ModelConfig } from "../config";
 import { Session, Message, MessagePart } from "../types";
 import { buildMessageBlocks, extractMessageText, hasVisibleContent } from "./session-detail/blocks";
+import { buildCodexPlanDisplay } from "./session-detail/codex-plan";
 import {
   buildCodexPatchOutputContent,
   getCodexPatchEntries,
@@ -551,12 +553,34 @@ function buildDefaultToolStrategy(
   };
 }
 
+function buildSkillToolStrategy(
+  tool: MessagePart,
+  state: NormalizedToolState,
+  defaultStrategy: ToolDisplayStrategy,
+): ToolDisplayStrategy {
+  const input = toRecord(state.inputValue);
+  const name = toPlainText(input.name);
+
+  return {
+    ...defaultStrategy,
+    Icon: Wrench,
+    title: tool.tool || "skill",
+    secondaryText: name || undefined,
+    expandable: false,
+    showInputPreview: false,
+  };
+}
+
 function buildCodexToolStrategy(
   tool: MessagePart,
   state: NormalizedToolState,
 ): ToolDisplayStrategy {
   const defaultStrategy = buildDefaultToolStrategy(tool, state);
   const toolKey = (tool.tool || "").toLowerCase();
+
+  if (toolKey === "skill") {
+    return buildSkillToolStrategy(tool, state, defaultStrategy);
+  }
 
   if (toolKey === "exec_command") {
     const display = buildCodexExecCommandDisplay(
@@ -759,15 +783,7 @@ function buildOpencodeToolStrategy(
   }
 
   if (toolKey === "skill") {
-    const name = toPlainText(input.name);
-    return {
-      ...defaultStrategy,
-      Icon: Wrench,
-      title: tool.tool || "skill",
-      secondaryText: name || undefined,
-      expandable: false,
-      showInputPreview: false,
-    };
+    return buildSkillToolStrategy(tool, state, defaultStrategy);
   }
 
   return defaultStrategy;
@@ -933,6 +949,10 @@ function MessageItem({
               return <ReasoningSection key={index} parts={block.parts} />;
             }
 
+            if (block.type === "plan") {
+              return <PlansSection key={index} parts={block.parts} />;
+            }
+
             if (block.type === "tool") {
               return (
                 <ToolsSection key={index} parts={block.parts} sessionAgentKey={sessionAgentKey} />
@@ -1029,6 +1049,88 @@ function ToolsSection({
           <ToolItem key={i} tool={tool} sessionAgentKey={sessionAgentKey} />
         ))}
       </div>
+    </div>
+  );
+}
+
+function PlansSection({ parts }: { parts: MessagePart[] }) {
+  return (
+    <div className="space-y-2">
+      {parts.map((plan, i) => (
+        <PlanItem key={i} part={plan} />
+      ))}
+    </div>
+  );
+}
+
+function PlanItem({ part }: { part: MessagePart }) {
+  const [expanded, setExpanded] = useState(false);
+  const display = buildCodexPlanDisplay(part);
+  const statusMeta =
+    display.approvalStatus === "fail" ? TOOL_STATUS_META.error : TOOL_STATUS_META.completed;
+  const StatusIcon = statusMeta.icon;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-wrap items-start gap-2">
+        <div
+          className={`w-full md:w-[560px] rounded-sm border border-[var(--console-border-strong)] bg-white px-3 py-2 text-left shadow-[2px_2px_0_0_rgba(15,23,42,0.05)] ${
+            display.expandable ? "transition-colors hover:bg-[var(--console-surface-muted)]" : ""
+          }`}
+        >
+          {display.expandable ? (
+            <button
+              type="button"
+              className="flex w-full items-start gap-2 text-left"
+              onClick={() => setExpanded(!expanded)}
+            >
+              <CalendarRange className="mt-0.5 size-3.5 shrink-0 text-[var(--console-accent)]" />
+              <span className="min-w-0 flex-1">
+                <span className="console-mono block text-xs font-semibold text-[var(--console-text)]">
+                  {display.title}
+                </span>
+              </span>
+              <span className="mt-0.5 shrink-0 text-[var(--console-muted)]">
+                {expanded ? (
+                  <ChevronUp className="size-3.5" />
+                ) : (
+                  <ChevronDown className="size-3.5" />
+                )}
+              </span>
+            </button>
+          ) : (
+            <div className="flex items-start gap-2">
+              <CalendarRange className="mt-0.5 size-3.5 shrink-0 text-[var(--console-accent)]" />
+              <span className="min-w-0 flex-1">
+                <span className="console-mono block text-xs font-semibold text-[var(--console-text)]">
+                  {display.title}
+                </span>
+              </span>
+            </div>
+          )}
+        </div>
+        <span
+          className={`console-mono inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${statusMeta.className}`}
+        >
+          <StatusIcon className="size-3" />
+          {statusMeta.label}
+        </span>
+      </div>
+
+      {display.expandable && expanded ? (
+        <div className="overflow-hidden rounded-sm border border-[var(--console-border)] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+          <div className="border-b border-[var(--console-border)] bg-[var(--console-surface-muted)] px-3 py-1.5">
+            <span className="console-mono text-xs text-[var(--console-muted)]">
+              {display.contentLabel}
+            </span>
+          </div>
+          <div className="p-4">
+            <div className="console-markdown text-sm leading-relaxed text-[var(--console-text)]">
+              <MessageMarkdown text={display.contentMarkdown} />
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -94,4 +94,94 @@ describe("SessionDetail markdown rendering", () => {
     expect(html).not.toContain("example.com/one");
     expect(html).not.toContain("example.com/two");
   });
+
+  it("codex skill 显示技能名，不显示原始 JSON 输入", () => {
+    const html = renderSessionDetail([
+      {
+        role: "assistant",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [
+          {
+            type: "tool",
+            tool: "skill",
+            title: "skill",
+            state: {
+              status: "completed",
+              input: {
+                name: "frontend-design",
+              },
+            },
+          },
+        ],
+      },
+    ]);
+
+    expect(html).toContain("skill");
+    expect(html).toContain("frontend-design");
+    expect(html).not.toContain('"name"');
+    expect(html).not.toContain('{"name"');
+  });
+
+  it("plan block 会出现在静态渲染结果中", () => {
+    const html = renderSessionDetail([
+      {
+        role: "assistant",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [
+          {
+            type: "plan",
+            input: "# 实施方案\n\n这里是计划正文",
+            approval_status: "success",
+          },
+        ],
+      },
+    ]);
+
+    expect(html).toContain("plan");
+    expect(html).toContain("Success");
+    expect(html).toContain('type="button"');
+    expect(html).not.toContain("这里是计划正文");
+  });
+
+  it("无内容 plan 仍显示标题，但不包含展开区域正文", () => {
+    const html = renderSessionDetail([
+      {
+        role: "assistant",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [
+          {
+            type: "plan",
+            approval_status: "success",
+          },
+        ],
+      },
+    ]);
+
+    expect(html).toContain("plan");
+    expect(html).toContain("Success");
+    expect(html).not.toContain('type="button"');
+    expect(html).not.toContain(">Plan<");
+    expect(html).not.toContain(">Rejected<");
+  });
+
+  it("失败态 plan 的 output 会按 markdown 语义渲染", () => {
+    const html = renderSessionDetail([
+      {
+        role: "assistant",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [
+          {
+            type: "plan",
+            output: "## 拒绝说明\n\n- 需要完整命令\n- 补充相关参数",
+            approval_status: "fail",
+          },
+        ],
+      },
+    ]);
+
+    expect(html).toContain("plan");
+    expect(html).toContain("Failed");
+    expect(html).toContain('type="button"');
+    expect(html).not.toContain("<pre");
+  });
 });

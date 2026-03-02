@@ -1,6 +1,6 @@
 import { Message, MessagePart } from "../../types";
 
-export type MessageBlockType = "reasoning" | "text" | "tool";
+export type MessageBlockType = "reasoning" | "text" | "tool" | "plan";
 
 export interface MessageBlock {
   type: MessageBlockType;
@@ -51,7 +51,7 @@ function extractMessageText(value: unknown): string {
 }
 
 function isVisiblePart(part: MessagePart) {
-  if (part.type === "tool") {
+  if (part.type === "tool" || part.type === "plan") {
     return true;
   }
 
@@ -69,7 +69,7 @@ export function buildMessageBlocks(parts: MessagePart[]): MessageBlock[] {
     }
 
     const previousBlock = blocks.at(-1);
-    if (previousBlock?.type === part.type) {
+    if (part.type !== "plan" && previousBlock?.type === part.type) {
       previousBlock.parts.push(part);
       return blocks;
     }
