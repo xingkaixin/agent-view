@@ -1,0 +1,1029 @@
+{
+  "id": "019ca3f3-9fec-7573-a8a4-77ed8ca8a431",
+  "title": "调整 assistant 消息模式顺序",
+  "slug": null,
+  "directory": "/Users/Kevin/workspace/projects/personal/agent-view",
+  "version": "0.107.0-alpha.5",
+  "time_created": 1772277178350,
+  "time_updated": 1772277178350,
+  "summary_files": null,
+  "stats": {
+    "total_cost": 0,
+    "total_input_tokens": 17418186,
+    "total_output_tokens": 255614,
+    "message_count": 19
+  },
+  "messages": [
+    {
+      "id": "2026-02-28T11:14:45.558Z",
+      "role": "user",
+      "agent": null,
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277285558,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "text",
+          "text": "这个在codex和kimi 存在这个问题。\n\ntool 属于assistant text这个需要顺序上的调整。\n\nassistant的消息模式组有以下几种模式\n\n1. thinking\n2. thinking + text + tool\n3. text + tool\n4. text\n需要处理好顺序。 \n\n",
+          "time_created": 1772277285558
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:14:52.440Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277292440,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "text",
+          "text": "我先在仓库里定位消息分组和渲染顺序相关实现，确认 `assistant text` 与 `tool` 现在是怎么归类和排序的，再把问题收敛成可执行的方案。",
+          "time_created": 1772277292440
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_z66fjt20PBlsiR0dnfnWbPeJ",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "rg -n \"thinking|tool|assistant|message group|grouping|kimi|codex\" .",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 1b3958\nWall time: 0.0511 seconds\nProcess exited with code 0\nOriginal token count: 262144\nOutput:\nTotal output lines: 1414\n\n./src/config.ts:5:    \"kimi-k2.5\": \"kimi\",\n./src/config.ts:15:    kimi: {\n./src/config.ts:17:      icon: \"/icon/provider/kimi.svg\",\n./src/config.ts:62:    codex: {\n./src/config.ts:64:      icon: \"/icon/agent/codex.svg\",\n./src/config.ts:66:    kimi: {\n./src/config.ts:68:      icon: \"/icon/agent/kimi.svg\",\n./src/components/SessionDetail.tsx:23:import { ToolOutputRenderer } from \"./tool-output/ToolOutputRenderer\";\n./src/components/SessionDetail.tsx:29:} from \"./tool-output/types\";\n./src/components/SessionDetail.tsx:479:function buildKimiToolStrategy(tool: MessagePart, state: NormalizedToolState): ToolDisplayStrategy {\n./src/components/SessionDetail.tsx:480:  const defaultStrategy = buildDefaultToolStrategy(tool, state);\n./src/components/SessionDetail.tsx:481:  const toolKey = (tool.tool || \"\").toLowerCase();\n./src/components/SessionDetail.tsx:484:  if (toolKey === \"glob\") {\n./src/components/SessionDetail.tsx:489:      title: tool.title || \"glob\",\n./src/components/SessionDetail.tsx:501:  if (toolKey === \"grep\") {\n./src/components/SessionDetail.tsx:508:      title: tool.title || \"grep\",\n./src/components/SessionDetail.tsx:520:  if (toolKey === \"shell\") {\n./src/components/SessionDetail.tsx:525:      title: tool.title || \"bash\",\n./src/components/SessionDetail.tsx:537:  if (toolKey === \"readfile\") {\n./src/components/SessionDetail.tsx:542:      title: tool.title || \"read\",\n./src/components/SessionDetail.tsx:554:  if (toolKey === \"strreplacefile\") {\n./src/components/SessionDetail.tsx:560:      title: tool.title || \"edit\",\n./src/components/SessionDetail.tsx:578:  if (toolKey === \"writefile\") {\n./src/components/SessionDetail.tsx:583:      title: tool.title || \"write\",\n./src/components/SessionDetail.tsx:599:  tool: MessagePart,\n./src/components/SessionDetail.tsx:609:    title: tool.title || tool.tool || \"Tool\",\n./src/components/SessionDetail.tsx:623:  tool: MessagePart,\n./src/components/SessionDetail.tsx:626:  const defaultStrategy = buildDefaultToolStrategy(tool, state);\n./src/components/SessionDetail.tsx:627:  const toolKey = (tool.tool || \"\").toLowerCase();\n./src/components/SessionDetail.tsx:630:  if (toolKey === \"glob\") {\n./src/components/SessionDetail.tsx:635:      title: tool.tool || \"glob\",\n./src/components/SessionDetail.tsx:647:  if (toolKey === \"grep\") {\n./src/components/SessionDetail.tsx:654:      title: tool.tool || \"grep\",\n./src/components/SessionDetail.tsx:666:  if (toolKey === \"bash\") {\n./src/components/SessionDetail.tsx:677:      title: tool.tool || \"bash\",\n./src/components/SessionDetail.tsx:689:  if (toolKey === \"read\") {\n./src/components/SessionDetail.tsx:694:      title: tool.tool || \"read\",\n./src/components/SessionDetail.tsx:706:  if (toolKey === \"edit\") {\n./src/components/SessionDetail.tsx:711:      title: tool.tool || \"edit\",\n./src/components/SessionDetail.tsx:723:  if (toolKey === \"write\") {\n./src/components/SessionDetail.tsx:729:      title: tool.tool || \"write\",\n./src/components/SessionDetail.tsx:741:  if (toolKey === \"skill\") {\n./src/components/SessionDetail.tsx:746:      title: tool.tool || \"skill\",\n./src/components/SessionDetail.tsx:758:  tool: MessagePart,\n./src/components/SessionDetail.tsx:763:    return buildOpencodeToolStrategy(tool, state);\n./src/components/SessionDetail.tsx:765:  if (normalizedAgentKey === \"kimi\") {\n./src/components/SessionDetail.tsx:766:    return buildKimiToolStrategy(tool, state);\n./src/components/SessionDetail.tsx:768:  return buildDefaultToolStrategy(tool, state);\n./src/components/SessionDetail.tsx:789:    return part.type === \"tool\";\n./src/components/SessionDetail.tsx:871:  const toolParts = msg.parts.filter((p) => p.type === \"tool\");\n./src/components/SessionDetail.tsx:925:          {toolParts.length > 0 && (\n./src/components/SessionDetail.tsx:926:            <ToolsSection parts={toolParts} sessionAgentKey={sessionAgentKey} />\n./src/components/SessionDetail.tsx:977:    <div className=\"overflow-hidden rounded-sm border border-[var(--console-thinking-border)] bg-[var(--console-thinking-bg)]\">\n./src/components/SessionDetail.tsx:991:        <div className=\"border-t border-dashed border-[var(--console-thinking-border)] px-4 py-3\">\n./src/components/SessionDetail.tsx:1011:        {parts.map((tool, i) => (\n./src/components/SessionDetail.tsx:1012:          <ToolItem key={i} tool={tool} sessionAgentKey={sessionAgentKey} />\n./src/components/SessionDetail.tsx:1019:function ToolItem({ tool, sessionAgentKey }: { tool: MessagePart; sessionAgentKey: string }) {\n./src/components/SessionDetail.tsx:1021:  const state = normalizeToolState(tool);\n./src/components/SessionDetail.tsx:1022:  const strategy = getToolDisplayStrategy(sessionAgentKey, tool, state);\n./src/types.ts:15:  type: \"text\" | \"tool\" | \"reasoning\";\n./src/types.ts:17:  tool?: string;\n./src/types.ts:27:  role: \"user\" | \"assistant\";\n./src/index.css:99:    --console-thinking-bg: #f9f9f9;\n./src/index.css:100:    --console-thinking-border: #ebebeb;\n./package.json:4:  \"description\": \"A tool for visualizing and browsing AI Agent sessions.\",\n./data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json:5:  \"directory\": \"/Users/Kevin/.kimi/sessions/8484e0724e0efd59de28989b93c84e25/44996b5c-6abb-4530-b80a-8f7d6fd7846a\",\n./data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json:38:      \"role\": \"assistant\",\n./data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json:39:      \"agent\": \"kimi\",\n./data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json:54:          \"type\": \"tool\",\n./data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json:55:          \"tool\": \"ReadFile\",\n./data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json:70:                \"text\": \"     1\\t\\\"\\\"\\\"\\n     2\\tCommand-line interface for agent-dump\\n     3\\t\\\"\\\"\\\"\\n     4\\t\\n     5\\timport argparse\\n     6\\tfrom datetime import datetime, timedelta\\n     7\\tfrom pathlib import Path\\n     8\\timport re\\n     9\\t\\n    10\\tfrom agent_dump.agents.base import BaseAgent, Session\\n    11\\tfrom agent_dump.scanner import AgentScanner\\n    12\\tfrom agent_dump.selector import select_agent_interactive, select_sessions_interactive\\n    13\\t\\n    14\\t# Valid URI schemes and their corresponding agent names\\n    15\\tVALID_URI_SCHEMES = {\\n    16\\t    \\\"opencode\\\": \\\"opencode\\\",\\n    17\\t    \\\"codex\\\": \\\"codex\\\",\\n    18\\t    \\\"kimi\\\": \\\"kimi\\\",\\n    19\\t    \\\"claude\\\": \\\"claudecode\\\",  # claude:// maps to claudecode agent\\n    20\\t}\\n    21\\t\\n    22\\t\\n    23\\tdef parse_uri(uri: str) -> tuple[str, str] | None:\\n    24\\t    \\\"\\\"\\\"\\n    25\\t    Parse an agent session URI.\\n    26\\t    Returns (scheme, session_id) if valid, None otherwise.\\n    27\\t    \\\"\\\"\\\"\\n    28\\t    pattern = r\\\"^([a-z]+)://(.+)$\\\"\\n    29\\t    match = re.match(pattern, uri)\\n    30\\t    if not match:\\n    31\\t        return None\\n    32\\t    scheme, session_id = match.groups()\\n    33\\t    if scheme not in VALID_URI_SCHEMES:\\n    34\\t        return None\\n    35\\t    return scheme, session_id\\n    36\\t\\n    37\\t\\n    38\\tdef find_session_by_id(scanner: AgentScanner, session_id: str) -> tuple[BaseAgent, Session] | None:\\n    39\\t    \\\"\\\"\\\"Find a session by ID across all available agents\\\"\\\"\\\"\\n    40\\t    for agent in scanner.get_available_agents():\\n    41\\t        # Scan all sessions (use a large days value)\\n    42\\t        sessions = agent.get_sessions(days=3650)\\n    43\\t        for session in sessions:\\n    44\\t            if session.id == session_id:\\n    45\\t                return agent, session\\n    46\\t    return None\\n    47\\t\\n    48\\t\\n    49\\tdef render_session_text(uri: str, session_data: dict) -> str:\\n    50\\t    \\\"\\\"\\\"Render session data as formatted text\\\"\\\"\\\"\\n    51\\t    lines = []\\n    52\\t    lines.append(\\\"# Session Dump\\\")\\n    53\\t    lines.append(\\\"\\\")\\n    54\\t    lines.append(f\\\"- URI: `{uri}`\\\")\\n    55\\t    lines.append(\\\"\\\")\\n    56\\t\\n    57\\t    messages = session_data.get(\\\"messages\\\", [])\\n    58\\t    msg_idx = 1\\n    59\\t\\n    60\\t    for msg in messages:\\n    61\\t        role = msg.get(\\\"role\\\", \\\"unknown\\\")\\n    62\\t        parts = msg.get(\\\"parts\\\", [])\\n    63\\t\\n    64\\t        # Skip tool messages\\n    65\\t        if role == \\\"tool\\\":\\n    66\\t            continue\\n    67\\t\\n    68\\t        # Determine display name\\n    69\\t        if role == \\\"user\\\":\\n    70\\t            display_role = \\\"User\\\"\\n    71\\t        elif role == \\\"assistant\\\":\\n    72\\t            display_role = \\\"Assistant\\\"\\n    73\\t        else:\\n    74\\t            display_role = role.capitalize()\\n    75\\t\\n    76\\t        # Collect content from parts\\n    77\\t        content_parts = []\\n    78\\t        for part in parts:\\n    79\\t            part_type = part.get(\\\"type\\\")\\n    80\\t            if part_type in (\\\"text\\\", \\\"reasoning\\\"):\\n    81\\t                text = part.get(\\\"text\\\", \\\"\\\").strip()\\n    82\\t                if text:\\n    83\\t                    content_parts.append(text)\\n    84\\t            # Skip tool parts and other non-text parts\\n    85\\t\\n    86\\t        if not content_parts:\\n    87\\t            continue\\n    88\\t\\n    89\\t        # Add section header\\n    90\\t        lines.append(f\\\"## {msg_idx}. {display_role}\\\")\\n    91\\t        lines.append(\\\"\\\")\\n    92\\t\\n    93\\t        # Add content\\n    94\\t        for content in content_parts:\\n    95\\t            lines.append(content)\\n    96\\t            lines.append(\\\"\\\")\\n    97\\t\\n    98\\t        msg_idx += 1\\n    99\\t\\n   100\\t    return \\\"\\\\n\\\".join(lines)\\n   101\\t\\n   102\\t\\n   103\\tdef format_relative_time(time_value: datetime | float) -> str:\\n   104\\t    \\\"\\\"\\\"Format time as relative description\\\"\\\"\\\"\\n   105\\t    if isinstance(time_value, (int, float)):\\n   106\\t        time_value = datetime.fromtimestamp(time_value)\\n   107\\t\\n   108\\t    now = datetime.now()\\n   109\\t    delta = now - time_value\\n   110\\t\\n   111\\t    if delta.days == 0:\\n   112\\t        if delta.seconds < 3600:\\n   113\\t            minutes = delta.seconds // 60\\n   114\\t            return f\\\"{minutes} 分钟前\\\" if minutes > 0 else \\\"刚刚\\\"\\n   115\\t        hours = delta.seconds // 3600\\n   116\\t        return f\\\"{hours} 小时前\\\"\\n   117\\t    elif delta.days == 1:\\n   118\\t        return \\\"昨天\\\"\\n   119\\t    elif delta.days < 7:\\n   120\\t        return f\\\"{delta.days} 天前\\\"\\n   121\\t    elif delta.days < 30:\\n   122\\t        weeks = delta.days // 7\\n   123\\t        return f\\\"{weeks} 周前\\\"\\n   124\\t    else:\\n   125\\t        return time_value.strftime(\\\"%Y-%m-%d\\\")\\n   126\\t\\n   127\\t\\n   128\\tdef group_sessions_by_time(sessions: list[Session]) -> dict[str, list[Session]]:\\n   129\\t    \\\"\\\"\\\"Group sessions by relative time periods\\\"\\\"\\\"\\n   130\\t    groups: dict[str, list[Session]] = {\\n   131\\t        \\\"今天\\\": [],\\n   132\\t        \\\"昨天\\\": [],\\n   133\\t        \\\"本周\\\": [],\\n   134\\t        \\\"本月\\\": [],\\n   135\\t        \\\"更早\\\": [],\\n   136\\t    }\\n   137\\t\\n   138\\t    now = datetime.now()\\n   139\\t    today = now.replace(hour=0, minute=0, second=0, microsecond=0)\\n   140\\t    yesterday = today - timedelta(days=1)\\n   141\\t    week_ago = today - timedelta(days=7)\\n   142\\t    month_ago = today - timedelta(days=30)\\n   143\\t\\n   144\\t    for session in sessions:\\n   145\\t        session_time = session.created_at\\n   146\\t\\n   147\\t        if isinstance(session_time, (int, float)):\\n   148\\t            # Assume milliseconds if large number\\n   149\\t            if session_time > 1e10:\\n   150\\t                session_time = datetime.fromtimestamp(session_time / 1000)\\n   151\\t            else:\\n   152\\t                session_time = datetime.fromtimestamp(session_time)\\n   153\\t\\n   154\\t        if session_time >= today:\\n   155\\t            groups[\\\"今天\\\"].append(session)\\n   156\\t        elif session_time >= yesterday:\\n   157\\t            groups[\\\"昨天\\\"].append(session)\\n   158\\t        elif session_time >= week_ago:\\n   159\\t            groups[\\\"本周\\\"].append(session)\\n   160\\t        elif session_time >= month_ago:\\n   161\\t            groups[\\\"本月\\\"].append(session)\\n   162\\t        else:\\n   163\\t            groups[\\\"更早\\\"].append(session)\\n   164\\t\\n   165\\t    # Remove empty groups\\n   166\\t    return {k: v for k, v in groups.items() if v}\\n   167\\t\\n   168\\t\\n   169\\tdef display_sessions_list(\\n   170\\t    agent: BaseAgent, sessions: list[Session], page_size: int = 20, show_pagination: bool = True\\n   171\\t) -> None:\\n   172\\t    \\\"\\\"\\\"Display sessions with pagination support\\\"\\\"\\\"\\n   173\\t    total = len(sessions)\\n   174\\t\\n   175\\t    if total == 0:\\n   176\\t        print(\\\"   (无会话)\\\")\\n   177\\t        return\\n   178\\t\\n   179\\t    # Show all sessions with pagination\\n   180\\t    current_page = 0\\n   181\\t    total_pages = (total + page_size - 1) // page_size\\n   182\\t\\n   183\\t    while True:\\n   184\\t        start_idx = current_page * page_size\\n   185\\t        end_idx = min(start_idx + page_size, total)\\n   186\\t\\n   187\\t        # Display current page\\n   188\\t        for i in range(start_idx, end_idx):\\n   189\\t            session = sessions[i]\\n   190\\t            title = agent.get_formatted_title(session)\\n   191\\t            uri = agent.get_session_uri(session)\\n   192\\t            print(f\\\"   • {title} {uri}\\\")\\n   193\\t\\n   194\\t        # Show pagination info\\n   195\\t        if show_pagination and total_pages > 1:\\n   196\\t            print(f\\\"\\\\n   第 {current_page + 1}/{total_pages} 页 (共 {total} 个会话)\\\")\\n   197\\t\\n   198\\t            if current_page < total_pages - 1:\\n   199\\t                print(\\\"   按 Enter 查看更多，或输入 'q' 退出\\\")\\n   200\\t                try:\\n   201\\t                    user_input = input(\\\"> \\\").strip().lower()\\n   202\\t                    if user_input == \\\"q\\\":\\n   203\\t                        break\\n   204\\t                    current_page += 1\\n   205\\t                    print()\\n   206\\t                except EOFError, KeyboardInterrupt:\\n   207\\t                    print()\\n   208\\t                    break\\n   209\\t            else:\\n   210\\t                print(\\\"   已显示全部会话\\\")\\n   211\\t                break\\n   212\\t        else:\\n   213\\t            if total > page_size:\\n   214\\t                print(f\\\"\\\\n   ... 还有 {total - page_size} 个会话未显示\\\")\\n   215\\t            break\\n   216\\t\\n   217\\t\\n   218\\tdef export_sessions(agent: BaseAgent, sessions: list, output_base_dir: Path) -> list[Path]:\\n   219\\t    \\\"\\\"\\\"Export multiple sessions\\\"\\\"\\\"\\n   220\\t    output_dir = output_base_dir / agent.name\\n   221\\t    output_dir.mkdir(parents=True, exist_ok=True)\\n   222\\t\\n   223\\t    print(f\\\"📤 导出 {agent.display_name} 会话...\\\")\\n   224\\t    exported = []\\n   225\\t    for session in sessions:\\n   226\\t        try:\\n   227\\t            output_path = agent.export_session(session, output_dir)\\n   228\\t            exported.append(output_path)\\n   229\\t            print(f\\\"  ✓ {session.title[:50]}... → {output_path.name}\\\")\\n   230\\t        except Exception as e:\\n   231\\t            print(f\\\"  ✗ {session.title[:50]}... → 错误: {e}\\\")\\n   232\\t\\n   233\\t    return exported\\n   234\\t\\n   235\\t\\n   236\\tdef main():\\n   237\\t    \\\"\\\"\\\"Main entry point\\\"\\\"\\\"\\n   238\\t    parser = argparse.ArgumentParser(description=\\\"Export agent sessions to JSON\\\")\\n   239\\t    parser.add_argument(\\\"uri\\\", nargs=\\\"?\\\", help=\\\"Agent session URI to dump (e.g., opencode://session-id)\\\")\\n   240\\t    parser.add_argument(\\\"--days\\\", type=int, default=7, help=\\\"Number of days to look back (default: 7)\\\")\\n   241\\t    parser.add_argument(\\n   242\\t        \\\"--output\\\",\\n   243\\t        type=str,\\n   244\\t        default=\\\"./sessions\\\",\\n   245\\t        help=\\\"Output base directory (default: ./sessions)\\\",\\n   246\\t    )\\n   247\\t    parser.add_argument(\\n   248\\t        \\\"--list\\\",\\n   249\\t        action=\\\"store_true\\\",\\n   250\\t        help=\\\"List all available sessions without exporting\\\",\\n   251\\t    )\\n   252\\t    parser.add_argument(\\n   253\\t        \\\"--interactive\\\",\\n   254\\t        action=\\\"store_true\\\",\\n   255\\t        help=\\\"Run in interactive mode to select and export sessions\\\",\\n   256\\t    )\\n   257\\t    parser.add_argument(\\n   258\\t        \\\"--page-size\\\",\\n   259\\t        type=int,\\n   260\\t        default=20,\\n   261\\t        help=\\\"Number of sessions to display per page (default: 20)\\\",\\n   262\\t    )\\n   263\\t    args = parser.parse_args()\\n   264\\t\\n   265\\t    # Handle URI mode first\\n   266\\t    if args.uri:\\n   267\\t        uri_result = parse_uri(args.uri)\\n   268\\t        if uri_result is None:\\n   269\\t            print(f\\\"❌ 无效的 URI 格式: {args.uri}\\\")\\n   270\\t            print(\\\"\\\\n支持的 URI 格式:\\\")\\n   271\\t            print(\\\"  - opencode://<session_id>\\\")\\n   272\\t            print(\\\"  - codex://<session_id>\\\")\\n   273\\t            print(\\\"  - kimi://<session_id>\\\")\\n   274\\t            print(\\\"  - claude://<session_id>\\\")\\n   275\\t            return 1\\n   276\\t\\n   277\\t        scheme, session_id = uri_result\\n   278\\t\\n   279\\t        # Scan for available agents\\n   280\\t        scanner = AgentScanner()\\n   281\\t        available_agents = scanner.get_available_agents()\\n   282\\t\\n   283\\t        if not available_agents:\\n   284\\t            print(\\\"❌ 未找到任何可用的 Agent Tools 会话。\\\")\\n   285\\t            return 1\\n   286\\t\\n   287\\t        # Find the session\\n   288\\t        result = find_session_by_id(scanner, session_id)\\n   289\\t        if result is None:\\n   290\\t            print(f\\\"❌ 未找到会话: {args.uri}\\\")\\n   291\\t            return 1\\n   292\\t\\n   293\\t        agent, session = result\\n   294\\t\\n   295\\t        # Verify the URI scheme matches the agent\\n   296\\t        expected_agent_name = VALID_URI_SCHEMES.get(scheme)\\n   297\\t        if agent.name != expected_agent_name:\\n   298\\t            print(f\\\"❌ URI scheme 与会话不匹配: {args.uri}\\\")\\n   299\\t            print(f\\\"   该会话属于 {agent.display_name}，但 URI 使用了 {scheme}://\\\")\\n   300\\t            return 1\\n   301\\t\\n   302\\t        # Get session data and render\\n   303\\t        try:\\n   304\\t            session_data = agent.get_session_data(session)\\n   305\\t            output = render_session_text(args.uri, session_data)\\n   306\\t            print(output)\\n   307\\t            return 0\\n   308\\t        except Exception as e:\\n   309\\t            print(f\\\"❌ 获取会话数据失败: {e}\\\")\\n   310\\t            return 1\\n   311\\t\\n   312\\t    # 如果没有指定 --interactive 或 --list，但指定了 --days，则自动启用 --list\\n   313\\t    # 如果都没有指定，显示帮助信息\\n   314\\t    if not args.interactive and not args.list:\\n   315\\t        if args.days != 7:  # 用户显式指定了 --days\\n   316\\t            args.list = True\\n   317\\t        else:\\n   318\\t            parser.print_help()\\n   319\\t            return\\n   320\\t\\n   321\\t    print(\\\"🚀 Agent Session Exporter\\\\n\\\")\\n   322\\t    print(\\\"=\\\" * 60 + \\\"\\\\n\\\")\\n   323\\t\\n   324\\t    # Scan for available agents\\n   325\\t    scanner = AgentScanner()\\n   326\\t    available_agents = scanner.get_available_agents()\\n   327\\t\\n   328\\t    if not available_agents:\\n   329\\t        print(\\\"❌ 未找到任何可用的 Agent Tools 会话。\\\")\\n   330\\t        print(\\\"\\\\n支持的 Agent Tools:\\\")\\n   331\\t        print(\\\"  - OpenCode: ~/.local/share/opencode/opencode.db\\\")\\n   332\\t        print(\\\"  - Codex: ~/.codex/sessions/{YYYY}/{MM}/{DD}/\\\")\\n   333\\t        print(\\\"  - Kimi: ~/.kimi/sessions/{project_id}/{session_id}/\\\")\\n   334\\t        print(\\\"  - Claude Code: ~/.claude/projects/{project_id}/\\\")\\n   335\\t        return\\n   336\\t\\n   337\\t    # List mode\\n   338\\t    if args.list:\\n   339\\t        print(f\\\"📋 列出最近 {args.days} 天的会话:\\\\n\\\")\\n   340\\t        print(\\\"-\\\" * 60)\\n   341\\t\\n   342\\t        for agent in available_agents:\\n   343\\t            # Get filtered sessions with days parameter\\n   344\\t            sessions = agent.get_sessions(days=args.days)\\n   345\\t            print(f\\\"\\\\n📁 {agent.display_name} ({len(sessions)} 个会话)\\\")\\n   346\\t\\n   347\\t            if sessions:\\n   348\\t                display_sessions_list(agent, sessions, page_size=args.page_size)\\n   349\\t            else:\\n   350\\t                print(f\\\"   (最近 {args.days} 天内无会话)\\\")\\n   351\\t\\n   352\\t        print(\\\"\\\\n\\\" + \\\"=\\\" * 60)\\n   353\\t        print(\\\"提示: 使用 --interactive 进入交互式导出模式\\\")\\n   354\\t        print()\\n   355\\t        return 0\\n   356\\t\\n   357\\t    # Interactive mode\\n   358\\t    # Select agent\\n   359\\t    if len(available_agents) == 1:\\n   360\\t        selected_agent = available_agents[0]\\n   361\\t        print(f\\\"自动选择: {selected_agent.display_name}\\\\n\\\")\\n   362\\t    else:\\n   363\\t        selected_agent = select_agent_interactive(available_agents, days=args.days)\\n   364\\t        if not selected_agent:\\n   365\\t            print(\\\"\\\\n⚠️  未选择 Agent Tool，退出。\\\")\\n   366\\t            return 1\\n   367\\t        print(f\\\"\\\\n已选择: {selected_agent.display_name}\\\\n\\\")\\n   368\\t\\n   369\\t    # Get sessions for the selected agent\\n   370\\t    sessions = selected_agent.get_sessions(days=args.days)\\n   371\\t\\n   372\\t    if not sessions:\\n   373\\t        print(f\\\"⚠️  未找到最近 {args.days} 天内的会话。\\\")\\n   374\\t        return 1\\n   375\\t\\n   376\\t    print(f\\\"📊 找到 {len(sessions)} 个会话 (最近 {args.days} 天)\\\\n\\\")\\n   377\\t\\n   378\\t    # Show warning if too many sessions\\n   379\\t    if len(sessions) > 100:\\n   380\\t        print(f\\\"⚠️  注意: 会话数量较多 ({len(sessions)} 个)，建议使用 --days 缩小时间范围\\\")\\n   381\\t        print(\\\"   例如: agent-dump --interactive --days 1\\\\n\\\")\\n   382\\t\\n   383\\t    # Select sessions\\n   384\\t    selected_sessions = select_sessions_interactive(sessions, selected_agent)\\n   385\\t    if not selected_sessions:\\n   386\\t        print(\\\"\\\\n⚠️  未选择会话，退出。\\\")\\n   387\\t        return 1\\n   388\\t\\n   389\\t    print(f\\\"\\\\n✓ 选择了 {len(selected_sessions)} 个会话\\\\n\\\")\\n   390\\t\\n   391\\t    # Export\\n   392\\t    output_base_dir = Path(args.output)\\n   393\\t    exported = export_sessions(selected_agent, selected_sessions, output_base_dir)\\n   394\\t\\n   395\\t    print(f\\\"\\\\n✅ 成功导出 {len(exported)} 个会话到 {output_base_dir}/{selected_agent.name}/\\\")\\n   396\\t    return 0\\n   397\\t\\n   398\\t\\n   399\\tif __name__ == \\\"__main__\\\":\\n   400\\t    main()\\n\",\n./data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json:78:          \"type\": \"tool\",\n./data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json:79:          \"tool\": \"ReadFile\",\n./data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json:94:                \"text\": \"     1\\t\\\"\\\"\\\"\\n     2\\tSession selection utilities\\n     3\\t\\\"\\\"\\\"\\n     4\\t\\n     5\\tfrom datetime import datetime, timedelta\\n     6\\timport sys\\n     7\\t\\n     8\\timport questionary\\n     9\\tfrom questionary import Choice, Style\\n    10\\t\\n    11\\tfrom agent_dump.agents.base import BaseAgent, Session\\n    12\\t\\n    13\\t\\n    14\\tdef is_terminal() -> bool:\\n    15\\t    \\\"\\\"\\\"Check if running in a terminal\\\"\\\"\\\"\\n    16\\t    return sys.stdin.isatty() and sys.stdout.isatty()\\n    17\\t\\n    18\\t\\n    19\\tdef get_time_group(session: Session) -> str:\\n    20\\t    \\\"\\\"\\\"Get time group for a session\\\"\\\"\\\"\\n    21\\t    from datetime import UTC\\n    22\\t\\n    23\\t    now = datetime.now(UTC)\\n    24\\t    today = now.replace(hour=0, minute=0, second=0, microsecond=0)\\n    25\\t    yesterday = today - timedelta(days=1)\\n    26\\t    week_ago = today - timedelta(days=7)\\n    27\\t    month_ago = today - timedelta(days=30)\\n    28\\t\\n    29\\t    session_time = session.created_at\\n    30\\t\\n    31\\t    if isinstance(session_time, (int, float)):\\n    32\\t        # Assume milliseconds if large number\\n    33\\t        if session_time > 1e10:\\n    34\\t            ses…250144 tokens truncated…a.json:1382:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1383:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1403:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1404:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1423:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1424:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1452:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1453:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1483:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1484:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1500:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1501:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1517:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1518:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1534:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1535:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1551:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1552:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1568:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1569:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1588:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1589:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1653:          \"text\": \"<skill>\\n<name>agent-estimation</name>\\n<path>/Users/Kevin/.agents/skills/agent-estimation/SKILL.md</path>\\n---\\nname: agent-estimation\\ndescription: Accurately estimate AI agent work effort using the agent's own operational units (tool-call rounds) instead of human time. Use when asked to estimate, scope, plan, or evaluate how long a coding task will take. Prevents the common failure mode where agents anchor to human developer timelines and massively overestimate. Outputs a structured breakdown with round counts, risk factors, and a final wallclock conversion.\\n---\\n\\n# Agent Work Estimation Skill\\n\\n## Problem\\n\\nAI coding agents systematically overestimate task duration because they anchor to human developer timelines absorbed from training data. A task an agent can complete in 30 minutes gets estimated as \\\"2-3 days\\\" because that's what a human developer forum post would say.\\n\\n## Solution\\n\\nForce the agent to estimate from its own operational units — **tool-call rounds** — and only convert to human wallclock time at the very end.\\n\\n## Core Units\\n\\n| Unit | Definition | Scale |\\n|------|-----------|-------|\\n| **Round** | One tool-call cycle: think → write code → execute → verify → fix | ~2-4 min wallclock |\\n| **Module** | A functional unit built from multiple rounds until usable | 2-15 rounds |\\n| **Project** | All modules + integration + debugging | Sum of modules × integration factor |\\n\\nA **Round** is the atomic unit. It maps directly to one iteration of:\\n1. Agent reasons about what to do\\n2. Agent writes/edits code\\n3. Agent runs the code or a test\\n4. Agent reads the output\\n5. Agent decides if it needs to fix something (if yes → next round)\\n\\n## Estimation Procedure\\n\\nWhen asked to estimate a task, follow these steps in order:\\n\\n### Step 1: Decompose into Modules\\n\\nBreak the task into functional modules. Each module should be independently buildable and testable. Ask yourself: \\\"What are the distinct pieces I would build one at a time?\\\"\\n\\n### Step 2: Estimate Rounds per Module\\n\\nFor each module, estimate the number of rounds using these anchors:\\n\\n| Pattern | Typical Rounds | Examples |\\n|---------|---------------|----------|\\n| **Boilerplate / known pattern** | 1-2 | CRUD endpoint, config file, standard API client |\\n| **Moderate complexity** | 3-5 | Custom UI layout, state management, data pipeline |\\n| **Exploratory / under-documented** | 5-10 | Unfamiliar framework, platform-specific APIs, complex integrations |\\n| **High uncertainty** | 8-15 | Undocumented behavior, novel algorithms, multi-system debugging |\\n\\nKey calibration rules:\\n- If you can generate the code in one shot and it will likely run → **1 round**\\n- If you'll need to generate, run, see an error, and fix → **2-3 rounds**\\n- If the library/framework has sparse docs and you'll be guessing → **5+ rounds**\\n- If it involves platform permissions, OS-level APIs, or environment-specific behavior the user must manually verify → add **2-3 rounds**\\n\\n### Step 3: Assign Risk Coefficients\\n\\nEach module gets a risk coefficient that inflates its round count:\\n\\n| Risk Level | Coefficient | When to Apply |\\n|------------|------------|---------------|\\n| **Low** | 1.0 | Mature ecosystem, clear docs, agent has strong pattern match |\\n| **Medium** | 1.3 | Minor unknowns, may need 1-2 extra debug rounds |\\n| **High** | 1.5 | Sparse docs, platform quirks, integration unknowns |\\n| **Very High** | 2.0 | Possible dead ends, may need to change approach entirely |\\n\\n### Step 4: Calculate Totals\\n\\n```\\nModule effective rounds = base rounds × risk coefficient\\nProject rounds = Σ(module effective rounds) + integration rounds\\nIntegration rounds = 10-20% of base total (for wiring modules together)\\n```\\n\\n### Step 5: Convert to Wallclock Time\\n\\nOnly at the very end, convert to human time:\\n\\n```\\nWallclock time = project rounds × minutes_per_round\\n```\\n\\nDefault `minutes_per_round` = **3 minutes** (includes agent generation time + user review time).\\n\\nAdjust this parameter based on context:\\n- Fast iteration, user barely reviews → 2 min/round\\n- Complex domain, user carefully reviews each step → 4 min/round\\n- User needs to manually test (mobile, hardware, permissions) → 5 min/round\\n\\n## Output Format\\n\\nAlways output the estimation in this exact structure:\\n\\n```markdown\\n### Task: [task name]\\n\\n#### Module Breakdown\\n\\n| # | Module | Base Rounds | Risk | Effective Rounds | Notes |\\n|---|--------|------------|------|-----------------|-------|\\n| 1 | ...    | N          | 1.x  | M               | why   |\\n| 2 | ...    | N          | 1.x  | M               | why   |\\n\\n#### Summary\\n\\n- **Base rounds**: X\\n- **Integration**: +Y rounds\\n- **Risk-adjusted total**: Z rounds\\n- **Estimated wallclock**: A – B minutes (at N min/round)\\n\\n#### Biggest Risks\\n1. [specific risk and what could blow up the estimate]\\n2. [...]\\n```\\n\\n## Anti-Patterns to Avoid\\n\\nThese are the failure modes this skill exists to prevent:\\n\\n1. **Human-time anchoring**: \\\"A developer would take about 2 weeks...\\\" → NO. Start from rounds.\\n2. **Padding by vibes**: Adding time \\\"just to be safe\\\" without specific risk rationale → NO. Use risk coefficients.\\n3. **Confusing complexity with volume**: 500 lines of boilerplate ≠ hard. One line of CGEvent API ≠ easy. Estimate by uncertainty, not line count.\\n4. **Forgetting integration cost**: Modules work alone but break together. Always add integration rounds.\\n5. **Ignoring user-side bottlenecks**: If the user must manually grant permissions, restart an app, or test on a device, that's extra round time. Adjust `minutes_per_round`, don't add phantom rounds.\\n\\n## Calibration Reference\\n\\nHere are example projects with known round counts to help calibrate:\\n\\nSee `references/calibration-examples.md` for detailed examples across project types.\\n\\n## Eval Prompts\\n\\nSee `evals/evals.json` for test cases to validate estimation accuracy.\\n\\n</skill>\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1660:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1661:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1682:          \"text\": \"已使用 `$agent-estimation`，按 **tool-call rounds** 给你做分 Phase 评估。\\n\\n### Task: klip-22 各 Phase 工作量评估（当前状态：Phase 1 已完成）\\n\\n#### Module Breakdown\\n\\n| # | Module | Base Rounds | Risk | Effective Rounds | Notes |\\n|---|--------|------------|------|-----------------|-------|\\n| 1 | Phase 1: SQLServer 注释层级修复 | 0（已完成） | 1.0 | 0 | 已落地并通过回归测试 |\\n| 2 | Phase 2: 核心策略单测补齐 | 10 | 1.3 | 13 | 主要是 `mysql/postgres/oracle` 三套策略测试补齐与调稳 |\\n| 3 | Phase 3: parse-sql 路由错误分支补测 | 4 | 1.3 | 5 | 新增路由测试并覆盖 `SQL_REQUIRED/INVALID_DATABASE_TYPE/SQL_PARSE_FAILED` |\\n| 4 | Phase 4: 覆盖率口径治理 | 5 | 1.5 | 8 | 调整 `coverage.include/exclude` 后可能触发阈值波动 |\\n| 5 | Phase 5: 回归验证与文档收敛 | 4 | 1.3 | 5 | `lint + test:run + test:coverage` 与 klip 状态收口 |\\n\\n#### Summary\\n\\n- **Base rounds**: 23（Phase 2-5 剩余）\\n- **Integration**: +4 rounds\\n- **Risk-adjusted total**: 35 rounds\\n- **Estimated wallclock**: **95 – 125 分钟**（按 3 min/round，含联调缓冲）\\n\\n#### Biggest Risks\\n1. Phase 4 调整覆盖范围后，可能引发阈值不达标，连带需要补测（最可能放大工时）。\\n2. Phase 2 的方言细节断言（默认值/注释/schema）可能出现跨策略差异，需多轮修正。\\n3. Phase 3 若需要 mock 解析异常路径，可能有 1-2 轮测试稳定性调试。\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1708:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1709:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1746:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1747:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1767:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1768:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1784:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1785:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1801:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1802:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1818:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1819:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1835:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1836:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1855:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1856:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1886:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1887:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1903:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1904:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1923:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1924:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1944:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1945:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1964:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:1965:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2012:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2013:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2033:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2034:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2050:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2051:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2067:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2068:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2084:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2085:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2101:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2102:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2118:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2119:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2135:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2136:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2155:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2156:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2196:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2197:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2213:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2214:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2233:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2234:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2254:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2255:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2274:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2275:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2322:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2323:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2343:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2344:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2360:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2361:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2377:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2378:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2394:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2395:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2414:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2415:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2435:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2436:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2455:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2456:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2476:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2477:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2496:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2497:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2522:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2523:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2542:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2543:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2563:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2564:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2580:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2581:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2597:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2598:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2614:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2615:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2631:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2632:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2651:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2652:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2677:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2678:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2694:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2695:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2711:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2712:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2728:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2729:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2748:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2749:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2777:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2778:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2803:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2804:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2820:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2821:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2837:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2838:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2854:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2855:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2874:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2875:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2895:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2896:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2912:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2913:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2929:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2930:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2946:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2947:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2963:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2964:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2983:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:2984:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3004:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3005:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3021:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3022:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3041:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3042:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3067:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3068:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3084:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3085:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3104:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3105:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3130:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3131:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3147:          \"type\": \"tool\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3148:          \"tool\": \"exec_command\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3167:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3168:      \"agent\": \"codex\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3196:      \"role\": \"assistant\",\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json:3197:      \"agent\": \"codex\",\n",
+                "time_created": 1772277292576
+              }
+            ]
+          },
+          "time_created": 1772277292454
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_UMHGPRsfJWYLvRhB768cLDWS",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "rg --files .",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 27c850\nWall time: 0.0526 seconds\nProcess exited with code 0\nOriginal token count: 544\nOutput:\n./src/config.ts\n./src/lib/utils.ts\n./src/components/tool-output/StructuredDiffOutput.tsx\n./src/components/tool-output/types.ts\n./src/components/tool-output/UnifiedDiffOutput.tsx\n./src/components/tool-output/ToolOutputRenderer.tsx\n./src/components/DetailLanding.tsx\n./src/components/SessionList.tsx\n./src/components/SessionDetail.tsx\n./src/components/ui/input.tsx\n./src/components/ui/button.tsx\n./src/components/ui/separator.tsx\n./src/components/ui/badge.tsx\n./src/components/ui/scroll-area.tsx\n./src/components/ui/card.tsx\n./src/types.ts\n./src/index.css\n./src/main.tsx\n./src/App.tsx\n./data/sessions/opencode/omarchy-hyprland-display-switch-lid-mirror-config.json\n./data/sessions/opencode/zed-startup-failure-troubleshooting.json\n./data/sessions/opencode/terminal-history-search-ctrl-r.json\n./data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json\n./data/sessions/kimi/fix-dialog-drawer-a11y-toast-style.json\n./data/sessions/kimi/4bb6a695-6c6f-494b-a6b5-a59eb9f99dc3.json\n./data/sessions/kimi/cea8f1e3-b0c7-4ffc-af22-84cedf99e7d5.json\n./data/sessions/codex/019c8daa-9ca7-7d33-acb1-6687a121c898.json\n./data/sessions/codex/019c8d8e-e8b6-77c0-a7c7-e61a4a719778.json\n./data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json\n./data/sessions/claudecode/34db9283-8a85-4153-9950-7dd5d6f85a86.json\n./vite.config.ts\n./tsconfig.json\n./components.json\n./scripts/build-index.ts\n./scripts/build-logo.ts\n./package.json\n./public/favicon-32x32.png\n./public/logo-192x192.png\n./public/logo.svg\n./public/icon/agent/opencode.png\n./public/icon/agent/codex.svg\n./public/icon/agent/kimi.svg\n./public/icon/agent/claudecode.svg\n./public/icon/provider/minimax-color.svg\n./public/icon/provider/doubao-color.svg\n./public/icon/provider/qwen-color.svg\n./public/icon/provider/kimi.svg\n./public/icon/provider/gemini-color.svg\n./public/icon/provider/openai.svg\n./public/icon/provider/claude-color.svg\n./public/icon/provider/deepseek-color.svg\n./public/icon/provider/zhipu-color.svg\n./public/logo.png\n./public/favicon.png\n./public/logo-512x512.png\n./public/apple-touch-icon.png\n./public/favicon.ico\n./public/favicon-16x16.png\n./README.md\n./bun.lock\n./vercel.json\n./index.html\n./tsconfig.node.json\n",
+                "time_created": 1772277292577
+              }
+            ]
+          },
+          "time_created": 1772277292457
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:14:55.187Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277295187,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Inspecting session detail and grouping logic**",
+          "time_created": 1772277295187
+        },
+        {
+          "type": "text",
+          "text": "已经定位到核心区域在 `src/components/SessionDetail.tsx`。现状看起来是把 `reasoning`、`text`、`tool` 分开渲染，这很容易把原始 `parts` 的时序打散，正好对应你说的 4 种 assistant 消息模式。",
+          "time_created": 1772277299443
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_qORranmnJ9meHxi5My0ORh7q",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "sed -n '1,260p' src/components/SessionDetail.tsx",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 99d361\nWall time: 0.0511 seconds\nProcess exited with code 0\nOriginal token count: 1585\nOutput:\nimport { diffLines, type Change } from \"diff\";\n/* eslint-disable react/no-array-index-key */\nimport {\n  BookOpenText,\n  Bot,\n  CheckCircle2,\n  ChevronDown,\n  ChevronUp,\n  FilePenLine,\n  FileSearch,\n  LoaderCircle,\n  Lightbulb,\n  NotebookPen,\n  SquareTerminal,\n  UserRound,\n  Wrench,\n  XCircle,\n} from \"lucide-react\";\nimport { useMemo, useState } from \"react\";\nimport ReactMarkdown from \"react-markdown\";\nimport { ModelConfig } from \"../config\";\nimport { Session, Message, MessagePart } from \"../types\";\nimport { ToolOutputRenderer } from \"./tool-output/ToolOutputRenderer\";\nimport {\n  DiffBlock,\n  DiffLineItem,\n  ToolOutputContent,\n  ToolOutputLanguage,\n} from \"./tool-output/types\";\n\ninterface SessionDetailProps {\n  session: Session;\n}\n\ntype ToolStatus = \"running\" | \"completed\" | \"error\";\n\ninterface NormalizedToolState {\n  status: ToolStatus;\n  inputValue: unknown;\n  outputValue: unknown;\n  errorValue: unknown;\n  metadataValue: unknown;\n  inputText: string;\n  command: string;\n}\n\ninterface ToolDisplayStrategy {\n  Icon: typeof LoaderCircle;\n  title: string;\n  secondaryText?: string;\n  expandable: boolean;\n  showInputPreview: boolean;\n  outputContent: ToolOutputContent;\n}\n\nconst TOOL_STATUS_META: Record<\n  ToolStatus,\n  { label: string; className: string; icon: typeof LoaderCircle }\n> = {\n  completed: {\n    label: \"Success\",\n    className:\n      \"border-[var(--console-success-border)] bg-[var(--console-success-bg)] text-[var(--console-success)]\",\n    icon: CheckCircle2,\n  },\n  error: {\n    label: \"Failed\",\n    className:\n      \"border-[var(--console-error-border)] bg-[var(--console-error-bg)] text-[var(--console-error)]\",\n    icon: XCircle,\n  },\n  running: {\n    label: \"Running\",\n    className:\n      \"border-[var(--console-warning-border)] bg-[var(--console-warning-bg)] text-[var(--console-warning)]\",\n    icon: LoaderCircle,\n  },\n};\n\nfunction toDisplayText(value: unknown) {\n  if (value == null) {\n    return \"\";\n  }\n\n  if (typeof value === \"string\") {\n    const text = value.trim();\n    if (!text) {\n      return \"\";\n    }\n    try {\n      const parsed = JSON.parse(text) as unknown;\n      return JSON.stringify(parsed, null, 2);\n    } catch {\n      return value;\n    }\n  }\n\n  try {\n    return JSON.stringify(value, null, 2);\n  } catch {\n    if (typeof value === \"number\" || typeof value === \"bigint\" || typeof value === \"boolean\") {\n      return `${value}`;\n    }\n    if (typeof value === \"symbol\") {\n      return value.description ? `Symbol(${value.description})` : \"Symbol\";\n    }\n    if (typeof value === \"function\") {\n      return \"[Function]\";\n    }\n    return \"[Unserializable value]\";\n  }\n}\n\nfunction parseInputCandidate(inputValue: unknown) {\n  if (typeof inputValue !== \"string\") {\n    return inputValue;\n  }\n  try {\n    return JSON.parse(inputValue) as unknown;\n  } catch {\n    return inputValue;\n  }\n}\n\nfunction extractToolTextSegments(value: unknown): string[] {\n  if (typeof value === \"string\") {\n    return [value];\n  }\n\n  if (Array.isArray(value)) {\n    return value.flatMap((item) => extractToolTextSegments(item));\n  }\n\n  if (value && typeof value === \"object\") {\n    const record = value as Record<string, unknown>;\n    const textValue = record.text;\n    if (typeof textValue === \"string\") {\n      return [textValue];\n    }\n    const contentValue = record.content;\n    if (contentValue !== undefined) {\n      return extractToolTextSegments(contentValue);\n    }\n  }\n\n  return [];\n}\n\nfunction stripSystemTag(text: string) {\n  return text\n    .replace(/^<system>/i, \"\")\n    .replace(/<\\/system>$/i, \"\")\n    .trim();\n}\n\nfunction joinToolText(value: unknown, includeSystem = true) {\n  const segments = extractToolTextSegments(value)\n    .map((segment) => segment.trim())\n    .filter((segment) => {\n      if (includeSystem) {\n        return Boolean(segment);\n      }\n      return Boolean(segment) && !/^<system>[\\s\\S]*<\\/system>$/i.test(segment);\n    });\n\n  if (segments.length === 0) {\n    return \"\";\n  }\n\n  return segments\n    .map((segment) =>\n      includeSystem && /^<system>[\\s\\S]*<\\/system>$/i.test(segment)\n        ? stripSystemTag(segment)\n        : segment,\n    )\n    .join(\"\\n\");\n}\n\nfunction extractCommand(inputValue: unknown) {\n  const parsed = parseInputCandidate(inputValue);\n  if (parsed && typeof parsed === \"object\") {\n    const input = parsed as { cmd?: unknown; command?: unknown };\n    if (typeof input.cmd === \"string\") {\n      return input.cmd;\n    }\n    if (typeof input.command === \"string\") {\n      return input.command;\n    }\n  }\n  return \"\";\n}\n\nfunction normalizeToolState(part: MessagePart): NormalizedToolState {\n  const rawState = (part.state || {}) as Record<string, unknown>;\n  const rawStatus = rawState.status;\n  const status: ToolStatus =\n    rawStatus === \"running\" || rawStatus === \"error\" || rawStatus === \"completed\"\n      ? rawStatus\n      : \"completed\";\n\n  const outputValue = rawState.output ?? rawState.result ?? \"\";\n  const errorValue = rawState.error ?? \"\";\n  const inputValue = parseInputCandidate(rawState.input ?? rawState.arguments ?? {});\n  const metadataValue = rawState.metadata ?? {};\n  const command = extractCommand(inputValue);\n\n  return {\n    status,\n    command,\n    inputValue,\n    outputValue,\n    errorValue,\n    metadataValue,\n    inputText: toDisplayText(inputValue),\n  };\n}\n\nfunction toRecord(value: unknown) {\n  if (value && typeof value === \"object\" && !Array.isArray(value)) {\n    return value as Record<string, unknown>;\n  }\n  return {};\n}\n\nfunction toPlainText(value: unknown) {\n  return typeof value === \"string\" ? value.trim() : \"\";\n}\n\nfunction toStringValue(value: unknown) {\n  return typeof value === \"string\" ? value : \"\";\n}\n\nfunction extractMessageText(value: unknown): string {\n  if (typeof value === \"string\") {\n    return value;\n  }\n\n  if (Array.isArray(value)) {\n    return value\n      .map((item) => {\n        if (typeof item === \"string\") {\n          return item;\n        }\n        if (item && typeof item === \"object\") {\n          const record = item as Record<string, unknown>;\n          const text = extractMessageText(record.text);\n          if (text.trim()) {\n            return text;\n          }\n          const content = extractMessageText(record.content);\n          if (content.trim()) {\n            return content;\n          }\n        }\n        return \"\";\n      })\n      .filter(Boolean)\n      .join(\"\\n\\n\");\n  }\n\n",
+                "time_created": 1772277299566
+              }
+            ]
+          },
+          "time_created": 1772277299448
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_iw1nO7Hh4eDd2zNjCjukRTze",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "sed -n '260,560p' src/components/SessionDetail.tsx",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 18993d\nWall time: 0.0511 seconds\nProcess exited with code 0\nOriginal token count: 2091\nOutput:\n\n  if (value && typeof value === \"object\") {\n    const record = value as Record<string, unknown>;\n    const text = extractMessageText(record.text);\n    if (text.trim()) {\n      return text;\n    }\n    const content = extractMessageText(record.content);\n    if (content.trim()) {\n      return content;\n    }\n  }\n\n  return \"\";\n}\n\nfunction hasNonEmptyMessageText(value: unknown) {\n  return Boolean(extractMessageText(value).trim());\n}\n\nfunction normalizeEscapedNewlines(text: string) {\n  return text.replace(/\\\\n/g, \"\\n\");\n}\n\nfunction formatToolOutput(value: unknown) {\n  const structuredText = joinToolText(value);\n  const text = structuredText || toDisplayText(value);\n  const normalized = normalizeEscapedNewlines(text);\n  return normalized || \"No output captured.\";\n}\n\nfunction getOutputOrErrorText(state: NormalizedToolState) {\n  const outputText = formatToolOutput(state.outputValue);\n  if (outputText !== \"No output captured.\") {\n    return outputText;\n  }\n\n  const errorText = formatToolOutput(state.errorValue);\n  if (errorText !== \"No output captured.\") {\n    return errorText;\n  }\n\n  return \"No output captured.\";\n}\n\nfunction getFilePathFromInput(inputValue: unknown) {\n  const input = toRecord(inputValue);\n  const filePath = toPlainText(input.filePath) || toPlainText(input.path);\n  return filePath || \"\";\n}\n\nfunction detectLanguageByFilePath(filePath: string): ToolOutputLanguage {\n  const fileName = filePath.split(\"/\").pop()?.toLowerCase() || \"\";\n  if (fileName === \".bashrc\" || fileName === \".zshrc\" || fileName === \".profile\") {\n    return \"bash\";\n  }\n\n  const extension = fileName.includes(\".\") ? fileName.split(\".\").pop() : \"\";\n  switch (extension) {\n    case \"ts\":\n      return \"typescript\";\n    case \"tsx\":\n      return \"tsx\";\n    case \"js\":\n      return \"javascript\";\n    case \"jsx\":\n      return \"jsx\";\n    case \"sh\":\n    case \"bash\":\n    case \"zsh\":\n      return \"bash\";\n    case \"html\":\n      return \"html\";\n    case \"css\":\n      return \"css\";\n    case \"yaml\":\n    case \"yml\":\n      return \"yaml\";\n    case \"json\":\n      return \"json\";\n    case \"md\":\n      return \"markdown\";\n    case \"toml\":\n      return \"toml\";\n    case \"conf\":\n      return \"ini\";\n    default:\n      return \"text\";\n  }\n}\n\nfunction extractReadContent(rawOutput: unknown) {\n  const rawText = joinToolText(rawOutput, false) || formatToolOutput(rawOutput);\n  if (rawText === \"No output captured.\") {\n    return rawText;\n  }\n\n  const withoutWrapper = rawText.replace(/^<file>\\s*/i, \"\").replace(/\\s*<\\/file>\\s*$/i, \"\");\n  const lines = withoutWrapper\n    .split(\"\\n\")\n    .filter((line) => !/^\\(End of file - total \\d+ lines\\)$/.test(line.trim()))\n    .map((line) => line.replace(/^\\d+\\|\\s?/, \"\").replace(/^\\s*\\d+\\t/, \"\"));\n  const cleaned = lines.join(\"\\n\").trimEnd();\n  return cleaned || \"No output captured.\";\n}\n\nfunction createDiffBlock(oldValue: string, newValue: string) {\n  const oldLines = normalizeEscapedNewlines(oldValue).split(\"\\n\");\n  const newLines = normalizeEscapedNewlines(newValue).split(\"\\n\");\n  const diffLines = [\n    \"@@\",\n    ...oldLines.map((line) => `- ${line}`),\n    ...newLines.map((line) => `+ ${line}`),\n  ];\n  return diffLines.join(\"\\n\");\n}\n\nfunction splitDiffChunkLines(value: string) {\n  const normalized = normalizeEscapedNewlines(value);\n  const lines = normalized.split(\"\\n\");\n  if (normalized.endsWith(\"\\n\")) {\n    lines.pop();\n  }\n  return lines;\n}\n\nfunction diffPartsToLines(parts: Change[]): DiffLineItem[] {\n  return parts.flatMap((part) => {\n    const type: DiffLineItem[\"type\"] = part.added ? \"add\" : part.removed ? \"remove\" : \"context\";\n    return splitDiffChunkLines(part.value).map((line) => ({\n      type,\n      text: line,\n    }));\n  });\n}\n\nfunction getKimiEditEntries(inputValue: unknown) {\n  const input = toRecord(inputValue);\n  const rawEdit = input.edit;\n  if (Array.isArray(rawEdit)) {\n    return rawEdit;\n  }\n  if (rawEdit && typeof rawEdit === \"object\") {\n    return [rawEdit];\n  }\n  return [];\n}\n\nfunction getDiffBlockLabel(filePath: string) {\n  const normalizedPath = filePath.trim();\n  if (!normalizedPath) {\n    return \"edit\";\n  }\n\n  const fileName = normalizedPath.split(\"/\").pop() || normalizedPath;\n  return fileName === normalizedPath ? fileName : `${fileName} · ${normalizedPath}`;\n}\n\nfunction buildKimiEditDiffBlocks(state: NormalizedToolState, filePath: string): DiffBlock[] {\n  const edits = getKimiEditEntries(state.inputValue);\n  const label = getDiffBlockLabel(filePath);\n\n  return edits\n    .map((entry) => {\n      const edit = toRecord(entry);\n      const oldValue = toStringValue(edit.old);\n      const newValue = toStringValue(edit.new);\n      if (!oldValue.trim() && !newValue.trim()) {\n        return null;\n      }\n\n      return {\n        label,\n        lines: diffPartsToLines(\n          diffLines(normalizeEscapedNewlines(oldValue), normalizeEscapedNewlines(newValue)),\n        ),\n      };\n    })\n    .filter((block): block is DiffBlock => block != null && block.lines.length > 0);\n}\n\nfunction extractEditDiff(state: NormalizedToolState) {\n  const metadata = toRecord(state.metadataValue);\n  const diffText = toStringValue(metadata.diff);\n  if (diffText.trim()) {\n    return normalizeEscapedNewlines(diffText);\n  }\n\n  const edits = getKimiEditEntries(state.inputValue);\n  const generatedDiff = edits\n    .map((entry) => {\n      const edit = toRecord(entry);\n      const oldValue = toStringValue(edit.old);\n      const newValue = toStringValue(edit.new);\n      if (!oldValue.trim() && !newValue.trim()) {\n        return \"\";\n      }\n      return createDiffBlock(oldValue, newValue);\n    })\n    .filter(Boolean)\n    .join(\"\\n\\n\");\n  if (generatedDiff.trim()) {\n    return generatedDiff;\n  }\n\n  return getOutputOrErrorText(state);\n}\n\nfunction extractWriteContent(state: NormalizedToolState) {\n  const input = toRecord(state.inputValue);\n  if (state.status === \"completed\") {\n    const contentText = toStringValue(input.content);\n    if (contentText.trim()) {\n      return normalizeEscapedNewlines(contentText);\n    }\n  }\n  return getOutputOrErrorText(state);\n}\n\nfunction buildKimiToolStrategy(tool: MessagePart, state: NormalizedToolState): ToolDisplayStrategy {\n  const defaultStrategy = buildDefaultToolStrategy(tool, state);\n  const toolKey = (tool.tool || \"\").toLowerCase();\n  const input = toRecord(state.inputValue);\n\n  if (toolKey === \"glob\") {\n    const pattern = toPlainText(input.pattern);\n    return {\n      ...defaultStrategy,\n      Icon: FileSearch,\n      title: tool.title || \"glob\",\n      secondaryText: pattern || undefined,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: getOutputOrErrorText(state),\n        language: \"text\",\n        isCode: false,\n      },\n    };\n  }\n\n  if (toolKey === \"grep\") {\n    const path = toPlainText(input.path);\n    const pattern = toPlainText(input.pattern);\n    const details = [path, pattern].filter(Boolean).join(\" · \");\n    return {\n      ...defaultStrategy,\n      Icon: FileSearch,\n      title: tool.title || \"grep\",\n      secondaryText: details || undefined,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: getOutputOrErrorText(state),\n        language: \"text\",\n        isCode: false,\n      },\n    };\n  }\n\n  if (toolKey === \"shell\") {\n    const command = toPlainText(input.command);\n    return {\n      ...defaultStrategy,\n      Icon: SquareTerminal,\n      title: tool.title || \"bash\",\n      secondaryText: command ? `(${command})` : undefined,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: getOutputOrErrorText(state),\n        language: \"text\",\n        isCode: false,\n      },\n    };\n  }\n\n  if (toolKey === \"readfile\") {\n    const filePath = getFilePathFromInput(state.inputValue);\n    return {\n      ...defaultStrategy,\n      Icon: BookOpenText,\n      title: tool.title || \"read\",\n      secondaryText: filePath || undefined,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: extractReadContent(state.outputValue),\n        language: detectLanguageByFilePath(filePath),\n        isCode: true,\n      },\n    };\n  }\n\n  if (toolKey === \"strreplacefile\") {\n    const filePath = getFilePathFromInput(state.inputValue);\n    const diffBlocks = buildKimiEditDiffBlocks(state, filePath);\n    return {\n      ...defaultStrategy,\n      Icon: FilePenLine,\n      title: tool.title || \"edit\",\n",
+                "time_created": 1772277299566
+              }
+            ]
+          },
+          "time_created": 1772277299454
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_hbuue9Z4xQm2eBEKTHmf5XTS",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "sed -n '560,1120p' src/components/SessionDetail.tsx",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 16000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: d66625\nWall time: 0.0519 seconds\nProcess exited with code 0\nOriginal token count: 4595\nOutput:\n      title: tool.title || \"edit\",\n      secondaryText: filePath || undefined,\n      showInputPreview: false,\n      outputContent:\n        diffBlocks.length > 0\n          ? {\n              kind: \"structured-diff\",\n              blocks: diffBlocks,\n            }\n          : {\n              kind: \"plain\",\n              text: extractEditDiff(state),\n              language: \"diff\",\n              isCode: true,\n            },\n    };\n  }\n\n  if (toolKey === \"writefile\") {\n    const filePath = getFilePathFromInput(state.inputValue);\n    return {\n      ...defaultStrategy,\n      Icon: NotebookPen,\n      title: tool.title || \"write\",\n      secondaryText: filePath || undefined,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: extractWriteContent(state),\n        language: detectLanguageByFilePath(filePath),\n        isCode: state.status === \"completed\",\n      },\n    };\n  }\n\n  return defaultStrategy;\n}\n\nfunction buildDefaultToolStrategy(\n  tool: MessagePart,\n  state: NormalizedToolState,\n): ToolDisplayStrategy {\n  const preview = state.command || state.inputText || \"{}\";\n  const compactPreview = preview.replace(/\\s+/g, \" \").trim();\n  const previewText =\n    compactPreview.length > 72 ? `${compactPreview.slice(0, 72)}...` : compactPreview;\n\n  return {\n    Icon: SquareTerminal,\n    title: tool.title || tool.tool || \"Tool\",\n    secondaryText: previewText ? `(${previewText})` : undefined,\n    expandable: true,\n    showInputPreview: true,\n    outputContent: {\n      kind: \"plain\",\n      text: getOutputOrErrorText(state),\n      language: \"text\",\n      isCode: false,\n    },\n  };\n}\n\nfunction buildOpencodeToolStrategy(\n  tool: MessagePart,\n  state: NormalizedToolState,\n): ToolDisplayStrategy {\n  const defaultStrategy = buildDefaultToolStrategy(tool, state);\n  const toolKey = (tool.tool || \"\").toLowerCase();\n  const input = toRecord(state.inputValue);\n\n  if (toolKey === \"glob\") {\n    const pattern = toPlainText(input.pattern);\n    return {\n      ...defaultStrategy,\n      Icon: FileSearch,\n      title: tool.tool || \"glob\",\n      secondaryText: pattern || undefined,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: getOutputOrErrorText(state),\n        language: \"text\",\n        isCode: false,\n      },\n    };\n  }\n\n  if (toolKey === \"grep\") {\n    const path = toPlainText(input.path);\n    const pattern = toPlainText(input.pattern);\n    const details = [path, pattern].filter(Boolean).join(\" · \");\n    return {\n      ...defaultStrategy,\n      Icon: FileSearch,\n      title: tool.tool || \"grep\",\n      secondaryText: details || undefined,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: getOutputOrErrorText(state),\n        language: \"text\",\n        isCode: false,\n      },\n    };\n  }\n\n  if (toolKey === \"bash\") {\n    const description = toPlainText(input.description);\n    const command = toPlainText(input.command);\n    const secondaryText = description\n      ? `${description}${command ? ` (${command})` : \"\"}`\n      : command\n        ? `(${command})`\n        : undefined;\n    return {\n      ...defaultStrategy,\n      Icon: SquareTerminal,\n      title: tool.tool || \"bash\",\n      secondaryText,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: getOutputOrErrorText(state),\n        language: \"text\",\n        isCode: false,\n      },\n    };\n  }\n\n  if (toolKey === \"read\") {\n    const filePath = getFilePathFromInput(state.inputValue);\n    return {\n      ...defaultStrategy,\n      Icon: BookOpenText,\n      title: tool.tool || \"read\",\n      secondaryText: filePath || undefined,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: extractReadContent(state.outputValue),\n        language: detectLanguageByFilePath(filePath),\n        isCode: true,\n      },\n    };\n  }\n\n  if (toolKey === \"edit\") {\n    const filePath = getFilePathFromInput(state.inputValue);\n    return {\n      ...defaultStrategy,\n      Icon: FilePenLine,\n      title: tool.tool || \"edit\",\n      secondaryText: filePath || undefined,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: extractEditDiff(state),\n        language: \"diff\",\n        isCode: true,\n      },\n    };\n  }\n\n  if (toolKey === \"write\") {\n    const filePath = getFilePathFromInput(state.inputValue);\n    const isSuccessfulWrite = state.status === \"completed\";\n    return {\n      ...defaultStrategy,\n      Icon: NotebookPen,\n      title: tool.tool || \"write\",\n      secondaryText: filePath || undefined,\n      showInputPreview: false,\n      outputContent: {\n        kind: \"plain\",\n        text: extractWriteContent(state),\n        language: detectLanguageByFilePath(filePath),\n        isCode: isSuccessfulWrite,\n      },\n    };\n  }\n\n  if (toolKey === \"skill\") {\n    const name = toPlainText(input.name);\n    return {\n      ...defaultStrategy,\n      Icon: Wrench,\n      title: tool.tool || \"skill\",\n      secondaryText: name || undefined,\n      expandable: false,\n      showInputPreview: false,\n    };\n  }\n\n  return defaultStrategy;\n}\n\nfunction getToolDisplayStrategy(\n  sessionAgentKey: string,\n  tool: MessagePart,\n  state: NormalizedToolState,\n): ToolDisplayStrategy {\n  const normalizedAgentKey = sessionAgentKey.toLowerCase();\n  if (normalizedAgentKey === \"opencode\") {\n    return buildOpencodeToolStrategy(tool, state);\n  }\n  if (normalizedAgentKey === \"kimi\") {\n    return buildKimiToolStrategy(tool, state);\n  }\n  return buildDefaultToolStrategy(tool, state);\n}\n\nfunction formatTokens(n: number) {\n  if (n >= 1000000) {\n    return `${(n / 1000000).toFixed(1)}M`;\n  }\n  if (n >= 1000) {\n    return `${(n / 1000).toFixed(1)}K`;\n  }\n  return n.toString();\n}\n\nfunction hasVisibleContent(msg: Message) {\n  return msg.parts.some((part) => {\n    if (part.type === \"text\") {\n      return hasNonEmptyMessageText(part.text);\n    }\n    if (part.type === \"reasoning\") {\n      return hasNonEmptyMessageText(part.text);\n    }\n    return part.type === \"tool\";\n  });\n}\n\nfunction formatMessageTime(rawTime: unknown) {\n  if (typeof rawTime === \"number\" && rawTime <= 0) {\n    return \"Unknown time\";\n  }\n\n  let date: Date | null = null;\n  if (typeof rawTime === \"number\") {\n    const normalized = rawTime < 10 ** 12 ? rawTime * 1000 : rawTime;\n    date = new Date(normalized);\n  } else if (typeof rawTime === \"string\") {\n    if (rawTime.trim()) {\n      const timestamp = Number(rawTime);\n      if (!Number.isNaN(timestamp) && timestamp > 0) {\n        date = new Date(timestamp < 10 ** 12 ? timestamp * 1000 : timestamp);\n      } else {\n        date = new Date(rawTime);\n      }\n    }\n  }\n\n  if (!date || Number.isNaN(date.getTime())) {\n    return \"Unknown time\";\n  }\n\n  return date.toLocaleTimeString(\"en-US\", {\n    hour: \"2-digit\",\n    minute: \"2-digit\",\n    second: \"2-digit\",\n    hour12: true,\n  });\n}\n\nexport function SessionDetail({ session }: SessionDetailProps) {\n  const sessionSlug = session._urlSlug || session.slug || \"\";\n  const sessionAgentKey =\n    sessionSlug.split(\"/\")[0] || ModelConfig.getDefaultAgentKey() || \"opencode\";\n  const visibleMessages = useMemo(\n    () => session.messages.filter((msg) => hasVisibleContent(msg)),\n    [session.messages],\n  );\n\n  if (visibleMessages.length === 0) {\n    return (\n      <div className=\"mx-auto max-w-4xl rounded-sm border border-[var(--console-border)] bg-white p-6 text-sm text-[var(--console-muted)]\">\n        当前会话暂无可展示的消息内容。\n      </div>\n    );\n  }\n\n  return (\n    <div className=\"mx-auto w-full max-w-5xl space-y-8 px-2 md:px-4 animate-in fade-in slide-in-from-bottom-2 duration-300\">\n      <div className=\"flex flex-col gap-8\">\n        {visibleMessages.map((msg, index) => (\n          <MessageItem\n            key={index}\n            msg={msg}\n            formatTokens={formatTokens}\n            sessionAgentKey={sessionAgentKey}\n          />\n        ))}\n      </div>\n    </div>\n  );\n}\n\nfunction MessageItem({\n  msg,\n  formatTokens,\n  sessionAgentKey,\n}: {\n  msg: Message;\n  formatTokens: (n: number) => string;\n  sessionAgentKey: string;\n}) {\n  const role = msg.role;\n  const time = formatMessageTime(msg.time_created);\n  const isUser = role === \"user\";\n  const textParts = msg.parts.filter((p) => p.type === \"text\" && hasNonEmptyMessageText(p.text));\n  const toolParts = msg.parts.filter((p) => p.type === \"tool\");\n  const reasoningParts = msg.parts.filter(\n    (p) => p.type === \"reasoning\" && hasNonEmptyMessageText(p.text),\n  );\n\n  const getAgentAvatar = () => {\n    const agentKey = sessionAgentKey.toLowerCase();\n    const agentName = ModelConfig.getAgentName(agentKey);\n    const agentIcon = ModelConfig.agents[agentKey]?.icon;\n    return (\n      <>\n        {agentIcon ? (\n          <img src={agentIcon} alt={agentName} className=\"size-4 rounded-sm object-cover\" />\n        ) : (\n          <Bot className=\"size-4 text-[var(--console-muted)]\" />\n        )}\n      </>\n    );\n  };\n\n  const modeLabel = msg.mode ? msg.mode.toUpperCase() : null;\n  const modelLabel = msg.model || null;\n\n  return (\n    <article className=\"w-full border-l-2 border-[var(--console-thread)] pl-4 pr-3 md:pr-5\">\n      <div className=\"flex gap-4\">\n        <div className=\"shrink-0 pt-1\">\n          <div className=\"flex size-8 items-center justify-center rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)]\">\n            {isUser ? (\n              <UserRound className=\"size-4 text-[var(--console-muted)]\" />\n            ) : (\n              getAgentAvatar()\n            )}\n          </div>\n        </div>\n        <div className=\"min-w-0 flex-1 space-y-3\">\n          <div className=\"flex items-baseline gap-3\">\n            <span className=\"console-mono text-sm font-bold tracking-wide text-[var(--console-text)]\">\n              {isUser ? \"USER\" : \"AGENT\"}\n            </span>\n            <time className=\"console-mono text-xs text-[var(--console-muted)]\">{time}</time>\n            {modeLabel && (\n              <span className=\"console-mono rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] px-1.5 py-0.5 text-[10px] text-[var(--console-muted)]\">\n                {modeLabel}\n              </span>\n            )}\n            {modelLabel && (\n              <span className=\"console-mono rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] px-1.5 py-0.5 text-[10px] text-[var(--console-muted)]\">\n                {modelLabel}\n              </span>\n            )}\n          </div>\n\n          {reasoningParts.length > 0 && <ReasoningSection parts={reasoningParts} />}\n          {toolParts.length > 0 && (\n            <ToolsSection parts={toolParts} sessionAgentKey={sessionAgentKey} />\n          )}\n\n          {textParts.length > 0 && (\n            <div className=\"rounded-sm border border-[var(--console-border)] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]\">\n              <div className=\"console-markdown text-sm leading-relaxed text-[var(--console-text)]\">\n                {textParts.map((part, i) => (\n                  <ReactMarkdown key={i}>{extractMessageText(part.text)}</ReactMarkdown>\n                ))}\n              </div>\n            </div>\n          )}\n\n          {!isUser && (msg.tokens || msg.cost) && (\n            <div className=\"flex flex-wrap gap-2\">\n              {msg.tokens?.input ? (\n                <span className=\"console-mono rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] px-2 py-1 text-[11px] text-[var(--console-muted)]\">\n                  INPUT {formatTokens(msg.tokens.input)}\n                </span>\n              ) : null}\n              {msg.tokens?.output ? (\n                <span className=\"console-mono rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] px-2 py-1 text-[11px] text-[var(--console-muted)]\">\n                  OUTPUT {formatTokens(msg.tokens.output)}\n                </span>\n              ) : null}\n              {msg.tokens?.reasoning ? (\n                <span className=\"console-mono rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] px-2 py-1 text-[11px] text-[var(--console-muted)]\">\n                  REASONING {formatTokens(msg.tokens.reasoning)}\n                </span>\n              ) : null}\n              {msg.cost ? (\n                <span className=\"console-mono rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] px-2 py-1 text-[11px] text-[var(--console-muted)]\">\n                  COST ${msg.cost.toFixed(4)}\n                </span>\n              ) : null}\n            </div>\n          )}\n        </div>\n      </div>\n    </article>\n  );\n}\n\nfunction ReasoningSection({ parts }: { parts: MessagePart[] }) {\n  const [expanded, setExpanded] = useState(false);\n  const fullText = parts\n    .map((p) => extractMessageText(p.text))\n    .filter(Boolean)\n    .join(\"\\n\\n\");\n\n  return (\n    <div className=\"overflow-hidden rounded-sm border border-[var(--console-thinking-border)] bg-[var(--console-thinking-bg)]\">\n      <div\n        className=\"flex cursor-pointer items-center justify-between bg-[var(--console-surface-muted)] px-3 py-2\"\n        onClick={() => setExpanded(!expanded)}\n      >\n        <span className=\"console-mono flex items-center gap-2 text-xs font-medium text-[var(--console-muted)]\">\n          <Lightbulb className=\"size-3.5\" />\n          Thinking\n        </span>\n        <span className=\"text-[var(--console-muted)]\">\n          {expanded ? <ChevronUp className=\"w-4 h-4\" /> : <ChevronDown className=\"w-4 h-4\" />}\n        </span>\n      </div>\n      {expanded && (\n        <div className=\"border-t border-dashed border-[var(--console-thinking-border)] px-4 py-3\">\n          <div className=\"console-mono whitespace-pre-wrap text-xs leading-relaxed text-[var(--console-muted)]\">\n            {fullText}\n          </div>\n        </div>\n      )}\n    </div>\n  );\n}\n\nfunction ToolsSection({\n  parts,\n  sessionAgentKey,\n}: {\n  parts: MessagePart[];\n  sessionAgentKey: string;\n}) {\n  return (\n    <div className=\"space-y-2\">\n      <div className=\"space-y-2\">\n        {parts.map((tool, i) => (\n          <ToolItem key={i} tool={tool} sessionAgentKey={sessionAgentKey} />\n        ))}\n      </div>\n    </div>\n  );\n}\n\nfunction ToolItem({ tool, sessionAgentKey }: { tool: MessagePart; sessionAgentKey: string }) {\n  const [expanded, setExpanded] = useState(false);\n  const state = normalizeToolState(tool);\n  const strategy = getToolDisplayStrategy(sessionAgentKey, tool, state);\n  const statusMeta = TOOL_STATUS_META[state.status];\n  const StatusIcon = statusMeta.icon;\n  const ToolIcon = strategy.Icon;\n\n  return (\n    <div className=\"space-y-2\">\n      <div className=\"flex flex-wrap items-start gap-2\">\n        <div\n          className={`w-full md:w-[560px] rounded-sm border border-[var(--console-border-strong)] bg-white px-3 py-2 text-left shadow-[2px_2px_0_0_rgba(15,23,42,0.05)] ${\n            strategy.expandable ? \"transition-colors hover:bg-[var(--console-surface-muted)]\" : \"\"\n          }`}\n        >\n          {strategy.expandable ? (\n            <button\n              type=\"button\"\n              className=\"flex w-full items-start gap-2 text-left\"\n              onClick={() => setExpanded(!expanded)}\n            >\n              <ToolIcon className=\"mt-0.5 size-3.5 shrink-0 text-[var(--console-accent)]\" />\n              <span className=\"min-w-0 flex-1\">\n                <span className=\"console-mono block text-xs font-semibold text-[var(--console-text)]\">\n                  {strategy.title}\n                </span>\n                {strategy.secondaryText ? (\n                  <span className=\"console-mono mt-0.5 block whitespace-pre-wrap break-words text-xs leading-relaxed text-[var(--console-muted)]\">\n                    {strategy.secondaryText}\n                  </span>\n                ) : null}\n              </span>\n              <span className=\"mt-0.5 shrink-0 text-[var(--console-muted)]\">\n                {expanded ? (\n                  <ChevronUp className=\"size-3.5\" />\n                ) : (\n                  <ChevronDown className=\"size-3.5\" />\n                )}\n              </span>\n            </button>\n          ) : (\n            <div className=\"flex items-start gap-2\">\n              <ToolIcon className=\"mt-0.5 size-3.5 shrink-0 text-[var(--console-accent)]\" />\n              <span className=\"min-w-0 flex-1\">\n                <span className=\"console-mono block text-xs font-semibold text-[var(--console-text)]\">\n                  {strategy.title}\n                </span>\n                {strategy.secondaryText ? (\n                  <span className=\"console-mono mt-0.5 block whitespace-pre-wrap break-words text-xs leading-relaxed text-[var(--console-muted)]\">\n                    {strategy.secondaryText}\n                  </span>\n                ) : null}\n              </span>\n            </div>\n          )}\n        </div>\n        <span\n          className={`console-mono inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${statusMeta.className}`}\n        >\n          <StatusIcon className={`size-3 ${state.status === \"running\" ? \"animate-spin\" : \"\"}`} />\n          {statusMeta.label}\n        </span>\n      </div>\n\n      {strategy.expandable && expanded ? (\n        <div className=\"overflow-hidden rounded-sm border border-[var(--console-border)] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]\">\n          <div className=\"border-b border-[var(--console-border)] bg-[var(--console-surface-muted)] px-3 py-1.5\">\n            <span className=\"console-mono text-xs text-[var(--console-muted)]\">Output</span>\n          </div>\n          <div className=\"p-3\">\n            <ToolOutputRenderer outputContent={strategy.outputContent} />\n          </div>\n          {strategy.showInputPreview ? (\n            <div className=\"border-t border-[var(--console-border)] bg-[#fafafa] px-3 py-2\">\n              <span className=\"console-mono text-[11px] text-[var(--console-muted)]\">\n                Input Preview\n              </span>\n              <pre className=\"console-mono mt-1 max-h-[200px] overflow-x-auto whitespace-pre-wrap break-all text-xs leading-relaxed text-[var(--console-muted)]\">\n                {state.inputText || \"{}\"}\n              </pre>\n            </div>\n          ) : null}\n        </div>\n      ) : null}\n    </div>\n  );\n}\n",
+                "time_created": 1772277299569
+              }
+            ]
+          },
+          "time_created": 1772277299455
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_3fWqg1MCV5mXDlsQgOP00vbi",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "sed -n '1,220p' src/types.ts",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 4000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: e5de2b\nWall time: 0.0519 seconds\nProcess exited with code 0\nOriginal token count: 270\nOutput:\nexport interface SessionStats {\n  message_count: number;\n  total_input_tokens: number;\n  total_output_tokens: number;\n  total_cost: number;\n}\n\nexport interface MessageTokens {\n  input?: number;\n  output?: number;\n  reasoning?: number;\n}\n\nexport interface MessagePart {\n  type: \"text\" | \"tool\" | \"reasoning\";\n  text?: unknown;\n  tool?: string;\n  title?: string;\n  state?: {\n    status?: \"running\" | \"completed\" | \"error\";\n    input?: unknown;\n    output?: unknown;\n  };\n}\n\nexport interface Message {\n  role: \"user\" | \"assistant\";\n  time_created: string;\n  mode?: string;\n  model?: string;\n  parts: MessagePart[];\n  tokens?: MessageTokens;\n  cost?: number;\n}\n\nexport interface SessionInfo {\n  id: string;\n  slug: string;\n  title: string;\n  directory: string;\n  time_created: number;\n  time_updated?: number;\n  stats: SessionStats;\n}\n\nexport interface Session {\n  id: string;\n  slug: string;\n  _urlSlug?: string;\n  title: string;\n  directory: string;\n  time_created: string;\n  stats: SessionStats;\n  messages: Message[];\n}\n\nexport interface IndexData {\n  sessions: SessionInfo[];\n}\n",
+                "time_created": 1772277299569
+              }
+            ]
+          },
+          "time_created": 1772277299463
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:15:03.302Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277303302,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Inspecting message part order**",
+          "time_created": 1772277303302
+        },
+        {
+          "type": "text",
+          "text": "我继续核对真实 session 数据里的 `parts` 顺序，确认 Codex 和 Kimi 两种源数据是否都保留了原始时序，以及是否确实存在 `text` 在 `tool` 前后的两种情况。",
+          "time_created": 1772277313939
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_FWrcPGb9nkWXlkycoMSvRFsB",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "node -e \"const fs=require('fs');const path=require('path');for(const file of ['data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json','data/sessions/codex/019c8d8e-e8b6-77c0-a7c7-e61a4a719778.json','data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json','data/sessions/kimi/fix-dialog-drawer-a11y-toast-style.json']){const data=JSON.parse(fs.readFileSync(file,'utf8'));console.log('\\nFILE',file);data.messages.forEach((m,idx)=>{if(m.role!=='assistant') return; const seq=m.parts.map(p=>p.type+(p.tool?':'+p.tool:'')); const hasMixed = new Set(m.parts.map(p=>p.type)).size>1; if(hasMixed) console.log(idx, JSON.stringify(seq));});}\"",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 1950ee\nWall time: 0.0517 seconds\nProcess exited with code 0\nOriginal token count: 1858\nOutput:\n\nFILE data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json\n8 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n9 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n10 [\"reasoning\",\"text\",\"tool:exec_command\"]\n11 [\"reasoning\",\"text\",\"tool:exec_command\"]\n12 [\"reasoning\",\"text\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n13 [\"reasoning\",\"reasoning\",\"reasoning\",\"reasoning\",\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n14 [\"reasoning\",\"reasoning\",\"reasoning\",\"reasoning\",\"reasoning\",\"text\"]\n16 [\"reasoning\",\"text\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n17 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n18 [\"reasoning\",\"text\",\"tool:exec_command\"]\n19 [\"reasoning\",\"reasoning\",\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n20 [\"reasoning\",\"text\",\"tool:exec_command\"]\n21 [\"reasoning\",\"text\"]\n23 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n24 [\"reasoning\",\"text\",\"text\"]\n25 [\"reasoning\",\"text\",\"tool:exec_command\"]\n26 [\"reasoning\",\"text\",\"text\"]\n27 [\"reasoning\",\"reasoning\",\"text\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n28 [\"reasoning\",\"reasoning\",\"reasoning\",\"text\"]\n31 [\"reasoning\",\"reasoning\",\"text\"]\n35 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n36 [\"reasoning\",\"reasoning\",\"text\",\"text\",\"tool:exec_command\",\"tool:exec_command\"]\n37 [\"reasoning\",\"text\",\"tool:exec_command\"]\n38 [\"reasoning\",\"reasoning\",\"text\"]\n40 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n41 [\"reasoning\",\"reasoning\",\"reasoning\",\"reasoning\",\"text\",\"text\",\"tool:exec_command\",\"tool:exec_command\"]\n42 [\"reasoning\",\"text\",\"tool:exec_command\"]\n43 [\"reasoning\",\"reasoning\",\"text\"]\n45 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n46 [\"reasoning\",\"text\",\"tool:exec_command\"]\n47 [\"reasoning\",\"text\",\"tool:exec_command\"]\n48 [\"reasoning\",\"reasoning\",\"text\",\"tool:exec_command\"]\n49 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n50 [\"reasoning\",\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n51 [\"reasoning\",\"reasoning\",\"text\"]\n52 [\"reasoning\",\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n53 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n54 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\"]\n55 [\"reasoning\",\"text\",\"text\",\"tool:exec_command\",\"tool:exec_command\"]\n56 [\"reasoning\",\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\"]\n57 [\"reasoning\",\"reasoning\",\"text\"]\n58 [\"reasoning\",\"text\",\"text\"]\n\nFILE data/sessions/codex/019c8d8e-e8b6-77c0-a7c7-e61a4a719778.json\n1 [\"reasoning\",\"text\",\"text\",\"tool:exec_command\",\"tool:exec_command\"]\n2 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\"]\n3 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\"]\n4 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\"]\n5 [\"reasoning\",\"text\",\"tool:exec_command\"]\n6 [\"reasoning\",\"text\"]\n7 [\"reasoning\",\"reasoning\",\"text\",\"tool:exec_command\"]\n8 [\"reasoning\",\"text\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\",\"tool:exec_command\"]\n9 [\"reasoning\",\"reasoning\",\"text\"]\n\nFILE data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json\n1 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\"]\n2 [\"reasoning\",\"text\",\"tool:StrReplaceFile\"]\n3 [\"reasoning\",\"text\",\"tool:Shell\"]\n4 [\"reasoning\",\"tool:Shell\"]\n5 [\"reasoning\",\"text\"]\n7 [\"reasoning\",\"text\",\"tool:StrReplaceFile\"]\n8 [\"reasoning\",\"tool:Shell\"]\n9 [\"reasoning\",\"tool:Shell\"]\n10 [\"reasoning\",\"text\"]\n\nFILE data/sessions/kimi/fix-dialog-drawer-a11y-toast-style.json\n1 [\"reasoning\",\"text\",\"tool:Grep\",\"tool:Grep\",\"tool:Glob\"]\n2 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\",\"tool:Grep\"]\n3 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\",\"tool:ReadFile\",\"tool:ReadFile\"]\n4 [\"reasoning\",\"text\",\"tool:ReadFile\",\"tool:ReadFile\",\"tool:ReadFile\"]\n5 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\",\"tool:ReadFile\",\"tool:ReadFile\",\"tool:ReadFile\"]\n6 [\"reasoning\",\"tool:ReadFile\",\"tool:Grep\"]\n7 [\"reasoning\",\"tool:Glob\",\"tool:Glob\",\"tool:ReadFile\"]\n8 [\"reasoning\",\"tool:ReadFile\",\"tool:Grep\"]\n9 [\"reasoning\",\"tool:ReadFile\",\"tool:Glob\",\"tool:Glob\",\"tool:Glob\"]\n10 [\"reasoning\",\"tool:ReadFile\"]\n11 [\"reasoning\",\"text\",\"tool:ReadFile\"]\n12 [\"reasoning\",\"tool:Grep\"]\n13 [\"reasoning\",\"tool:ReadFile\"]\n14 [\"reasoning\",\"text\",\"tool:StrReplaceFile\"]\n15 [\"reasoning\",\"tool:StrReplaceFile\"]\n16 [\"reasoning\",\"tool:WriteFile\"]\n17 [\"reasoning\",\"tool:Shell\"]\n18 [\"reasoning\",\"tool:Shell\"]\n19 [\"reasoning\",\"tool:Shell\"]\n20 [\"reasoning\",\"text\",\"tool:ReadFile\",\"tool:ReadFile\"]\n21 [\"reasoning\",\"tool:ReadFile\"]\n22 [\"reasoning\",\"text\"]\n24 [\"reasoning\",\"tool:StrReplaceFile\"]\n25 [\"reasoning\",\"tool:ReadFile\"]\n26 [\"reasoning\",\"tool:StrReplaceFile\"]\n27 [\"reasoning\",\"tool:Shell\"]\n28 [\"reasoning\",\"text\"]\n30 [\"reasoning\",\"text\",\"tool:ReadFile\",\"tool:ReadFile\"]\n31 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\"]\n32 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\"]\n33 [\"reasoning\",\"text\",\"tool:StrReplaceFile\"]\n34 [\"reasoning\",\"text\",\"tool:WriteFile\"]\n35 [\"reasoning\",\"tool:Shell\"]\n36 [\"reasoning\",\"tool:Shell\"]\n37 [\"reasoning\",\"text\",\"tool:ReadFile\",\"tool:ReadFile\"]\n38 [\"reasoning\",\"text\"]\n40 [\"reasoning\",\"text\",\"tool:Grep\",\"tool:Grep\"]\n41 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\"]\n42 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\"]\n43 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\"]\n44 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\"]\n45 [\"reasoning\",\"tool:ReadFile\",\"tool:ReadFile\"]\n46 [\"reasoning\",\"tool:ReadFile\"]\n47 [\"reasoning\",\"text\",\"tool:StrReplaceFile\"]\n48 [\"reasoning\",\"tool:ReadFile\"]\n49 [\"reasoning\",\"tool:ReadFile\"]\n50 [\"reasoning\",\"tool:ReadFile\"]\n51 [\"reasoning\",\"tool:StrReplaceFile\"]\n52 [\"reasoning\",\"tool:ReadFile\"]\n53 [\"reasoning\",\"tool:ReadFile\"]\n54 [\"reasoning\",\"tool:StrReplaceFile\"]\n55 [\"reasoning\",\"tool:ReadFile\"]\n56 [\"reasoning\",\"tool:ReadFile\"]\n57 [\"reasoning\",\"tool:StrReplaceFile\"]\n58 [\"reasoning\",\"tool:ReadFile\"]\n59 [\"reasoning\",\"tool:ReadFile\"]\n60 [\"reasoning\",\"tool:StrReplaceFile\"]\n61 [\"reasoning\",\"text\",\"tool:Shell\"]\n62 [\"reasoning\",\"tool:ReadFile\"]\n63 [\"reasoning\",\"tool:StrReplaceFile\"]\n64 [\"reasoning\",\"tool:Shell\"]\n65 [\"reasoning\",\"text\"]\n67 [\"reasoning\",\"tool:ReadFile\"]\n68 [\"reasoning\",\"tool:StrReplaceFile\"]\n69 [\"reasoning\",\"tool:Shell\"]\n70 [\"reasoning\",\"tool:Shell\"]\n71 [\"reasoning\",\"text\",\"tool:ReadFile\"]\n72 [\"reasoning\",\"text\"]\n74 [\"reasoning\",\"text\",\"tool:ReadFile\",\"tool:Grep\"]\n75 [\"reasoning\",\"text\",\"tool:StrReplaceFile\"]\n76 [\"reasoning\",\"tool:Shell\"]\n77 [\"reasoning\",\"text\"]\n",
+                "time_created": 1772277314122
+              }
+            ]
+          },
+          "time_created": 1772277313957
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_z6q1GCXt6YgouCCiK4aFnMKx",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "node -e \"const fs=require('fs');const file='data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json';const data=JSON.parse(fs.readFileSync(file,'utf8'));data.messages.forEach((m,idx)=>{if(m.role!=='assistant') return; const seq=m.parts.map(p=>p.type); if(seq.includes('text')&&seq.includes('tool')){console.log('msg',idx,'seq',seq.join(' -> ')); m.parts.forEach((p,i)=>{if(p.type==='text'||p.type==='reasoning') console.log(' part',i,p.type,JSON.stringify(String(p.text).slice(0,80))); else console.log(' part',i,p.type,p.tool);}); console.log('---');}});\"",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: ad12f9\nWall time: 0.0516 seconds\nProcess exited with code 0\nOriginal token count: 254\nOutput:\nmsg 2 seq reasoning -> text -> tool\n part 0 reasoning \"我找到问题了。在 `cli.py` 的 `display_sessions_list` 函数中，第 206 行捕获 `KeyboardInterrupt` 的方\"\n part 1 text \"找到问题了！在 `cli.py` 第 206 行，`except EOFError, KeyboardInterrupt:` 是 Python 2 的语法，Py\"\n part 2 tool StrReplaceFile\n---\nmsg 3 seq reasoning -> text -> tool\n part 0 reasoning \"修复完成。现在让我验证一下修复是否正确，并运行测试确保没有破坏其他功能。\"\n part 1 text \"修复完成。让我验证修复并运行测试：\"\n part 2 tool Shell\n---\nmsg 7 seq reasoning -> text -> tool\n part 0 reasoning \"用户说问题依旧存在。让我仔细看一下代码逻辑。\\n\\n问题可能在于 `input()` 函数本身的行为。当调用 `input()` 时，它会阻塞等待用户输入，这时候 \"\n part 1 text \"我明白了！问题是 `display_sessions_list` 里的 `break` 只是跳出了分页循环，但外层的 `for agent in availab\"\n part 2 tool StrReplaceFile\n---\n",
+                "time_created": 1772277314122
+              }
+            ]
+          },
+          "time_created": 1772277313958
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_ClMmwVvbP38ozs91AvyqRHUZ",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "node -e \"const fs=require('fs');const file='data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json';const data=JSON.parse(fs.readFileSync(file,'utf8'));data.messages.forEach((m,idx)=>{if(m.role!=='assistant') return; const seq=m.parts.map(p=>p.type); if(seq.includes('text')&&seq.includes('tool')){console.log('msg',idx,'seq',seq.join(' -> ')); m.parts.forEach((p,i)=>{if(p.type==='text'||p.type==='reasoning') console.log(' part',i,p.type,JSON.stringify(String(p.text).slice(0,80))); else console.log(' part',i,p.type,p.tool);}); console.log('---');}});\"",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: e91e9d\nWall time: 0.0518 seconds\nProcess exited with code 0\nOriginal token count: 3382\nOutput:\nmsg 8 seq reasoning -> text -> tool -> tool -> tool\n part 0 reasoning \"**Acknowledging review task and vitest usage**\"\n part 1 text \"我继续按你指定的 `$vitest` 来做审查：先快速盘点当前 Vitest 配置、测试分布和覆盖盲区，再跑一轮现有测试验证，最后给出“需要调整/补充/新增”的\"\n part 2 tool exec_command\n part 3 tool exec_command\n part 4 tool exec_command\n---\nmsg 9 seq reasoning -> text -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Planning skill usage announcement**\"\n part 1 text \"当前按 `$vitest` skill 继续：我会聚焦测试配置、执行稳定性和覆盖空白三个维度给你出审查结论。下一步先读 `package.json`、`vite\"\n part 2 tool exec_command\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n---\nmsg 10 seq reasoning -> text -> tool\n part 0 reasoning \"**Assessing test run feasibility**\"\n part 1 text \"我开始跑一轮单测，确认当前基线是否稳定；随后会抽样查看失败风险高的测试与未覆盖模块。\"\n part 2 tool exec_command\n---\nmsg 11 seq reasoning -> text -> tool\n part 0 reasoning \"**Running coverage tests**\"\n part 1 text \"单测基线已通过（117 文件/917 用例）。我再跑覆盖率，确认阈值与盲区是否一致，再给你“新增/补充”建议的优先级。\"\n part 2 tool exec_command\n---\nmsg 12 seq reasoning -> text -> text -> tool -> tool -> tool -> tool -> tool -> tool -> tool -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Assessing test coverage gaps**\"\n part 1 text \"我在做第二步：定位“看起来有测试但实际未纳入覆盖统计”的配置问题，以及真正还缺测试的核心模块，避免只给泛泛建议。接下来会做一个源码-测试映射核对。\"\n part 2 text \"我在做第二步：定位“看起来有测试但实际未纳入覆盖统计”的配置问题，以及真正还缺测试的核心模块，避免只给泛泛建议。接下来会做一个源码-测试映射核对。\"\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n part 6 tool exec_command\n part 7 tool exec_command\n part 8 tool exec_command\n part 9 tool exec_command\n part 10 tool exec_command\n part 11 tool exec_command\n part 12 tool exec_command\n part 13 tool exec_command\n---\nmsg 13 seq reasoning -> reasoning -> reasoning -> reasoning -> reasoning -> text -> tool -> tool -> tool -> tool -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Planning untested files detection**\"\n part 1 reasoning \"**Identifying critical untested strategies**\"\n part 2 reasoning \"**Identifying critical untested strategies**\"\n part 3 reasoning \"**Reviewing tests for coverage gaps**\"\n part 4 reasoning \"**Checking API tests for parse route**\"\n part 5 text \"我正在核对“API 路由是否已覆盖到关键分支”，尤其是 `parse-sql` 的输入校验和错误路径，避免遗漏线上高频报错点。\"\n part 6 tool exec_command\n part 7 tool exec_command\n part 8 tool exec_command\n part 9 tool exec_command\n part 10 tool exec_command\n part 11 tool exec_command\n part 12 tool exec_command\n part 13 tool exec_command\n---\nmsg 16 seq reasoning -> text -> text -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Inspecting existing klip documentation**\"\n part 1 text \"我先按现有 `klips` 目录规范确认文档结构和命名，然后新增一份只记录问题与跟进计划的 klip 文档，不改业务代码。接下来先读取几个已有 klip 的样例\"\n part 2 text \"我先按现有 `klips` 目录规范确认文档结构和命名，然后新增一份只记录问题与跟进计划的 klip 文档，不改业务代码。接下来先读取几个已有 klip 的样例\"\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n part 6 tool exec_command\n---\nmsg 17 seq reasoning -> text -> tool -> tool -> tool\n part 0 reasoning \"**Planning detailed klip documentation**\"\n part 1 text \"我已确认可以新建 `klip-22`。为了便于后续持续跟进，我会同时产出 `README.md`（问题详情）+ `task_plan.md`（可执行追踪清单），\"\n part 2 tool exec_command\n part 3 tool exec_command\n part 4 tool exec_command\n---\nmsg 18 seq reasoning -> text -> tool\n part 0 reasoning \"**Planning detailed issue documentation**\"\n part 1 text \"我准备开始落盘文档：新建 `klips/klip-22-vitest-test-governance-followup/README.md` 和 `task_p\"\n part 2 tool exec_command\n---\nmsg 19 seq reasoning -> reasoning -> reasoning -> text -> tool -> tool -> tool\n part 0 reasoning \"**Drafting detailed review README**\"\n part 1 reasoning \"**Adding task plan file**\"\n part 2 reasoning \"**Verifying file existence**\"\n part 3 text \"文档已创建完毕，我正在做一次快速自检（路径、内容结构、状态字段）确保可直接进入后续迭代使用。\"\n part 4 tool exec_command\n part 5 tool exec_command\n part 6 tool exec_command\n---\nmsg 20 seq reasoning -> text -> tool\n part 0 reasoning \"**Checking for changed files**\"\n part 1 text \"文档自检完成，结构和内容都已落盘。最后我再确认一下工作区改动列表，只包含新增 klip 文档。\"\n part 2 tool exec_command\n---\nmsg 23 seq reasoning -> text -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Planning phase1 fix and tests**\"\n part 1 text \"我开始执行 Phase 1：先修复 `SqlServerStrategy` 的表注释层级类型问题，再补一条最小回归测试并跑 `bun run test:run`\"\n part 2 tool exec_command\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n---\nmsg 25 seq reasoning -> text -> tool\n part 0 reasoning \"**Running tests to validate**\"\n part 1 text \"我现在执行 `bun run test:run` 做 Phase 1 验证（含新加回归用例），确认没有引入回归。\"\n part 2 tool exec_command\n---\nmsg 27 seq reasoning -> reasoning -> text -> text -> tool -> tool -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Updating task status to in_progress**\"\n part 1 reasoning \"**Planning file diff extraction**\"\n part 2 text \"我做最后一次自检：确认改动仅包含 Phase 1 相关代码、测试与 klip 状态更新，然后给你汇总结果。\"\n part 3 text \"我做最后一次自检：确认改动仅包含 Phase 1 相关代码、测试与 klip 状态更新，然后给你汇总结果。\"\n part 4 tool exec_command\n part 5 tool exec_command\n part 6 tool exec_command\n part 7 tool exec_command\n part 8 tool exec_command\n part 9 tool exec_command\n---\nmsg 35 seq reasoning -> text -> tool -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Planning vitest tests for phase 3**\"\n part 1 text \"我开始执行 Phase 3：新增 `parse-sql` 路由错误分支测试（`SQL_REQUIRED`、`INVALID_DATABASE_TYPE`、`SQ\"\n part 2 tool exec_command\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n part 6 tool exec_command\n---\nmsg 36 seq reasoning -> reasoning -> text -> text -> tool -> tool\n part 0 reasoning \"**Testing parse failure determinism**\"\n part 1 reasoning \"**Adding detailed parse failure tests**\"\n part 2 text \"我开始新增 `api/__tests__/parse-sql-route.test.ts`，只覆盖 Phase 3 要求的三个错误分支，并在解析失败用例里抑制 \"\n part 3 text \"测试文件已加好。我先跑这一个新文件快速确认，再跑全量 `test:run` 做阶段验收。\"\n part 4 tool exec_command\n part 5 tool exec_command\n---\nmsg 37 seq reasoning -> text -> tool\n part 0 reasoning \"**Updating docs and task plan**\"\n part 1 text \"Phase 3 测试已通过，我现在回填 `klip-22` 的任务状态与 Issue Log，把 `F-004` 标记为已完成，保持文档和代码状态一致。\"\n part 2 tool exec_command\n---\nmsg 40 seq reasoning -> text -> tool -> tool -> tool -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Inspecting strategy files for tests**\"\n part 1 text \"我继续执行 Phase 2，并使用 `$vitest` 来补齐策略单测。先读取 MySQL/PostgreSQL/Oracle 三个策略实现，确定最小但有效的断\"\n part 2 tool exec_command\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n part 6 tool exec_command\n part 7 tool exec_command\n part 8 tool exec_command\n---\nmsg 41 seq reasoning -> reasoning -> reasoning -> reasoning -> text -> text -> tool -> tool\n part 0 reasoning \"**Inspecting type mappings for tests**\"\n part 1 reasoning \"**Refining command quoting strategy**\"\n part 2 reasoning \"**Planning minimal DB strategy tests**\"\n part 3 reasoning \"**Planning phase progress update**\"\n part 4 text \"我将一次性新增 3 个策略测试文件（MySQL/PostgreSQL/Oracle），覆盖默认值、自增、注释与转义这些关键分支；完成后先跑这 3 个文件再跑全量\"\n part 5 text \"三个测试文件已新增。我先跑这三份新测试做快速验证，确认断言正确后再跑全量 `test:run`。\"\n part 6 tool exec_command\n part 7 tool exec_command\n---\nmsg 42 seq reasoning -> text -> tool\n part 0 reasoning \"**Updating docs and tracking**\"\n part 1 text \"Phase 2 的代码与测试都通过了，我现在把 klip 状态同步为“Phase 2 完成、F-003 已解决”，并记录最新基线（122 files / 928\"\n part 2 tool exec_command\n---\nmsg 45 seq reasoning -> text -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Planning test coverage expansion**\"\n part 1 text \"我继续推进 Phase 4（覆盖率口径治理）：先调整 `vitest` 的 `coverage.include/exclude`，把 `api` 纳入统计，并把\"\n part 2 tool exec_command\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n---\nmsg 46 seq reasoning -> text -> tool\n part 0 reasoning \"**Refining coverage inclusion/exclusion strategy**\"\n part 1 text \"我准备修改 `vitest.config.ts`：把 `api` 纳入 coverage 统计，并把原先“整段排除 components”改成“仅排除组件展示层\"\n part 2 tool exec_command\n---\nmsg 47 seq reasoning -> text -> tool\n part 0 reasoning \"**Refining coverage inclusion/exclusion**\"\n part 1 text \"第一次调整后覆盖率明显不达标（主要被 `api` 的低覆盖模块和 `components` 下大量未测逻辑拉低）。我会做第二轮“精确排除”校准：保留已测业务逻辑\"\n part 2 tool exec_command\n---\nmsg 48 seq reasoning -> reasoning -> text -> tool\n part 0 reasoning \"**Adjusting coverage thresholds**\"\n part 1 reasoning \"**Adjusting coverage thresholds**\"\n part 2 text \"第二轮后只剩两个门槛未过（`functions 92.41 < 95`、`branches 80.6 < 85`）。这一步我会执行“门禁校准”：在扩大统计范围后\"\n part 3 tool exec_command\n---\nmsg 49 seq reasoning -> text -> tool -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Running lint and tests**\"\n part 1 text \"Phase 4 已通过 `coverage`（新口径下），我继续执行 Phase 5 收口：补跑 `bun run lint` 和 `bun run test:\"\n part 2 tool exec_command\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n part 6 tool exec_command\n---\nmsg 50 seq reasoning -> reasoning -> text -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Preparing manual lint patches**\"\n part 1 reasoning \"**Applying line-wrapping patch**\"\n part 2 text \"`lint` 仅失败在 3 个新测试文件的格式（逻辑无误）。我先把这 3 处按 Biome 样式修正，再重新跑 `lint` 收口。\"\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n part 6 tool exec_command\n---\nmsg 52 seq reasoning -> reasoning -> text -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Preparing to verify repo state**\"\n part 1 reasoning \"**Preparing to verify repo state**\"\n part 2 text \"我继续推进，先快速核对当前分支的未提交改动和 `klip-22` 文档状态，确认还有没有未完成项；随后我会直接做下一步收尾（若无遗留，会给出可执行的后续动作）。\"\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n part 6 tool exec_command\n---\nmsg 53 seq reasoning -> text -> tool -> tool -> tool -> tool -> tool\n part 0 reasoning \"**Reviewing uncommitted changes**\"\n part 1 text \"我看到了还有 6 个未提交文件，下一步我先检查这些 diff 是否完整对应 `Phase 3/4/5` 收尾，然后直接整理成可提交状态。\"\n part 2 tool exec_command\n part 3 tool exec_command\n part 4 tool exec_command\n part 5 tool exec_command\n part 6 tool exec_command\n---\nmsg 54 seq reasoning -> text -> tool -> tool\n part 0 reasoning \"**Verifying tests and lint before commit**\"\n part 1 text \"我准备做最后一次回归确认（`lint` + `test:run`），确保当前未提交 diff 完整可落地；如果通过，我会直接帮你整理提交建议。\"\n part 2 tool exec_command\n part 3 tool exec_command\n---\nmsg 55 seq reasoning -> text -> text -> tool -> tool\n part 0 reasoning \"**Adding coverage check**\"\n part 1 text \"`lint` 与 `test:run` 已再次通过；我再补跑一次 `test:coverage`，确认新门禁和统计口径在当前代码上稳定通过。\"\n part 2 text \"`lint` 与 `test:run` 已再次通过；我再补跑一次 `test:coverage`，确认新门禁和统计口径在当前代码上稳定通过。\"\n part 3 tool exec_command\n part 4 tool exec_command\n---\nmsg 56 seq reasoning -> reasoning -> text -> tool -> tool\n part 0 reasoning \"**Checking git status before committing**\"\n part 1 reasoning \"**Preparing final commit**\"\n part 2 text \"我继续做收尾：把当前 6 个文件打包提交为 Phase 4/5 完成记录，提交后会给你一份简明结果和下一步可选项。\"\n part 3 tool exec_command\n part 4 tool exec_command\n---\n",
+                "time_created": 1772277314124
+              }
+            ]
+          },
+          "time_created": 1772277313961
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:15:17.297Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277317297,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Planning order handling and tests**",
+          "time_created": 1772277317297
+        },
+        {
+          "type": "text",
+          "text": "真实数据已经证明问题存在：`parts` 里的原始顺序是保留的，但页面现在固定按 `reasoning -> tool -> text` 渲染，所以像 Kimi 的 `reasoning -> text -> tool`、Codex 的 `reasoning -> text -> tool*` 都会被打乱。接下来我确认项目里现有测试形态，方便把修复方案补到验收标准里。",
+          "time_created": 1772277320467
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_N4bRFkwxr7iWfvGGaDonZBOI",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "cat package.json",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 4000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 37d5a8\nWall time: 0.0513 seconds\nProcess exited with code 0\nOriginal token count: 397\nOutput:\n{\n  \"name\": \"agent-view\",\n  \"version\": \"0.3.0\",\n  \"description\": \"A tool for visualizing and browsing AI Agent sessions.\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"build\": \"bun run build:index && vite build && cp -r data dist/data\",\n    \"build:index\": \"bun run scripts/build-index.ts\",\n    \"build:logo\": \"bun run scripts/build-logo.ts\",\n    \"dev\": \"vite\",\n    \"lint\": \"oxlint --type-aware\",\n    \"lint:fix\": \"oxlint --type-aware --fix\",\n    \"lint:format\": \"oxfmt --write\",\n    \"preview\": \"vite preview\"\n  },\n  \"dependencies\": {\n    \"@radix-ui/react-scroll-area\": \"^1.2.10\",\n    \"@radix-ui/react-separator\": \"^1.1.8\",\n    \"@radix-ui/react-slot\": \"^1.2.4\",\n    \"@vercel/analytics\": \"^1.6.1\",\n    \"class-variance-authority\": \"^0.7.1\",\n    \"clsx\": \"^2.1.1\",\n    \"date-fns\": \"^4.1.0\",\n    \"diff\": \"^8.0.3\",\n    \"lucide-react\": \"^0.575.0\",\n    \"react\": \"^19.2.4\",\n    \"react-dom\": \"^19.2.4\",\n    \"react-markdown\": \"^10.1.0\",\n    \"react-router-dom\": \"^7.13.0\",\n    \"react-syntax-highlighter\": \"^16.1.1\",\n    \"sharp\": \"^0.33.0\",\n    \"tailwind-merge\": \"^3.5.0\",\n    \"tailwindcss-animate\": \"^1.0.7\"\n  },\n  \"devDependencies\": {\n    \"@tailwindcss/postcss\": \"^4.2.0\",\n    \"@tailwindcss/vite\": \"^4.2.0\",\n    \"@types/node\": \"^25.3.0\",\n    \"@types/react\": \"^19.2.14\",\n    \"@types/react-dom\": \"^19.2.3\",\n    \"@vitejs/plugin-react\": \"^5.1.4\",\n    \"autoprefixer\": \"^10.4.24\",\n    \"oxfmt\": \"^0.34.0\",\n    \"oxlint\": \"^1.49.0\",\n    \"oxlint-tsgolint\": \"^0.14.2\",\n    \"postcss\": \"^8.5.6\",\n    \"tailwindcss\": \"^4.2.0\",\n    \"typescript\": \"^5.9.3\",\n    \"vite\": \"^7.3.1\"\n  },\n  \"engines\": {\n    \"bun\": \">=1.0.0\"\n  }\n}\n",
+                "time_created": 1772277320593
+              }
+            ]
+          },
+          "time_created": 1772277320478
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_LqU2v6eictnvnVZ30R0jhydX",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "rg -n \"describe\\(|it\\(|test\\(\" src . --glob '!data/**'",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 8000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: e2ccef\nWall time: 0.0516 seconds\nProcess exited with code 0\nOriginal token count: 793\nOutput:\nsrc/components/tool-output/UnifiedDiffOutput.tsx:10:  if (/^(Index:|diff\\s|===)/.test(line)) {\nsrc/components/tool-output/UnifiedDiffOutput.tsx:29:  const lines = text.split(\"\\n\");\n./src/components/tool-output/UnifiedDiffOutput.tsx:10:  if (/^(Index:|diff\\s|===)/.test(line)) {\n./src/components/tool-output/UnifiedDiffOutput.tsx:29:  const lines = text.split(\"\\n\");\nsrc/components/SessionList.tsx:47:          const agent = session.slug ? session.slug.split(\"/\")[0] : \"opencode\";\n./src/components/SessionList.tsx:47:          const agent = session.slug ? session.slug.split(\"/\")[0] : \"opencode\";\n./src/components/SessionDetail.tsx:163:      return Boolean(segment) && !/^<system>[\\s\\S]*<\\/system>$/i.test(segment);\n./src/components/SessionDetail.tsx:172:      includeSystem && /^<system>[\\s\\S]*<\\/system>$/i.test(segment)\n./src/components/SessionDetail.tsx:312:  const fileName = filePath.split(\"/\").pop()?.toLowerCase() || \"\";\n./src/components/SessionDetail.tsx:317:  const extension = fileName.includes(\".\") ? fileName.split(\".\").pop() : \"\";\n./src/components/SessionDetail.tsx:359:    .split(\"\\n\")\n./src/components/SessionDetail.tsx:360:    .filter((line) => !/^\\(End of file - total \\d+ lines\\)$/.test(line.trim()))\n./src/components/SessionDetail.tsx:367:  const oldLines = normalizeEscapedNewlines(oldValue).split(\"\\n\");\n./src/components/SessionDetail.tsx:368:  const newLines = normalizeEscapedNewlines(newValue).split(\"\\n\");\n./src/components/SessionDetail.tsx:379:  const lines = normalized.split(\"\\n\");\n./src/components/SessionDetail.tsx:414:  const fileName = normalizedPath.split(\"/\").pop() || normalizedPath;\n./src/components/SessionDetail.tsx:828:    sessionSlug.split(\"/\")[0] || ModelConfig.getDefaultAgentKey() || \"opencode\";\nsrc/components/SessionDetail.tsx:163:      return Boolean(segment) && !/^<system>[\\s\\S]*<\\/system>$/i.test(segment);\nsrc/components/SessionDetail.tsx:172:      includeSystem && /^<system>[\\s\\S]*<\\/system>$/i.test(segment)\nsrc/components/SessionDetail.tsx:312:  const fileName = filePath.split(\"/\").pop()?.toLowerCase() || \"\";\nsrc/components/SessionDetail.tsx:317:  const extension = fileName.includes(\".\") ? fileName.split(\".\").pop() : \"\";\nsrc/components/SessionDetail.tsx:359:    .split(\"\\n\")\nsrc/components/SessionDetail.tsx:360:    .filter((line) => !/^\\(End of file - total \\d+ lines\\)$/.test(line.trim()))\nsrc/components/SessionDetail.tsx:367:  const oldLines = normalizeEscapedNewlines(oldValue).split(\"\\n\");\nsrc/components/SessionDetail.tsx:368:  const newLines = normalizeEscapedNewlines(newValue).split(\"\\n\");\nsrc/components/SessionDetail.tsx:379:  const lines = normalized.split(\"\\n\");\nsrc/components/SessionDetail.tsx:414:  const fileName = normalizedPath.split(\"/\").pop() || normalizedPath;\nsrc/components/SessionDetail.tsx:828:    sessionSlug.split(\"/\")[0] || ModelConfig.getDefaultAgentKey() || \"opencode\";\nsrc/App.tsx:58:        .split(\"/\")\nsrc/App.tsx:88:  const parts = sourceSlug.split(\"/\").filter(Boolean);\n./src/App.tsx:58:        .split(\"/\")\n./src/App.tsx:88:  const parts = sourceSlug.split(\"/\").filter(Boolean);\n./scripts/build-logo.ts:24:      process.exit(1);\n./scripts/build-logo.ts:64:    process.exit(1);\n",
+                "time_created": 1772277320606
+              }
+            ]
+          },
+          "time_created": 1772277320483
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_Q5mGSRQhHqVFmhfCdYwLaNJv",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "cat vite.config.ts",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 4000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 5b5e35\nWall time: 0.0517 seconds\nProcess exited with code 0\nOriginal token count: 84\nOutput:\nimport path from \"path\";\nimport tailwindcss from \"@tailwindcss/vite\";\nimport react from \"@vitejs/plugin-react\";\nimport { defineConfig } from \"vite\";\n\n// https://vitejs.dev/config/\nexport default defineConfig({\n  plugins: [react(), tailwindcss()],\n  resolve: {\n    alias: {\n      \"@\": path.resolve(__dirname, \"./src\"),\n    },\n  },\n});\n",
+                "time_created": 1772277320606
+              }
+            ]
+          },
+          "time_created": 1772277320487
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_u6gqgpdIwEfd7o9plLsmRlr1",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "rg -n \"mode group|modeLabel|parts\\.filter|reasoningParts|textParts|toolParts|hasVisibleContent\" src",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 6000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: d906b6\nWall time: 0.0519 seconds\nProcess exited with code 0\nOriginal token count: 301\nOutput:\nsrc/components/SessionDetail.tsx:781:function hasVisibleContent(msg: Message) {\nsrc/components/SessionDetail.tsx:830:    () => session.messages.filter((msg) => hasVisibleContent(msg)),\nsrc/components/SessionDetail.tsx:870:  const textParts = msg.parts.filter((p) => p.type === \"text\" && hasNonEmptyMessageText(p.text));\nsrc/components/SessionDetail.tsx:871:  const toolParts = msg.parts.filter((p) => p.type === \"tool\");\nsrc/components/SessionDetail.tsx:872:  const reasoningParts = msg.parts.filter(\nsrc/components/SessionDetail.tsx:891:  const modeLabel = msg.mode ? msg.mode.toUpperCase() : null;\nsrc/components/SessionDetail.tsx:912:            {modeLabel && (\nsrc/components/SessionDetail.tsx:914:                {modeLabel}\nsrc/components/SessionDetail.tsx:924:          {reasoningParts.length > 0 && <ReasoningSection parts={reasoningParts} />}\nsrc/components/SessionDetail.tsx:925:          {toolParts.length > 0 && (\nsrc/components/SessionDetail.tsx:926:            <ToolsSection parts={toolParts} sessionAgentKey={sessionAgentKey} />\nsrc/components/SessionDetail.tsx:929:          {textParts.length > 0 && (\nsrc/components/SessionDetail.tsx:932:                {textParts.map((part, i) => (\n",
+                "time_created": 1772277326224
+              }
+            ]
+          },
+          "time_created": 1772277326107
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_JklPGQXxv6vtvofmuzbqZ4LJ",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "sed -n '1,220p' README.md",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 6000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: daf965\nWall time: 0.0519 seconds\nProcess exited with code 0\nOriginal token count: 299\nOutput:\n# Agent View\n\n一个用于可视化和浏览 AI Agent 会话的工具。\n\n## 特性\n\n- 📊 会话列表展示，支持搜索\n- 💬 会话详情页，展示完整的对话时间线\n- 🪙 显示 Token 使用量和成本统计\n- 🔧 工具调用可视化，支持展开/折叠\n- 💭 思考过程展示\n- 🎨 根据 Agent 类型自动显示对应图标\n\n## 支持 Agent\n\n- OpenCode\n- （可扩展支持 Claude Code、Codex 等）\n\n## 目录结构\n\n```\n.\n├── index.html          # 主页面\n├── styles.css          # 样式文件\n├── app.js              # 核心逻辑\n├── config.js           # 模型和 Agent 配置\n├── data/\n│   └── sessions/       # 会话数据目录\n│       ├── index.json  # 会话索引\n│       └── *.json      # 会话文件\n└── icon/\n    ├── agent/          # Agent 图标\n    └── provider/       # 模型厂商图标\n```\n\n## 使用方法\n\n1. 将会话 JSON 文件放入 `data/sessions/` 目录\n2. 运行构建脚本生成索引：`bun run build:index`\n3. 使用任意静态服务器运行：`bun run build`\n\n## URL 路由\n\n- `#` - 会话列表页\n- `#opencode/<slug>` - 特定会话详情页\n",
+                "time_created": 1772277326224
+              }
+            ]
+          },
+          "time_created": 1772277326107
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:15:26.094Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277326094,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Planning message mode grouping**",
+          "time_created": 1772277326094
+        },
+        {
+          "type": "reasoning",
+          "text": "**Preparing clarifying questions**",
+          "time_created": 1772277330577
+        },
+        {
+          "type": "text",
+          "text": "我发现一个需要你拍板的小点：真实数据里除了你列的 4 类，还存在不少 `thinking + tool`，尤其 Kimi 很常见。如果不先定这个归类，后面的分组规则会留歧义。",
+          "time_created": 1772277331327
+        },
+        {
+          "type": "tool",
+          "tool": "request_user_input",
+          "callID": "call_Ubq8r1j3vLyksGXwxHQ0TFlc",
+          "title": "request_user_input",
+          "state": {
+            "arguments": {
+              "questions": [
+                {
+                  "header": "Tool 归类",
+                  "id": "thinking_tool_mode",
+                  "question": "遇到 `thinking + tool` 这种没有 text 的 assistant 消息时，你希望它怎么归类？",
+                  "options": [
+                    {
+                      "label": "单独成组 (Recommended)",
+                      "description": "新增一种 `thinking + tool` 组型，严格尊重原始 parts 组合。"
+                    },
+                    {
+                      "label": "并入 thinking",
+                      "description": "只按 thinking 显示，tool 作为 thinking 组内的后续内容。"
+                    },
+                    {
+                      "label": "并入 text+tool",
+                      "description": "把它当成缺少 text 的 `text + tool`，界面尽量贴近操作型消息。"
+                    }
+                  ]
+                },
+                {
+                  "header": "顺序策略",
+                  "id": "order_policy",
+                  "question": "对于 assistant 内部的 `parts`，你希望采用哪种顺序规则？",
+                  "options": [
+                    {
+                      "label": "严格按原始顺序 (Recommended)",
+                      "description": "完全按 JSON 里的 parts 顺序渲染，避免 Codex/Kimi 再被重排。"
+                    },
+                    {
+                      "label": "thinking 固定置顶",
+                      "description": "reasoning 永远先显示，其余 text/tool 再按原始顺序。"
+                    },
+                    {
+                      "label": "文本优先再工具",
+                      "description": "保留现在的产品心智，统一先 text 后 tool，只修正明显错位。"
+                    }
+                  ]
+                }
+              ]
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "{\"answers\":{\"thinking_tool_mode\":{\"answers\":[\"单独成组 (Recommended)\"]},\"order_policy\":{\"answers\":[\"严格按原始顺序 (Recommended)\"]}}}",
+                "time_created": 1772277404113
+              }
+            ]
+          },
+          "time_created": 1772277335856
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:16:50.643Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277410643,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Deciding tool-text grouping**",
+          "time_created": 1772277410643
+        },
+        {
+          "type": "text",
+          "text": "顺序规则已经定了。还有一个实现层面的取舍要锁一下：`text + tool` 这类消息，tool 是作为同一条 assistant 消息里的“顺序块”展示，还是要直接并到文本卡片里做成更强绑定。",
+          "time_created": 1772277411108
+        },
+        {
+          "type": "tool",
+          "tool": "request_user_input",
+          "callID": "call_oRBlvgz1sjXLzVW6B3qjxV3r",
+          "title": "request_user_input",
+          "state": {
+            "arguments": {
+              "questions": [
+                {
+                  "header": "展示形态",
+                  "id": "tool_visual_binding",
+                  "question": "`text + tool` / `thinking + text + tool` 这类消息里，tool 的视觉展示你希望怎样处理？",
+                  "options": [
+                    {
+                      "label": "同消息内顺序块 (Recommended)",
+                      "description": "保留独立的 thinking/text/tool 组件样式，但按 parts 顺序在同一条 assistant 消息内串起来。"
+                    },
+                    {
+                      "label": "并入文本卡片",
+                      "description": "把 tool 视为文本内容的一部分，工具卡片贴在文本卡片内部。"
+                    },
+                    {
+                      "label": "拆成多条消息",
+                      "description": "把一条 assistant message 拆成多条时间线节点，分别显示 text/tool。"
+                    }
+                  ]
+                }
+              ]
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "{\"answers\":{\"tool_visual_binding\":{\"answers\":[\"同消息内顺序块 (Recommended)\"]}}}",
+                "time_created": 1772277432814
+              }
+            ]
+          },
+          "time_created": 1772277413243
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:17:15.275Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277435275,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Preparing to quantify mode pattern counts**",
+          "time_created": 1772277435275
+        },
+        {
+          "type": "text",
+          "text": "我把最后一个产品取舍也锁住了：保持同一条 assistant 消息里的独立块样式，只修正块之间的顺序，不拆消息、不把 tool 混进 markdown 文本。再补一份模式统计后，我就可以给出完整方案。",
+          "time_created": 1772277436261
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_tKZiG7OsjuVbTpQ0OYeM5ufO",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "node -e \"const fs=require('fs');const glob=['data/sessions/codex/019c7f15-7901-7b10-af0f-7c4c520976ba.json','data/sessions/codex/019c8d8e-e8b6-77c0-a7c7-e61a4a719778.json','data/sessions/kimi/44996b5c-6abb-4530-b80a-8f7d6fd7846a.json','data/sessions/kimi/fix-dialog-drawer-a11y-toast-style.json'];const counts={};for(const file of glob){const data=JSON.parse(fs.readFileSync(file,'utf8'));for(const m of data.messages){if(m.role!=='assistant') continue; const parts=m.parts.filter(p=>['reasoning','text','tool'].includes(p.type)); const hasReasoning=parts.some(p=>p.type==='reasoning'&&String(p.text??'').trim()); const hasText=parts.some(p=>p.type==='text'&&String(p.text??'').trim()); const hasTool=parts.some(p=>p.type==='tool'); const key=[hasReasoning?'thinking':null,hasText?'text':null,hasTool?'tool':null].filter(Boolean).join(' + ')||'empty'; counts[key]=(counts[key]||0)+1;}} console.log(counts);\"",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 4000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: f97629\nWall time: 0.0520 seconds\nProcess exited with code 0\nOriginal token count: 24\nOutput:\n{\n  'thinking + text + tool': 56,\n  'thinking + text': 21,\n  text: 1,\n  'thinking + tool': 55\n}\n",
+                "time_created": 1772277440790
+              }
+            ]
+          },
+          "time_created": 1772277440623
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:17:32.181Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277452181,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Finalizing detailed implementation plan**",
+          "time_created": 1772277452181
+        },
+        {
+          "type": "plan",
+          "input": "# Assistant 消息顺序修复方案（Codex / Kimi）\n\n## 摘要\n\n当前问题的根因在于 [SessionDetail.tsx](/Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx) 先把 `msg.parts` 拆成 `reasoningParts`、`toolParts`、`textParts` 三组，再固定按 `reasoning -> tool -> text` 渲染，导致 Codex 与 Kimi 原始时序被打乱。\n\n本次方案不改数据层，不改现有视觉风格，只做最小化重构：\n在同一条 assistant message 内引入“按原始顺序生成渲染块”的中间层，保持 `thinking`、`text`、`tool` 仍是独立组件，但它们的出现顺序严格跟随 `parts` 原始顺序。\n\n默认采用以下规则：\n- 严格按原始 `parts` 顺序渲染\n- `thinking + tool` 单独作为合法消息形态支持\n- `text + tool` / `thinking + text + tool` 保持“同一条消息内顺序块”展示\n- 不拆成多条消息，不把 tool 并进 markdown 文本卡片\n\n## 实现设计\n\n### 1. 在消息详情层增加“有序渲染块”归一化\n\n在 [SessionDetail.tsx](/Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx) 内新增一个纯函数，建议命名为 `buildMessageBlocks(parts)`。\n\n职责：\n- 读取 `msg.parts` 原始数组\n- 过滤掉不可见内容\n  - `text`：`extractMessageText(part.text).trim()` 为空则丢弃\n  - `reasoning`：同上\n  - `tool`：保留\n- 按原始顺序生成 block\n- 将“相邻且同类型”的 part 合并成一个 block，避免碎片化展示\n\n推荐 block 结构：\n- `reasoning` block：`MessagePart[]`\n- `text` block：`MessagePart[]`\n- `tool` block：`MessagePart[]`\n\n合并规则：\n- 连续多个 `reasoning` 合并成一个 `reasoning` block\n- 连续多个 `text` 合并成一个 `text` block\n- 连续多个 `tool` 合并成一个 `tool` block\n- 一旦类型变化就开启新 block\n\n这样能自然覆盖：\n- `thinking`\n- `thinking + text + tool`\n- `text + tool`\n- `text`\n- `thinking + tool`\n\n也能处理真实数据里常见的重复 `text` / 多段 `reasoning` / 连续多个 `tool`。\n\n### 2. 用 block 渲染替换当前三段式固定顺序\n\n重构 [SessionDetail.tsx](/Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx) 里的 `MessageItem`：\n\n删除当前这三组派生逻辑：\n- `textParts`\n- `toolParts`\n- `reasoningParts`\n\n改为：\n- `const blocks = buildMessageBlocks(msg.parts)`\n\n渲染顺序改成：\n- `blocks.map(...)` 按顺序输出\n- `reasoning` block 继续走 `ReasoningSection`\n- `tool` block 继续走 `ToolsSection`\n- `text` block 继续走 markdown 卡片\n\n视觉保持不变：\n- `ReasoningSection` 仍可折叠\n- `ToolsSection` 仍是工具卡片列表\n- `text` 仍是 markdown 卡片\n\n变化只在“块的排列顺序”。\n\n### 3. 统一“可见消息”判断逻辑，避免展示与过滤不一致\n\n当前 `hasVisibleContent(msg)` 与 `MessageItem` 的可见性逻辑是分开的，后续容易再次偏移。\n\n改法：\n- 让 `hasVisibleContent(msg)` 直接基于 `buildMessageBlocks(msg.parts).length > 0`\n- `MessageItem` 也基于同一套 `buildMessageBlocks`\n\n这样消息是否展示、展示成什么顺序，统一由一个归一化函数决定。\n\n### 4. 保持工具渲染策略不变\n\n以下逻辑不需要改：\n- `normalizeToolState`\n- `buildKimiToolStrategy`\n- `buildOpencodeToolStrategy`\n- `getToolDisplayStrategy`\n- `ToolItem`\n- `ToolsSection` 内部单个 tool 的顺序\n\n原因：\n- 当前问题不是 tool 内容解析错误\n- 而是 tool 所在 block 在整条 assistant 消息里的位置错误\n\n因此只改 message-level ordering，不动 tool-level rendering，避免扩大改动面。\n\n## 公开接口 / 类型变更\n\n不修改 [types.ts](/Users/Kevin/workspace/projects/personal/agent-view/src/types.ts) 里的现有外部数据结构：\n- `Message`\n- `MessagePart`\n- `Session`\n\n仅在详情组件内部新增本地 view-model 类型，建议放在 [SessionDetail.tsx](/Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx) 内：\n\n- `type MessageBlockType = \"reasoning\" | \"text\" | \"tool\"`\n- `interface MessageBlock { type: MessageBlockType; parts: MessagePart[] }`\n\n这是纯展示层内部类型，不影响 JSON 输入格式，也不影响其他模块。\n\n## 数据流\n\n新的渲染链路固定为：\n\n1. `session.messages`\n2. `hasVisibleContent(msg)` 内部调用 `buildMessageBlocks(msg.parts)`\n3. `MessageItem` 再次调用 `buildMessageBlocks(msg.parts)`\n4. 按 block 顺序渲染：\n   - `reasoning` -> `ReasoningSection`\n   - `text` -> markdown card\n   - `tool` -> `ToolsSection`\n\n注意：\n- 顺序来自原始 `parts`\n- 展示块是“连续同类 part 的分组”\n- tool 仍然是 assistant message 的一部分，不再被强制提到 text 前面\n\n## 需要覆盖的测试与场景\n\n项目当前没有现成测试文件，因此这次应补最小单元测试，重点测纯函数而不是整页 UI。建议新增：\n- `src/components/__tests__/SessionDetail.blocks.test.ts`\n\n测试对象：\n- `buildMessageBlocks`\n- 必要时把 `extractMessageText` / 可见性判断辅助函数导出到同文件可测范围，或抽到局部 helper 文件\n\n核心用例：\n\n1. `thinking`\n- 输入：仅 reasoning\n- 期望：生成 1 个 reasoning block\n\n2. `thinking + text + tool`\n- 输入顺序：reasoning -> text -> tool -> tool\n- 期望：3 个 block，顺序不变，tool 合并成 1 个 block\n\n3. `text + tool`\n- 输入顺序：text -> tool\n- 期望：先 text block，再 tool block\n\n4. `text`\n- 输入：仅 text\n- 期望：1 个 text block\n\n5. `thinking + tool`\n- 输入顺序：reasoning -> tool\n- 期望：2 个 block，顺序不变\n- 这是额外兜底场景，真实 Kimi 数据里存在\n\n6. 连续多段 `text`\n- 输入：text -> text -> tool\n- 期望：2 个 block，第一个是合并后的 text block\n\n7. 连续多段 `reasoning`\n- 输入：reasoning -> reasoning -> text\n- 期望：2 个 block，第一个是合并后的 reasoning block\n\n8. 空文本过滤\n- 输入：空 text / 空 reasoning / tool\n- 期望：空文本被忽略，仅保留可见 block\n\n9. 顺序回归\n- 输入：reasoning -> text -> tool -> text\n- 期望：4 个 block，不跨类型错误合并\n\n10. 消息可见性\n- 输入：全空文本且无 tool\n- 期望：`hasVisibleContent` 为 false\n\n## 验收标准\n\n满足以下条件即视为完成：\n\n- Codex 的 `reasoning -> text -> tool*` 显示顺序与原始 JSON 一致\n- Kimi 的 `reasoning -> text -> tool` 显示顺序与原始 JSON 一致\n- Kimi 的 `reasoning -> tool` 能正确展示，不丢工具块\n- 原有 tool 卡片样式、展开逻辑、tool strategy 不回归\n- 原有 thinking 折叠交互不回归\n- 空文本不会渲染出空白卡片\n- 同类型连续片段会合并，避免界面碎片化\n- 不修改 session JSON 结构，不影响列表页和其他模块\n\n## 建议修改文件\n\n核心改动：\n- [SessionDetail.tsx](/Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx)\n\n新增测试：\n- `src/components/__tests__/SessionDetail.blocks.test.ts`\n\n如果为了测试方便需要提纯 helper，可接受的小范围拆分：\n- `src/components/session-detail/blocks.ts`\n\n但默认优先保持最小修改，先只改 [SessionDetail.tsx](/Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx)。\n\n## 明确假设与默认值\n\n- 假设 `msg.parts` 的原始顺序就是上游 session 的真实语义顺序\n- 默认“严格按原始顺序”优先于任何产品层重排\n- 默认 `thinking + tool` 是合法且必须支持的消息模式\n- 默认不新增新的 message-level UI 组件，只复用现有 `ReasoningSection` / `ToolsSection` / text card\n- 默认连续同类型 part 合并，非连续同类型不合并\n- 默认不改 `MessagePart`、`Message`、`Session` 公共类型\n- 默认不引入大范围组件拆分，只做展示层局部归一化",
+          "output": null,
+          "approval_status": "success",
+          "time_created": 1772277482700
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:18:38.960Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277518960,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Assessing testing setup options**",
+          "time_created": 1772277518960
+        },
+        {
+          "type": "text",
+          "text": "我开始按方案落地，先补齐实现所需的上下文：确认当前 TypeScript 配置和是否能直接用 Bun 自带测试跑新增单测，然后只在消息详情这一层做最小修改。",
+          "time_created": 1772277520616
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_BWptEYeb0a4U78sn5v9W9KXT",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "cat tsconfig.json",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 4000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 5a98ea\nWall time: 0.0516 seconds\nProcess exited with code 0\nOriginal token count: 157\nOutput:\n{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"useDefineForClassFields\": true,\n    \"lib\": [\"ES2022\", \"DOM\", \"DOM.Iterable\"],\n    \"module\": \"ESNext\",\n    \"skipLibCheck\": true,\n    \"moduleResolution\": \"bundler\",\n    \"allowImportingTsExtensions\": true,\n    \"resolveJsonModule\": true,\n    \"isolatedModules\": true,\n    \"noEmit\": true,\n    \"jsx\": \"react-jsx\",\n    \"strict\": true,\n    \"noUnusedLocals\": true,\n    \"noUnusedParameters\": true,\n    \"noFallthroughCasesInSwitch\": true,\n    \"paths\": {\n      \"@/*\": [\"./src/*\"]\n    }\n  },\n  \"include\": [\"src\"],\n  \"references\": [\n    {\n      \"path\": \"./tsconfig.node.json\"\n    }\n  ]\n}\n",
+                "time_created": 1772277520744
+              }
+            ]
+          },
+          "time_created": 1772277520624
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_WMI0cm27FNYTdVgb37J1RTOA",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "cat tsconfig.node.json",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 4000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: d51d33\nWall time: 0.0516 seconds\nProcess exited with code 0\nOriginal token count: 59\nOutput:\n{\n  \"compilerOptions\": {\n    \"composite\": true,\n    \"skipLibCheck\": true,\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"bundler\",\n    \"allowSyntheticDefaultImports\": true,\n    \"strict\": true\n  },\n  \"include\": [\"vite.config.ts\"]\n}\n",
+                "time_created": 1772277520744
+              }
+            ]
+          },
+          "time_created": 1772277520628
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_ZFLxwluc0gPlLe4p3zR7BAHR",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "git status --short",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 4000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 3dfdff\nWall time: 0.0516 seconds\nProcess exited with code 0\nOriginal token count: 23\nOutput:\n M README.md\n?? data/sessions/claudecode/\n?? data/sessions/codex/\n?? data/sessions/kimi/\n",
+                "time_created": 1772277520753
+              }
+            ]
+          },
+          "time_created": 1772277520629
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:18:48.333Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277528333,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Planning helper extraction and testing**",
+          "time_created": 1772277528333
+        },
+        {
+          "type": "text",
+          "text": "我准备开始改文件：把消息分组逻辑提成一个纯 helper，组件只负责按 block 顺序渲染；同时补一个 Bun 单测文件覆盖你列出的顺序场景，不引入新的测试框架。",
+          "time_created": 1772277529051
+        },
+        {
+          "type": "tool",
+          "tool": "patch",
+          "callID": "call_zlyR0r4cFzwq3JMQgfFkqvEs",
+          "title": "patch",
+          "state": {
+            "arguments": {
+              "kind": "apply_patch",
+              "raw": "*** Begin Patch\n*** Add File: /Users/Kevin/workspace/projects/personal/agent-view/src/components/session-detail/blocks.ts\n+import { Message, MessagePart } from \"../../types\";\n+\n+export type MessageBlockType = \"reasoning\" | \"text\" | \"tool\";\n+\n+export interface MessageBlock {\n+  type: MessageBlockType;\n+  parts: MessagePart[];\n+}\n+\n+function extractMessageText(value: unknown): string {\n+  if (typeof value === \"string\") {\n+    return value;\n+  }\n+\n+  if (Array.isArray(value)) {\n+    return value\n+      .map((item) => {\n+        if (typeof item === \"string\") {\n+          return item;\n+        }\n+        if (item && typeof item === \"object\") {\n+          const record = item as Record<string, unknown>;\n+          const text = extractMessageText(record.text);\n+          if (text.trim()) {\n+            return text;\n+          }\n+          const content = extractMessageText(record.content);\n+          if (content.trim()) {\n+            return content;\n+          }\n+        }\n+        return \"\";\n+      })\n+      .filter(Boolean)\n+      .join(\"\\n\\n\");\n+  }\n+\n+  if (value && typeof value === \"object\") {\n+    const record = value as Record<string, unknown>;\n+    const text = extractMessageText(record.text);\n+    if (text.trim()) {\n+      return text;\n+    }\n+    const content = extractMessageText(record.content);\n+    if (content.trim()) {\n+      return content;\n+    }\n+  }\n+\n+  return \"\";\n+}\n+\n+function isVisiblePart(part: MessagePart) {\n+  if (part.type === \"tool\") {\n+    return true;\n+  }\n+\n+  if (part.type === \"text\" || part.type === \"reasoning\") {\n+    return Boolean(extractMessageText(part.text).trim());\n+  }\n+\n+  return false;\n+}\n+\n+export function buildMessageBlocks(parts: MessagePart[]): MessageBlock[] {\n+  return parts.reduce<MessageBlock[]>((blocks, part) => {\n+    if (!isVisiblePart(part)) {\n+      return blocks;\n+    }\n+\n+    const previousBlock = blocks.at(-1);\n+    if (previousBlock?.type === part.type) {\n+      previousBlock.parts.push(part);\n+      return blocks;\n+    }\n+\n+    blocks.push({\n+      type: part.type,\n+      parts: [part],\n+    });\n+    return blocks;\n+  }, []);\n+}\n+\n+export function hasVisibleContent(msg: Message) {\n+  return buildMessageBlocks(msg.parts).length > 0;\n+}\n+\n+export { extractMessageText };\n*** Add File: /Users/Kevin/workspace/projects/personal/agent-view/src/components/__tests__/SessionDetail.blocks.test.ts\n+import { describe, expect, it } from \"bun:test\";\n+import { buildMessageBlocks, hasVisibleContent } from \"../session-detail/blocks\";\n+import type { Message, MessagePart } from \"../../types\";\n+\n+function createMessage(parts: MessagePart[]): Message {\n+  return {\n+    role: \"assistant\",\n+    time_created: \"2026-02-28T00:00:00.000Z\",\n+    parts,\n+  };\n+}\n+\n+describe(\"buildMessageBlocks\", () => {\n+  it(\"处理 thinking\", () => {\n+    const blocks = buildMessageBlocks([{ type: \"reasoning\", text: \"分析中\" }]);\n+\n+    expect(blocks).toHaveLength(1);\n+    expect(blocks[0]?.type).toBe(\"reasoning\");\n+  });\n+\n+  it(\"按原始顺序保留 thinking + text + tool，并合并连续 tool\", () => {\n+    const blocks = buildMessageBlocks([\n+      { type: \"reasoning\", text: \"分析中\" },\n+      { type: \"text\", text: \"准备执行\" },\n+      { type: \"tool\", tool: \"exec_command\" },\n+      { type: \"tool\", tool: \"exec_command\" },\n+    ]);\n+\n+    expect(blocks.map((block) => block.type)).toEqual([\"reasoning\", \"text\", \"tool\"]);\n+    expect(blocks[2]?.parts).toHaveLength(2);\n+  });\n+\n+  it(\"处理 text + tool\", () => {\n+    const blocks = buildMessageBlocks([\n+      { type: \"text\", text: \"准备执行\" },\n+      { type: \"tool\", tool: \"exec_command\" },\n+    ]);\n+\n+    expect(blocks.map((block) => block.type)).toEqual([\"text\", \"tool\"]);\n+  });\n+\n+  it(\"处理纯 text\", () => {\n+    const blocks = buildMessageBlocks([{ type: \"text\", text: \"最终答复\" }]);\n+\n+    expect(blocks).toHaveLength(1);\n+    expect(blocks[0]?.type).toBe(\"text\");\n+  });\n+\n+  it(\"处理 thinking + tool\", () => {\n+    const blocks = buildMessageBlocks([\n+      { type: \"reasoning\", text: \"分析中\" },\n+      { type: \"tool\", tool: \"ReadFile\" },\n+    ]);\n+\n+    expect(blocks.map((block) => block.type)).toEqual([\"reasoning\", \"tool\"]);\n+  });\n+\n+  it(\"合并连续 text\", () => {\n+    const blocks = buildMessageBlocks([\n+      { type: \"text\", text: \"第一段\" },\n+      { type: \"text\", text: \"第二段\" },\n+      { type: \"tool\", tool: \"exec_command\" },\n+    ]);\n+\n+    expect(blocks).toHaveLength(2);\n+    expect(blocks[0]?.type).toBe(\"text\");\n+    expect(blocks[0]?.parts).toHaveLength(2);\n+  });\n+\n+  it(\"合并连续 reasoning\", () => {\n+    const blocks = buildMessageBlocks([\n+      { type: \"reasoning\", text: \"第一段分析\" },\n+      { type: \"reasoning\", text: \"第二段分析\" },\n+      { type: \"text\", text: \"结论\" },\n+    ]);\n+\n+    expect(blocks).toHaveLength(2);\n+    expect(blocks[0]?.type).toBe(\"reasoning\");\n+    expect(blocks[0]?.parts).toHaveLength(2);\n+  });\n+\n+  it(\"过滤空 text 和空 reasoning\", () => {\n+    const blocks = buildMessageBlocks([\n+      { type: \"text\", text: \"   \" },\n+      { type: \"reasoning\", text: \"\" },\n+      { type: \"tool\", tool: \"exec_command\" },\n+    ]);\n+\n+    expect(blocks).toHaveLength(1);\n+    expect(blocks[0]?.type).toBe(\"tool\");\n+  });\n+\n+  it(\"顺序回归：非连续同类型不合并\", () => {\n+    const blocks = buildMessageBlocks([\n+      { type: \"reasoning\", text: \"分析中\" },\n+      { type: \"text\", text: \"准备执行\" },\n+      { type: \"tool\", tool: \"exec_command\" },\n+      { type: \"text\", text: \"执行完成\" },\n+    ]);\n+\n+    expect(blocks.map((block) => block.type)).toEqual([\"reasoning\", \"text\", \"tool\", \"text\"]);\n+  });\n+});\n+\n+describe(\"hasVisibleContent\", () => {\n+  it(\"全空文本且无 tool 时返回 false\", () => {\n+    const msg = createMessage([\n+      { type: \"reasoning\", text: \"\" },\n+      { type: \"text\", text: \"   \" },\n+    ]);\n+\n+    expect(hasVisibleContent(msg)).toBe(false);\n+  });\n+\n+  it(\"存在 tool 时返回 true\", () => {\n+    const msg = createMessage([\n+      { type: \"reasoning\", text: \"\" },\n+      { type: \"tool\", tool: \"ReadFile\" },\n+    ]);\n+\n+    expect(hasVisibleContent(msg)).toBe(true);\n+  });\n+});\n*** Update File: /Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx\n@@\n import { useMemo, useState } from \"react\";\n import ReactMarkdown from \"react-markdown\";\n import { ModelConfig } from \"../config\";\n import { Session, Message, MessagePart } from \"../types\";\n+import { buildMessageBlocks, extractMessageText, hasVisibleContent } from \"./session-detail/blocks\";\n import { ToolOutputRenderer } from \"./tool-output/ToolOutputRenderer\";\n import {\n   DiffBlock,\n   DiffLineItem,\n   ToolOutputContent,\n@@\n function toStringValue(value: unknown) {\n   return typeof value === \"string\" ? value : \"\";\n }\n-\n-function extractMessageText(value: unknown): string {\n-  if (typeof value === \"string\") {\n-    return value;\n-  }\n-\n-  if (Array.isArray(value)) {\n-    return value\n-      .map((item) => {\n-        if (typeof item === \"string\") {\n-          return item;\n-        }\n-        if (item && typeof item === \"object\") {\n-          const record = item as Record<string, unknown>;\n-          const text = extractMessageText(record.text);\n-          if (text.trim()) {\n-            return text;\n-          }\n-          const content = extractMessageText(record.content);\n-          if (content.trim()) {\n-            return content;\n-          }\n-        }\n-        return \"\";\n-      })\n-      .filter(Boolean)\n-      .join(\"\\n\\n\");\n-  }\n-\n-  if (value && typeof value === \"object\") {\n-    const record = value as Record<string, unknown>;\n-    const text = extractMessageText(record.text);\n-    if (text.trim()) {\n-      return text;\n-    }\n-    const content = extractMessageText(record.content);\n-    if (content.trim()) {\n-      return content;\n-    }\n-  }\n-\n-  return \"\";\n-}\n-\n-function hasNonEmptyMessageText(value: unknown) {\n-  return Boolean(extractMessageText(value).trim());\n-}\n@@\n-function hasVisibleContent(msg: Message) {\n-  return msg.parts.some((part) => {\n-    if (part.type === \"text\") {\n-      return hasNonEmptyMessageText(part.text);\n-    }\n-    if (part.type === \"reasoning\") {\n-      return hasNonEmptyMessageText(part.text);\n-    }\n-    return part.type === \"tool\";\n-  });\n-}\n-\n function formatMessageTime(rawTime: unknown) {\n@@\n }) {\n   const role = msg.role;\n   const time = formatMessageTime(msg.time_created);\n   const isUser = role === \"user\";\n-  const textParts = msg.parts.filter((p) => p.type === \"text\" && hasNonEmptyMessageText(p.text));\n-  const toolParts = msg.parts.filter((p) => p.type === \"tool\");\n-  const reasoningParts = msg.parts.filter(\n-    (p) => p.type === \"reasoning\" && hasNonEmptyMessageText(p.text),\n-  );\n+  const blocks = buildMessageBlocks(msg.parts);\n@@\n-          {reasoningParts.length > 0 && <ReasoningSection parts={reasoningParts} />}\n-          {toolParts.length > 0 && (\n-            <ToolsSection parts={toolParts} sessionAgentKey={sessionAgentKey} />\n-          )}\n-\n-          {textParts.length > 0 && (\n-            <div className=\"rounded-sm border border-[var(--console-border)] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]\">\n-              <div className=\"console-markdown text-sm leading-relaxed text-[var(--console-text)]\">\n-                {textParts.map((part, i) => (\n-                  <ReactMarkdown key={i}>{extractMessageText(part.text)}</ReactMarkdown>\n-                ))}\n-              </div>\n-            </div>\n-          )}\n+          {blocks.map((block, index) => {\n+            if (block.type === \"reasoning\") {\n+              return <ReasoningSection key={index} parts={block.parts} />;\n+            }\n+\n+            if (block.type === \"tool\") {\n+              return (\n+                <ToolsSection\n+                  key={index}\n+                  parts={block.parts}\n+                  sessionAgentKey={sessionAgentKey}\n+                />\n+              );\n+            }\n+\n+            return (\n+              <div\n+                key={index}\n+                className=\"rounded-sm border border-[var(--console-border)] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]\"\n+              >\n+                <div className=\"console-markdown text-sm leading-relaxed text-[var(--console-text)]\">\n+                  {block.parts.map((part, partIndex) => (\n+                    <ReactMarkdown key={partIndex}>{extractMessageText(part.text)}</ReactMarkdown>\n+                  ))}\n+                </div>\n+              </div>\n+            );\n+          })}\n*** End Patch\n",
+              "content": [
+                {
+                  "type": "write_file",
+                  "path": "/Users/Kevin/workspace/projects/personal/agent-view/src/components/session-detail/blocks.ts",
+                  "old_path": null,
+                  "input": {
+                    "content": "import { Message, MessagePart } from \"../../types\";\n\nexport type MessageBlockType = \"reasoning\" | \"text\" | \"tool\";\n\nexport interface MessageBlock {\n  type: MessageBlockType;\n  parts: MessagePart[];\n}\n\nfunction extractMessageText(value: unknown): string {\n  if (typeof value === \"string\") {\n    return value;\n  }\n\n  if (Array.isArray(value)) {\n    return value\n      .map((item) => {\n        if (typeof item === \"string\") {\n          return item;\n        }\n        if (item && typeof item === \"object\") {\n          const record = item as Record<string, unknown>;\n          const text = extractMessageText(record.text);\n          if (text.trim()) {\n            return text;\n          }\n          const content = extractMessageText(record.content);\n          if (content.trim()) {\n            return content;\n          }\n        }\n        return \"\";\n      })\n      .filter(Boolean)\n      .join(\"\\n\\n\");\n  }\n\n  if (value && typeof value === \"object\") {\n    const record = value as Record<string, unknown>;\n    const text = extractMessageText(record.text);\n    if (text.trim()) {\n      return text;\n    }\n    const content = extractMessageText(record.content);\n    if (content.trim()) {\n      return content;\n    }\n  }\n\n  return \"\";\n}\n\nfunction isVisiblePart(part: MessagePart) {\n  if (part.type === \"tool\") {\n    return true;\n  }\n\n  if (part.type === \"text\" || part.type === \"reasoning\") {\n    return Boolean(extractMessageText(part.text).trim());\n  }\n\n  return false;\n}\n\nexport function buildMessageBlocks(parts: MessagePart[]): MessageBlock[] {\n  return parts.reduce<MessageBlock[]>((blocks, part) => {\n    if (!isVisiblePart(part)) {\n      return blocks;\n    }\n\n    const previousBlock = blocks.at(-1);\n    if (previousBlock?.type === part.type) {\n      previousBlock.parts.push(part);\n      return blocks;\n    }\n\n    blocks.push({\n      type: part.type,\n      parts: [part],\n    });\n    return blocks;\n  }, []);\n}\n\nexport function hasVisibleContent(msg: Message) {\n  return buildMessageBlocks(msg.parts).length > 0;\n}\n\nexport { extractMessageText };"
+                  }
+                },
+                {
+                  "type": "write_file",
+                  "path": "/Users/Kevin/workspace/projects/personal/agent-view/src/components/__tests__/SessionDetail.blocks.test.ts",
+                  "old_path": null,
+                  "input": {
+                    "content": "import { describe, expect, it } from \"bun:test\";\nimport { buildMessageBlocks, hasVisibleContent } from \"../session-detail/blocks\";\nimport type { Message, MessagePart } from \"../../types\";\n\nfunction createMessage(parts: MessagePart[]): Message {\n  return {\n    role: \"assistant\",\n    time_created: \"2026-02-28T00:00:00.000Z\",\n    parts,\n  };\n}\n\ndescribe(\"buildMessageBlocks\", () => {\n  it(\"处理 thinking\", () => {\n    const blocks = buildMessageBlocks([{ type: \"reasoning\", text: \"分析中\" }]);\n\n    expect(blocks).toHaveLength(1);\n    expect(blocks[0]?.type).toBe(\"reasoning\");\n  });\n\n  it(\"按原始顺序保留 thinking + text + tool，并合并连续 tool\", () => {\n    const blocks = buildMessageBlocks([\n      { type: \"reasoning\", text: \"分析中\" },\n      { type: \"text\", text: \"准备执行\" },\n      { type: \"tool\", tool: \"exec_command\" },\n      { type: \"tool\", tool: \"exec_command\" },\n    ]);\n\n    expect(blocks.map((block) => block.type)).toEqual([\"reasoning\", \"text\", \"tool\"]);\n    expect(blocks[2]?.parts).toHaveLength(2);\n  });\n\n  it(\"处理 text + tool\", () => {\n    const blocks = buildMessageBlocks([\n      { type: \"text\", text: \"准备执行\" },\n      { type: \"tool\", tool: \"exec_command\" },\n    ]);\n\n    expect(blocks.map((block) => block.type)).toEqual([\"text\", \"tool\"]);\n  });\n\n  it(\"处理纯 text\", () => {\n    const blocks = buildMessageBlocks([{ type: \"text\", text: \"最终答复\" }]);\n\n    expect(blocks).toHaveLength(1);\n    expect(blocks[0]?.type).toBe(\"text\");\n  });\n\n  it(\"处理 thinking + tool\", () => {\n    const blocks = buildMessageBlocks([\n      { type: \"reasoning\", text: \"分析中\" },\n      { type: \"tool\", tool: \"ReadFile\" },\n    ]);\n\n    expect(blocks.map((block) => block.type)).toEqual([\"reasoning\", \"tool\"]);\n  });\n\n  it(\"合并连续 text\", () => {\n    const blocks = buildMessageBlocks([\n      { type: \"text\", text: \"第一段\" },\n      { type: \"text\", text: \"第二段\" },\n      { type: \"tool\", tool: \"exec_command\" },\n    ]);\n\n    expect(blocks).toHaveLength(2);\n    expect(blocks[0]?.type).toBe(\"text\");\n    expect(blocks[0]?.parts).toHaveLength(2);\n  });\n\n  it(\"合并连续 reasoning\", () => {\n    const blocks = buildMessageBlocks([\n      { type: \"reasoning\", text: \"第一段分析\" },\n      { type: \"reasoning\", text: \"第二段分析\" },\n      { type: \"text\", text: \"结论\" },\n    ]);\n\n    expect(blocks).toHaveLength(2);\n    expect(blocks[0]?.type).toBe(\"reasoning\");\n    expect(blocks[0]?.parts).toHaveLength(2);\n  });\n\n  it(\"过滤空 text 和空 reasoning\", () => {\n    const blocks = buildMessageBlocks([\n      { type: \"text\", text: \"   \" },\n      { type: \"reasoning\", text: \"\" },\n      { type: \"tool\", tool: \"exec_command\" },\n    ]);\n\n    expect(blocks).toHaveLength(1);\n    expect(blocks[0]?.type).toBe(\"tool\");\n  });\n\n  it(\"顺序回归：非连续同类型不合并\", () => {\n    const blocks = buildMessageBlocks([\n      { type: \"reasoning\", text: \"分析中\" },\n      { type: \"text\", text: \"准备执行\" },\n      { type: \"tool\", tool: \"exec_command\" },\n      { type: \"text\", text: \"执行完成\" },\n    ]);\n\n    expect(blocks.map((block) => block.type)).toEqual([\"reasoning\", \"text\", \"tool\", \"text\"]);\n  });\n});\n\ndescribe(\"hasVisibleContent\", () => {\n  it(\"全空文本且无 tool 时返回 false\", () => {\n    const msg = createMessage([\n      { type: \"reasoning\", text: \"\" },\n      { type: \"text\", text: \"   \" },\n    ]);\n\n    expect(hasVisibleContent(msg)).toBe(false);\n  });\n\n  it(\"存在 tool 时返回 true\", () => {\n    const msg = createMessage([\n      { type: \"reasoning\", text: \"\" },\n      { type: \"tool\", tool: \"ReadFile\" },\n    ]);\n\n    expect(hasVisibleContent(msg)).toBe(true);\n  });\n});"
+                  }
+                },
+                {
+                  "type": "edit_file",
+                  "path": "/Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx",
+                  "old_path": null,
+                  "input": {
+                    "content": "Index: /Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx\n===================================================================\n--- /Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx\n+++ /Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx\n@@\n import { useMemo, useState } from \"react\";\n import ReactMarkdown from \"react-markdown\";\n import { ModelConfig } from \"../config\";\n import { Session, Message, MessagePart } from \"../types\";\n+import { buildMessageBlocks, extractMessageText, hasVisibleContent } from \"./session-detail/blocks\";\n import { ToolOutputRenderer } from \"./tool-output/ToolOutputRenderer\";\n import {\n   DiffBlock,\n   DiffLineItem,\n   ToolOutputContent,\n function toStringValue(value: unknown) {\n   return typeof value === \"string\" ? value : \"\";\n }\n-\n-function extractMessageText(value: unknown): string {\n-  if (typeof value === \"string\") {\n-    return value;\n-  }\n-\n-  if (Array.isArray(value)) {\n-    return value\n-      .map((item) => {\n-        if (typeof item === \"string\") {\n-          return item;\n-        }\n-        if (item && typeof item === \"object\") {\n-          const record = item as Record<string, unknown>;\n-          const text = extractMessageText(record.text);\n-          if (text.trim()) {\n-            return text;\n-          }\n-          const content = extractMessageText(record.content);\n-          if (content.trim()) {\n-            return content;\n-          }\n-        }\n-        return \"\";\n-      })\n-      .filter(Boolean)\n-      .join(\"\\n\\n\");\n-  }\n-\n-  if (value && typeof value === \"object\") {\n-    const record = value as Record<string, unknown>;\n-    const text = extractMessageText(record.text);\n-    if (text.trim()) {\n-      return text;\n-    }\n-    const content = extractMessageText(record.content);\n-    if (content.trim()) {\n-      return content;\n-    }\n-  }\n-\n-  return \"\";\n-}\n-\n-function hasNonEmptyMessageText(value: unknown) {\n-  return Boolean(extractMessageText(value).trim());\n-}\n-function hasVisibleContent(msg: Message) {\n-  return msg.parts.some((part) => {\n-    if (part.type === \"text\") {\n-      return hasNonEmptyMessageText(part.text);\n-    }\n-    if (part.type === \"reasoning\") {\n-      return hasNonEmptyMessageText(part.text);\n-    }\n-    return part.type === \"tool\";\n-  });\n-}\n-\n function formatMessageTime(rawTime: unknown) {\n }) {\n   const role = msg.role;\n   const time = formatMessageTime(msg.time_created);\n   const isUser = role === \"user\";\n-  const textParts = msg.parts.filter((p) => p.type === \"text\" && hasNonEmptyMessageText(p.text));\n-  const toolParts = msg.parts.filter((p) => p.type === \"tool\");\n-  const reasoningParts = msg.parts.filter(\n-    (p) => p.type === \"reasoning\" && hasNonEmptyMessageText(p.text),\n-  );\n+  const blocks = buildMessageBlocks(msg.parts);\n-          {reasoningParts.length > 0 && <ReasoningSection parts={reasoningParts} />}\n-          {toolParts.length > 0 && (\n-            <ToolsSection parts={toolParts} sessionAgentKey={sessionAgentKey} />\n-          )}\n-\n-          {textParts.length > 0 && (\n-            <div className=\"rounded-sm border border-[var(--console-border)] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]\">\n-              <div className=\"console-markdown text-sm leading-relaxed text-[var(--console-text)]\">\n-                {textParts.map((part, i) => (\n-                  <ReactMarkdown key={i}>{extractMessageText(part.text)}</ReactMarkdown>\n-                ))}\n-              </div>\n-            </div>\n-          )}\n+          {blocks.map((block, index) => {\n+            if (block.type === \"reasoning\") {\n+              return <ReasoningSection key={index} parts={block.parts} />;\n+            }\n+\n+            if (block.type === \"tool\") {\n+              return (\n+                <ToolsSection\n+                  key={index}\n+                  parts={block.parts}\n+                  sessionAgentKey={sessionAgentKey}\n+                />\n+              );\n+            }\n+\n+            return (\n+              <div\n+                key={index}\n+                className=\"rounded-sm border border-[var(--console-border)] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]\"\n+              >\n+                <div className=\"console-markdown text-sm leading-relaxed text-[var(--console-text)]\">\n+                  {block.parts.map((part, partIndex) => (\n+                    <ReactMarkdown key={partIndex}>{extractMessageText(part.text)}</ReactMarkdown>\n+                  ))}\n+                </div>\n+              </div>\n+            );\n+          })}"
+                  }
+                }
+              ]
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Success. Updated the following files:\nA /Users/Kevin/workspace/projects/personal/agent-view/src/components/session-detail/blocks.ts\nA /Users/Kevin/workspace/projects/personal/agent-view/src/components/__tests__/SessionDetail.blocks.test.ts\nM /Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx\n",
+                "time_created": 1772277567792
+              }
+            ]
+          },
+          "time_created": 1772277567734
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:18:49.610Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277529610,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Creating helper and patching component**",
+          "time_created": 1772277529610
+        },
+        {
+          "type": "reasoning",
+          "text": "**Assessing test and lint readiness**",
+          "time_created": 1772277571272
+        },
+        {
+          "type": "text",
+          "text": "核心改动已经补上了：消息块现在会先按原始 `parts` 顺序归一化，再交给现有 thinking/text/tool 组件按顺序渲染。我先跑单测和 lint，确认这个最小重构没有引入类型或风格回归。",
+          "time_created": 1772277573425
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_jf4bJDZHEfHu6LsFdWfftNN1",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "bun test src/components/__tests__/SessionDetail.blocks.test.ts",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: ad50ab\nWall time: 0.0521 seconds\nProcess exited with code 0\nOriginal token count: 220\nOutput:\nbun test v1.3.10 (30e609e0)\n\nsrc/components/__tests__/SessionDetail.blocks.test.ts:\n(pass) buildMessageBlocks > 处理 thinking [0.87ms]\n(pass) buildMessageBlocks > 按原始顺序保留 thinking + text + tool，并合并连续 tool [0.11ms]\n(pass) buildMessageBlocks > 处理 text + tool [0.05ms]\n(pass) buildMessageBlocks > 处理纯 text [0.01ms]\n(pass) buildMessageBlocks > 处理 thinking + tool [0.01ms]\n(pass) buildMessageBlocks > 合并连续 text [0.02ms]\n(pass) buildMessageBlocks > 合并连续 reasoning [0.02ms]\n(pass) buildMessageBlocks > 过滤空 text 和空 reasoning [0.04ms]\n(pass) buildMessageBlocks > 顺序回归：非连续同类型不合并\n(pass) hasVisibleContent > 全空文本且无 tool 时返回 false [0.02ms]\n(pass) hasVisibleContent > 存在 tool 时返回 true [0.03ms]\n\n 11 pass\n 0 fail\n 19 expect() calls\nRan 11 tests across 1 file. [14.00ms]\n",
+                "time_created": 1772277573566
+              }
+            ]
+          },
+          "time_created": 1772277573430
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_JKH09XJjgQzcLODl6UsiryG0",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "bun run lint",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 393225\nWall time: 0.1632 seconds\nProcess exited with code 0\nOriginal token count: 29\nOutput:\n$ oxlint --type-aware\nFound 0 warnings and 0 errors.\nFinished in 174ms on 23 files with 161 rules using 10 threads.\n",
+                "time_created": 1772277573776
+              }
+            ]
+          },
+          "time_created": 1772277573436
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:19:37.206Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277577206,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Verifying build process**",
+          "time_created": 1772277577206
+        },
+        {
+          "type": "text",
+          "text": "单测和 lint 都过了。我再补跑一次构建，确认这个顺序修复不会影响打包和页面编译。",
+          "time_created": 1772277577246
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_46VQrrXTYG72OnqsbWS4IK5f",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "bun run build",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 49c836\nWall time: 1.0024 seconds\nProcess running with session ID 20980\nOriginal token count: 50\nOutput:\n$ bun run build:index && vite build && cp -r data dist/data\n$ bun run scripts/build-index.ts\nGenerated index with 11 sessions\nvite v7.3.1 building client environment for production...\ntransforming...\n",
+                "time_created": 1772277578710
+              }
+            ]
+          },
+          "time_created": 1772277577549
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:19:42.240Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277582240,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "text",
+          "text": "构建还在跑，我等它结束后再给你最终结果，顺便确认没有新的编译告警。",
+          "time_created": 1772277582240
+        },
+        {
+          "type": "tool",
+          "tool": "write_stdin",
+          "callID": "call_M2eRyUKyoQjv1NX9NDNvw5FQ",
+          "title": "write_stdin",
+          "state": {
+            "arguments": {
+              "session_id": 20980,
+              "chars": "",
+              "max_output_tokens": 12000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: 2879fd\nWall time: 0.0516 seconds\nProcess exited with code 0\nOriginal token count: 154\nOutput:\n✓ 2740 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                     0.46 kB │ gzip:   0.29 kB\ndist/assets/index-DpIpcOD1.css     75.72 kB │ gzip:  12.26 kB\ndist/assets/index-DsuCgwgz.js   1,021.98 kB │ gzip: 346.14 kB\n\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n✓ built in 2.03s\n",
+                "time_created": 1772277582761
+              }
+            ]
+          },
+          "time_created": 1772277582683
+        },
+        {
+          "type": "tool",
+          "tool": "exec_command",
+          "callID": "call_NBLHLxwRzyEfQe3guXf0YhDt",
+          "title": "bash",
+          "state": {
+            "arguments": {
+              "cmd": "git status --short src/components/SessionDetail.tsx src/components/session-detail/blocks.ts src/components/__tests__/SessionDetail.blocks.test.ts",
+              "workdir": "/Users/Kevin/workspace/projects/personal/agent-view",
+              "max_output_tokens": 4000,
+              "yield_time_ms": 1000
+            },
+            "output": [
+              {
+                "type": "text",
+                "text": "Chunk ID: e6d40f\nWall time: 0.0524 seconds\nProcess exited with code 0\nOriginal token count: 34\nOutput:\n M src/components/SessionDetail.tsx\n?? src/components/__tests__/SessionDetail.blocks.test.ts\n?? src/components/session-detail/blocks.ts\n",
+                "time_created": 1772277587149
+              }
+            ]
+          },
+          "time_created": 1772277587004
+        }
+      ]
+    },
+    {
+      "id": "2026-02-28T11:19:46.829Z",
+      "role": "assistant",
+      "agent": "codex",
+      "mode": null,
+      "model": null,
+      "provider": null,
+      "time_created": 1772277586829,
+      "time_completed": null,
+      "tokens": {},
+      "cost": 0,
+      "parts": [
+        {
+          "type": "reasoning",
+          "text": "**Considering git diff inspection**",
+          "time_created": 1772277586829
+        },
+        {
+          "type": "reasoning",
+          "text": "**Summarizing changes and next steps**",
+          "time_created": 1772277592028
+        },
+        {
+          "type": "text",
+          "text": "已实现。\n\n核心改动在 [SessionDetail.tsx](/Users/Kevin/workspace/projects/personal/agent-view/src/components/SessionDetail.tsx)、[blocks.ts](/Users/Kevin/workspace/projects/personal/agent-view/src/components/session-detail/blocks.ts) 和 [SessionDetail.blocks.test.ts](/Users/Kevin/workspace/projects/personal/agent-view/src/components/__tests__/SessionDetail.blocks.test.ts)。现在 assistant 消息会先按原始 `parts` 顺序归一化为连续 block，再按顺序渲染 `thinking`、`text`、`tool`，不再固定重排成 `reasoning -> tool -> text`。`thinking + tool` 也已作为合法形态支持，连续同类型 part 会合并，空文本会被过滤。\n\n我保留了现有 thinking 折叠、tool 卡片和 tool strategy，不改数据结构，只调整 message-level 顺序。新增的 Bun 单测覆盖了你方案里的 10 类顺序/可见性场景。\n\n验证已完成：\n- `bun test src/components/__tests__/SessionDetail.blocks.test.ts`\n- `bun run lint`\n- `bun run build`\n\n都通过了。构建时只有现有的 Vite 大 bundle 提示，没有新报错。\n\n如果你要继续，我建议下一步做 1 件事：\n1. 用真实 Codex/Kimi 会话手动过一遍详情页，确认视觉顺序和预期一致。",
+          "time_created": 1772277595494
+        }
+      ]
+    }
+  ]
+}
