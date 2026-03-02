@@ -1,63 +1,10 @@
 // 模型配置 - 定义模型对应的厂商和图标
 export const ModelConfig = {
-  // 模型到厂商的映射
-  modelToProvider: {
-    "kimi-k2.5": "kimi",
-    "glm-4.7": "zhipu",
-    "minimax-m2.5": "mimimax",
-    // 可以添加更多模型映射
-    // 'gpt-4': 'openai',
-    // 'claude-3-opus': 'anthropic',
-  } as Record<string, string>,
-
-  // 厂商信息
-  providers: {
-    kimi: {
-      name: "Kimi",
-      icon: "/icon/provider/kimi.svg",
-    },
-    zhipu: {
-      name: "Zhipu",
-      icon: "/icon/provider/zhipu-color.svg",
-    },
-    minimax: {
-      name: "MiniMax",
-      icon: "/icon/provider/minimax-color.svg",
-    },
-    openai: {
-      name: "OpenAI",
-      icon: "/icon/provider/openai.svg",
-    },
-    qwen: {
-      name: "Qwen",
-      icon: "/icon/provider/qwen-color.svg",
-    },
-    gemini: {
-      name: "Gemini",
-      icon: "/icon/provider/gemini-color.svg",
-    },
-    doubao: {
-      name: "Doubao",
-      icon: "/icon/provider/doubao-color.svg",
-    },
-    claude: {
-      name: "Claude",
-      icon: "/icon/provider/claude-color.svg",
-    },
-    deepseek: {
-      name: "DeepSeek",
-      icon: "/icon/provider/deepseek-color.svg",
-    },
-    // 可以添加更多厂商
-    // 'openai': { name: 'OpenAI', icon: '/icon/provider/openai.svg' },
-    // 'anthropic': { name: 'Anthropic', icon: '/icon/provider/anthropic.svg' },
-  } as Record<string, { name: string; icon: string }>,
-
   // Agent 图标配置
   agents: {
     opencode: {
       name: "OpenCode",
-      icon: "/icon/agent/opencode.png",
+      icon: "/icon/agent/opencode.svg",
     },
     codex: {
       name: "Codex",
@@ -71,28 +18,15 @@ export const ModelConfig = {
       name: "Claude Code",
       icon: "/icon/agent/claudecode.svg",
     },
+    kilo: {
+      name: "Kilo Code",
+      icon: "/icon/agent/kilocode.svg",
+    },
+    antigravity: {
+      name: "Antigravity",
+      icon: "/icon/agent/antigravity.svg",
+    },
   } as Record<string, { name: string; icon: string }>,
-
-  // 获取模型对应的厂商信息
-  getProvider(modelName: string) {
-    const providerKey = this.modelToProvider[modelName];
-    if (providerKey) {
-      return {
-        key: providerKey,
-        ...this.providers[providerKey],
-      };
-    }
-    return null;
-  },
-
-  // 获取模型显示名称
-  getModelDisplayName(modelName: string) {
-    const provider = this.getProvider(modelName);
-    if (provider) {
-      return `${provider.name} ${modelName}`;
-    }
-    return modelName;
-  },
 
   // 获取默认 Agent key
   getDefaultAgentKey() {

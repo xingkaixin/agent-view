@@ -8,7 +8,7 @@ const agentItems: LandingAgentItem[] = [
   {
     key: "codex",
     name: "Codex",
-    icon: "/icon/provider/openai.svg",
+    icon: "/icon/agent/codex.svg",
     count: 1,
   },
 ];
@@ -165,7 +165,7 @@ describe("App loading states", () => {
             {
               key: "kimi",
               name: "Kimi",
-              icon: "/icon/provider/kimi.svg",
+              icon: "/icon/agent/kimi.svg",
               count: 1,
             },
           ],

@@ -79,30 +79,6 @@ function DiagnosticItem({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ActionLink({
-  to,
-  label,
-  tone = "primary",
-}: {
-  to: string;
-  label: string;
-  tone?: "primary" | "secondary";
-}) {
-  const toneClass =
-    tone === "primary"
-      ? "border-[var(--console-accent)] bg-[var(--console-accent)] text-white hover:bg-[var(--console-accent-strong)]"
-      : "border-[var(--console-border)] bg-white text-[var(--console-text)] hover:bg-[var(--console-surface-muted)]";
-
-  return (
-    <Link
-      to={to}
-      className={`console-mono inline-flex min-h-11 items-center justify-center rounded-sm border px-4 py-2 text-xs uppercase tracking-[0.08em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--console-accent)] ${toneClass}`}
-    >
-      {label}
-    </Link>
-  );
-}
-
 function MissingStateHero({
   code,
   title,
