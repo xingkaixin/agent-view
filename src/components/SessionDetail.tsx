@@ -12,6 +12,7 @@ import {
   FileSearch,
   LoaderCircle,
   Lightbulb,
+  MessageCircleX,
   NotebookPen,
   SquareTerminal,
   UserRound,
@@ -23,12 +24,13 @@ import ReactMarkdown, { type Components } from "react-markdown";
 import { ModelConfig } from "../config";
 import { Session, Message, MessagePart } from "../types";
 import { buildMessageBlocks, extractMessageText, hasVisibleContent } from "./session-detail/blocks";
-import { buildCodexPlanDisplay } from "./session-detail/codex-plan";
+import { isCodexTurnAbortedMessage } from "./session-detail/codex-abort";
 import {
   buildCodexPatchOutputContent,
   getCodexPatchEntries,
   summarizeCodexPatchEntries,
 } from "./session-detail/codex-patch";
+import { buildCodexPlanDisplay } from "./session-detail/codex-plan";
 import {
   buildCodexExecCommandDisplay,
   buildCodexRequestUserInputDisplay,
@@ -894,6 +896,7 @@ function MessageItem({
   const role = msg.role;
   const time = formatMessageTime(msg.time_created);
   const isUser = role === "user";
+  const isAbortMessage = isCodexTurnAbortedMessage(msg, sessionAgentKey);
   const blocks = buildMessageBlocks(msg.parts);
 
   const getAgentAvatar = () => {
@@ -944,34 +947,38 @@ function MessageItem({
             )}
           </div>
 
-          {blocks.map((block, index) => {
-            if (block.type === "reasoning") {
-              return <ReasoningSection key={index} parts={block.parts} />;
-            }
+          {isAbortMessage ? (
+            <AbortToolItem />
+          ) : (
+            blocks.map((block, index) => {
+              if (block.type === "reasoning") {
+                return <ReasoningSection key={index} parts={block.parts} />;
+              }
 
-            if (block.type === "plan") {
-              return <PlansSection key={index} parts={block.parts} />;
-            }
+              if (block.type === "plan") {
+                return <PlansSection key={index} parts={block.parts} />;
+              }
 
-            if (block.type === "tool") {
+              if (block.type === "tool") {
+                return (
+                  <ToolsSection key={index} parts={block.parts} sessionAgentKey={sessionAgentKey} />
+                );
+              }
+
               return (
-                <ToolsSection key={index} parts={block.parts} sessionAgentKey={sessionAgentKey} />
-              );
-            }
-
-            return (
-              <div
-                key={index}
-                className="rounded-sm border border-[var(--console-border)] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
-              >
-                <div className="console-markdown text-sm leading-relaxed text-[var(--console-text)]">
-                  {block.parts.map((part, partIndex) => (
-                    <MessageMarkdown key={partIndex} text={extractMessageText(part.text)} />
-                  ))}
+                <div
+                  key={index}
+                  className="rounded-sm border border-[var(--console-border)] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+                >
+                  <div className="console-markdown text-sm leading-relaxed text-[var(--console-text)]">
+                    {block.parts.map((part, partIndex) => (
+                      <MessageMarkdown key={partIndex} text={extractMessageText(part.text)} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
 
           {!isUser && (msg.tokens || msg.cost) && (
             <div className="flex flex-wrap gap-2">
@@ -1000,6 +1007,25 @@ function MessageItem({
         </div>
       </div>
     </article>
+  );
+}
+
+function AbortToolItem() {
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-wrap items-start gap-2">
+        <div className="w-full rounded-sm border border-[var(--console-border-strong)] bg-white px-3 py-2 text-left shadow-[2px_2px_0_0_rgba(15,23,42,0.05)] md:w-[560px]">
+          <div className="flex items-start gap-2">
+            <MessageCircleX className="mt-0.5 size-3.5 shrink-0 text-[var(--console-accent)]" />
+            <span className="min-w-0 flex-1">
+              <span className="console-mono block text-xs font-semibold text-[var(--console-text)]">
+                abort
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

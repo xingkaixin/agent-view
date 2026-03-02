@@ -1,14 +1,15 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { Session } from "../../types";
+import { CODEX_TURN_ABORTED_TEXT } from "../session-detail/codex-abort";
 import { SessionDetail } from "../SessionDetail";
 
-function renderSessionDetail(messages: Session["messages"]) {
+function renderSessionDetail(messages: Session["messages"], slug = "codex/test-session") {
   return renderToStaticMarkup(
     <SessionDetail
       session={{
         id: "session-1",
-        slug: "codex/test-session",
+        slug,
         title: "Test Session",
         directory: "/tmp",
         time_created: "2026-03-01T00:00:00.000Z",
@@ -183,5 +184,50 @@ describe("SessionDetail markdown rendering", () => {
     expect(html).toContain("Failed");
     expect(html).toContain('type="button"');
     expect(html).not.toContain("<pre");
+  });
+
+  it("codex 中断消息显示为 abort 工具条，不展示原始文本", () => {
+    const html = renderSessionDetail([
+      {
+        role: "user",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [{ type: "text", text: CODEX_TURN_ABORTED_TEXT }],
+      },
+    ]);
+
+    expect(html).toContain("abort");
+    expect(html).not.toContain("The user interrupted the previous turn on purpose.");
+    expect(html).not.toContain("&lt;turn_aborted&gt;");
+    expect(html).not.toContain('type="button"');
+  });
+
+  it("普通 codex 用户文本仍按原样渲染", () => {
+    const html = renderSessionDetail([
+      {
+        role: "user",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [{ type: "text", text: "继续" }],
+      },
+    ]);
+
+    expect(html).toContain("继续");
+    expect(html).not.toContain("abort");
+  });
+
+  it("非 codex session 的同样文本仍按普通文本渲染", () => {
+    const html = renderSessionDetail(
+      [
+        {
+          role: "user",
+          time_created: "2026-03-01T00:00:00.000Z",
+          parts: [{ type: "text", text: CODEX_TURN_ABORTED_TEXT }],
+        },
+      ],
+      "opencode/test-session",
+    );
+
+    expect(html).toContain("The user interrupted the previous turn on purpose.");
+    expect(html).toContain("&lt;turn_aborted&gt;");
+    expect(html).not.toContain(">abort<");
   });
 });

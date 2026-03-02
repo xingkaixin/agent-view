@@ -41,7 +41,8 @@ function extractPlanText(value: unknown): string {
 }
 
 export function buildCodexPlanDisplay(part: MessagePart): CodexPlanDisplay {
-  const approvalStatus: CodexPlanApprovalStatus = part.approval_status === "fail" ? "fail" : "success";
+  const approvalStatus: CodexPlanApprovalStatus =
+    part.approval_status === "fail" ? "fail" : "success";
   const contentMarkdown =
     approvalStatus === "fail" ? extractPlanText(part.output) : extractPlanText(part.input);
 
