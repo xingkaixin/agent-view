@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
+import { MemoryRouter } from "react-router-dom";
 import { renderMainContent, resolveHeaderContent } from "../../App";
 import type { LandingAgentItem, LandingSession } from "../DetailLanding";
 
@@ -102,5 +103,93 @@ describe("App loading states", () => {
 
     expect(html).toContain("加载会话索引中...");
     expect(html).not.toContain('data-testid="session-detail-skeleton"');
+  });
+
+  it("agent landing 优先使用 total_tokens 展示 kimi token 统计", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        {renderMainContent({
+          loading: false,
+          error: null,
+          viewState: {
+            mode: "agent",
+            activeAgentKey: "kimi",
+            activeSessionSlug: null,
+          },
+          normalizedSessions: [
+            {
+              ...sessions[0],
+              slug: "kimi/test-session",
+              fullPath: "kimi/test-session",
+              agentKey: "kimi",
+              stats: {
+                message_count: 3,
+                total_input_tokens: 0,
+                total_output_tokens: 0,
+                total_tokens: 61389,
+                total_cost: 0,
+              },
+            },
+          ],
+          agentItems: [
+            ...agentItems,
+            {
+              key: "kimi",
+              name: "Kimi",
+              icon: "/icon/provider/kimi.svg",
+              count: 1,
+            },
+          ],
+          activeAgentKey: "kimi",
+          sidebarSessions: [
+            {
+              ...sessions[0],
+              slug: "kimi/test-session",
+              fullPath: "kimi/test-session",
+              agentKey: "kimi",
+              stats: {
+                message_count: 3,
+                total_input_tokens: 0,
+                total_output_tokens: 0,
+                total_tokens: 61389,
+                total_cost: 0,
+              },
+            },
+          ],
+          sessionLoading: false,
+          sessionError: null,
+          session: null,
+        })}
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("Tokens");
+    expect(html).toContain("61,389");
+  });
+
+  it("agent landing 在缺少 total_tokens 时回退到 input 加 output", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        {renderMainContent({
+          loading: false,
+          error: null,
+          viewState: {
+            mode: "agent",
+            activeAgentKey: "codex",
+            activeSessionSlug: null,
+          },
+          normalizedSessions: sessions,
+          agentItems,
+          activeAgentKey: "codex",
+          sidebarSessions: sessions,
+          sessionLoading: false,
+          sessionError: null,
+          session: null,
+        })}
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("Tokens");
+    expect(html).toContain("22");
   });
 });

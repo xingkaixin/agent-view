@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ModelConfig } from "../config";
-import { SessionInfo } from "../types";
+import { SessionInfo, SessionStats } from "../types";
 
 export interface LandingSession extends SessionInfo {
   agentKey: string;
@@ -24,6 +24,10 @@ interface DetailLandingProps {
 
 function formatNumber(value: number) {
   return value.toLocaleString("en-US");
+}
+
+function getSessionTotalTokens(stats: SessionStats) {
+  return stats.total_tokens ?? stats.total_input_tokens + stats.total_output_tokens;
 }
 
 function formatRelativeTime(timestamp?: number) {
@@ -106,10 +110,7 @@ export function DetailLanding({ type, sessions, agentItems, activeAgentKey }: De
   const recentSessions = sortedSessions.slice(0, 5);
 
   const totalMessages = sessions.reduce((sum, item) => sum + item.stats.message_count, 0);
-  const totalTokens = sessions.reduce(
-    (sum, item) => sum + item.stats.total_input_tokens + item.stats.total_output_tokens,
-    0,
-  );
+  const totalTokens = sessions.reduce((sum, item) => sum + getSessionTotalTokens(item.stats), 0);
   const latestUpdatedAt = sortedSessions[0]?.time_updated || sortedSessions[0]?.time_created;
 
   if (type === "global") {

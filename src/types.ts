@@ -3,6 +3,7 @@ export interface SessionStats {
   total_input_tokens: number;
   total_output_tokens: number;
   total_cost: number;
+  total_tokens?: number;
 }
 
 export interface MessageTokens {

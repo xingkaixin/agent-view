@@ -15,6 +15,14 @@ interface SessionIndexItem {
   stats: unknown;
 }
 
+interface SessionStats {
+  message_count: number;
+  total_input_tokens: number;
+  total_output_tokens: number;
+  total_cost: number;
+  total_tokens?: number;
+}
+
 function findJsonFiles(dir: string, files: string[] = []): string[] {
   const items = readdirSync(dir);
 
@@ -30,6 +38,21 @@ function findJsonFiles(dir: string, files: string[] = []): string[] {
   }
 
   return files;
+}
+
+function normalizeStats(stats: unknown): SessionStats {
+  const source = typeof stats === "object" && stats !== null ? stats : {};
+  const normalized = source as Partial<SessionStats>;
+  const totalInputTokens = normalized.total_input_tokens ?? 0;
+  const totalOutputTokens = normalized.total_output_tokens ?? 0;
+
+  return {
+    message_count: normalized.message_count ?? 0,
+    total_input_tokens: totalInputTokens,
+    total_output_tokens: totalOutputTokens,
+    total_cost: normalized.total_cost ?? 0,
+    total_tokens: normalized.total_tokens ?? totalInputTokens + totalOutputTokens,
+  };
 }
 
 function buildIndex() {
@@ -52,7 +75,7 @@ function buildIndex() {
       directory: session.directory,
       time_created: session.time_created,
       time_updated: session.time_updated,
-      stats: session.stats,
+      stats: normalizeStats(session.stats),
     });
   }
 
