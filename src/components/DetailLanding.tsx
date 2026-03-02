@@ -16,10 +16,12 @@ export interface LandingAgentItem {
 }
 
 interface DetailLandingProps {
-  type: "global" | "agent";
+  type: "global" | "agent" | "missing-agent" | "missing-session";
   sessions: LandingSession[];
   agentItems: LandingAgentItem[];
   activeAgentKey?: string;
+  attemptedAgentKey?: string;
+  attemptedSessionSlug?: string | null;
 }
 
 function formatNumber(value: number) {
@@ -64,6 +66,125 @@ function LandingCard({ label, value, hint }: { label: string; value: string; hin
   );
 }
 
+function DiagnosticItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] p-3">
+      <p className="console-mono text-[11px] uppercase tracking-wider text-[var(--console-muted)]">
+        {label}
+      </p>
+      <p className="console-mono mt-2 break-all text-sm leading-6 text-[var(--console-text)]">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function ActionLink({
+  to,
+  label,
+  tone = "primary",
+}: {
+  to: string;
+  label: string;
+  tone?: "primary" | "secondary";
+}) {
+  const toneClass =
+    tone === "primary"
+      ? "border-[var(--console-accent)] bg-[var(--console-accent)] text-white hover:bg-[var(--console-accent-strong)]"
+      : "border-[var(--console-border)] bg-white text-[var(--console-text)] hover:bg-[var(--console-surface-muted)]";
+
+  return (
+    <Link
+      to={to}
+      className={`console-mono inline-flex min-h-11 items-center justify-center rounded-sm border px-4 py-2 text-xs uppercase tracking-[0.08em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--console-accent)] ${toneClass}`}
+    >
+      {label}
+    </Link>
+  );
+}
+
+function MissingStateHero({
+  code,
+  title,
+  description,
+  aside,
+  iconSrc,
+  iconAlt,
+}: {
+  code: string;
+  title: string;
+  description: string;
+  aside: string;
+  iconSrc?: string;
+  iconAlt?: string;
+}) {
+  return (
+    <div className="rounded-sm border border-[var(--console-border-strong)] bg-white p-5 md:p-6">
+      <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+        <div className="max-w-2xl">
+          <span className="console-mono inline-flex rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--console-muted)]">
+            {code}
+          </span>
+          <div className="mt-4 flex items-start gap-3">
+            {iconSrc ? (
+              <img
+                src={iconSrc}
+                alt={iconAlt || ""}
+                className="mt-1 size-8 shrink-0 object-contain"
+              />
+            ) : null}
+            <h2 className="console-mono text-2xl leading-tight font-semibold tracking-tight text-[var(--console-text)] md:text-[2rem]">
+              {title}
+            </h2>
+          </div>
+          <p className="mt-3 max-w-[42rem] text-sm leading-7 text-[var(--console-muted)]">
+            {description}
+          </p>
+        </div>
+        <div className="min-w-0 rounded-sm border border-dashed border-[var(--console-border)] bg-[var(--console-surface-muted)] px-4 py-3 md:max-w-xs">
+          <p className="console-mono text-[11px] uppercase tracking-[0.16em] text-[var(--console-muted)]">
+            STATUS NOTE
+          </p>
+          <p className="mt-2 text-sm leading-6 text-[var(--console-text)]">{aside}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RecommendedAgents({ agentItems }: { agentItems: LandingAgentItem[] }) {
+  return (
+    <div className="rounded-sm border border-[var(--console-border)] bg-white p-4">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h3 className="console-mono text-xs font-bold uppercase text-[var(--console-text)]">
+          Known Agents
+        </h3>
+        <span className="console-mono text-[11px] text-[var(--console-muted)]">
+          {agentItems.length} items
+        </span>
+      </div>
+      <ul className="grid gap-2 sm:grid-cols-2">
+        {agentItems.map((agent) => (
+          <li key={agent.key}>
+            <Link
+              to={`/${agent.key}`}
+              className="flex min-h-11 items-center gap-2 rounded-sm border border-transparent px-3 py-2 transition-colors duration-200 hover:border-[var(--console-border)] hover:bg-[var(--console-surface-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--console-accent)]"
+            >
+              <img src={agent.icon} alt={agent.name} className="size-4 object-contain" />
+              <span className="console-mono flex-1 text-xs text-[var(--console-text)]">
+                {agent.name}
+              </span>
+              <span className="console-mono text-[11px] text-[var(--console-muted)]">
+                {agent.count}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function RecentSessions({ sessions }: { sessions: LandingSession[] }) {
   if (sessions.length === 0) {
     return (
@@ -103,7 +224,14 @@ function RecentSessions({ sessions }: { sessions: LandingSession[] }) {
   );
 }
 
-export function DetailLanding({ type, sessions, agentItems, activeAgentKey }: DetailLandingProps) {
+export function DetailLanding({
+  type,
+  sessions,
+  agentItems,
+  activeAgentKey,
+  attemptedAgentKey,
+  attemptedSessionSlug,
+}: DetailLandingProps) {
   const sortedSessions = sessions.toSorted(
     (a, b) => (b.time_updated || b.time_created || 0) - (a.time_updated || a.time_created || 0),
   );
@@ -112,6 +240,71 @@ export function DetailLanding({ type, sessions, agentItems, activeAgentKey }: De
   const totalMessages = sessions.reduce((sum, item) => sum + item.stats.message_count, 0);
   const totalTokens = sessions.reduce((sum, item) => sum + getSessionTotalTokens(item.stats), 0);
   const latestUpdatedAt = sortedSessions[0]?.time_updated || sortedSessions[0]?.time_created;
+
+  if (type === "missing-agent") {
+    const requestedPath = `/${attemptedAgentKey || "unknown"}${attemptedSessionSlug ? `/${attemptedSessionSlug}` : ""}`;
+
+    return (
+      <div className="mx-auto max-w-4xl space-y-4">
+        <MissingStateHero
+          code="404 / AGENT"
+          title="这个 Agent 还没来上班。"
+          description="你请求的路径已经敲门了，但值班表里没有这个 Agent。它可能还没接入，也可能只是名字写得比系统认识的更有个性。"
+          aside="建议先从已接入的 Agent 里挑一个继续，别让地址栏单独承担产品决策。"
+        />
+
+        <div className="grid gap-3 md:grid-cols-3">
+          <DiagnosticItem label="Requested Agent" value={attemptedAgentKey || "unknown"} />
+          <DiagnosticItem label="Requested Path" value={requestedPath} />
+          {attemptedSessionSlug ? (
+            <DiagnosticItem label="Requested Session" value={attemptedSessionSlug} />
+          ) : null}
+        </div>
+
+        <RecommendedAgents agentItems={agentItems} />
+      </div>
+    );
+  }
+
+  if (type === "missing-session") {
+    const safeAgentKey = activeAgentKey || ModelConfig.getDefaultAgentKey() || "opencode";
+    const agent = ModelConfig.agents[safeAgentKey];
+    const displayName = agent?.name || safeAgentKey;
+    const agentIcon = agent?.icon;
+    const sessionSlug = attemptedSessionSlug || "unknown-session";
+
+    return (
+      <div className="mx-auto max-w-4xl space-y-4">
+        <MissingStateHero
+          code="404 / SESSION"
+          title="这段会话压根没在名册里。"
+          description={`${displayName} 这个 Agent 是在岗的，但你要找的会话并不在当前索引里。也许 slug 记错了，也许这条记录从一开始就不在这里。`}
+          aside="系统已经试图按当前路径查档，但这次检索只找回了空气。好消息是左侧列表还在。"
+          iconSrc={agentIcon}
+          iconAlt={displayName}
+        />
+
+        <div className="grid gap-3 md:grid-cols-2">
+          <div className="rounded-sm border border-[var(--console-border)] bg-[var(--console-surface-muted)] p-3">
+            <p className="console-mono text-[11px] uppercase tracking-wider text-[var(--console-muted)]">
+              Agent
+            </p>
+            <div className="mt-2 flex items-center gap-2">
+              {agentIcon ? (
+                <img src={agentIcon} alt={displayName} className="size-4 shrink-0 object-contain" />
+              ) : null}
+              <p className="console-mono break-all text-sm leading-6 text-[var(--console-text)]">
+                {displayName}
+              </p>
+            </div>
+          </div>
+          <DiagnosticItem label="Session" value={sessionSlug} />
+        </div>
+
+        <RecentSessions sessions={recentSessions} />
+      </div>
+    );
+  }
 
   if (type === "global") {
     return (

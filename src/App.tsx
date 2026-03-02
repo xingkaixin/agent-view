@@ -15,7 +15,14 @@ type ViewState =
   | { mode: "root"; activeAgentKey: null; activeSessionSlug: null }
   | { mode: "agent"; activeAgentKey: string; activeSessionSlug: null }
   | { mode: "session"; activeAgentKey: string; activeSessionSlug: string }
-  | { mode: "notFound"; activeAgentKey: null; activeSessionSlug: null };
+  | {
+      mode: "missingAgent";
+      activeAgentKey: null;
+      activeSessionSlug: null;
+      attemptedAgentKey: string;
+      attemptedSessionSlug: string | null;
+    }
+  | { mode: "invalidRoute"; activeAgentKey: null; activeSessionSlug: null };
 
 function safeDecodeSegment(value: string) {
   try {
@@ -52,7 +59,7 @@ function formatRelativeTime(timestamp?: number) {
   return `${days}d ago`;
 }
 
-function parseViewState(pathname: string, validAgentKeys: Set<string>): ViewState {
+export function parseViewState(pathname: string, validAgentKeys: Set<string>): ViewState {
   const trimmed = pathname.replace(/^\/+|\/+$/g, "");
   const segments = trimmed
     ? trimmed
@@ -70,7 +77,13 @@ function parseViewState(pathname: string, validAgentKeys: Set<string>): ViewStat
     if (validAgentKeys.has(agentKey)) {
       return { mode: "agent", activeAgentKey: agentKey, activeSessionSlug: null };
     }
-    return { mode: "notFound", activeAgentKey: null, activeSessionSlug: null };
+    return {
+      mode: "missingAgent",
+      activeAgentKey: null,
+      activeSessionSlug: null,
+      attemptedAgentKey: agentKey,
+      attemptedSessionSlug: null,
+    };
   }
 
   if (segments.length === 2) {
@@ -79,9 +92,16 @@ function parseViewState(pathname: string, validAgentKeys: Set<string>): ViewStat
     if (validAgentKeys.has(agentKey) && sessionSlug) {
       return { mode: "session", activeAgentKey: agentKey, activeSessionSlug: sessionSlug };
     }
+    return {
+      mode: "missingAgent",
+      activeAgentKey: null,
+      activeSessionSlug: null,
+      attemptedAgentKey: agentKey,
+      attemptedSessionSlug: sessionSlug || null,
+    };
   }
 
-  return { mode: "notFound", activeAgentKey: null, activeSessionSlug: null };
+  return { mode: "invalidRoute", activeAgentKey: null, activeSessionSlug: null };
 }
 
 function normalizeSession(session: SessionInfo): LandingSession | null {
@@ -132,12 +152,14 @@ export function resolveHeaderContent({
   sidebarSessions,
   currentSessionInfo,
   activeSessionPath,
+  sessionError,
 }: {
   viewState: ViewState;
   activeAgentKey: string | null;
   sidebarSessions: LandingSession[];
   currentSessionInfo: LandingSession | null;
   activeSessionPath: string | null;
+  sessionError: string | null;
 }): ResolvedHeader {
   let title = "Welcome";
   let subtitle = "Select an agent to continue";
@@ -149,17 +171,27 @@ export function resolveHeaderContent({
   }
 
   if (viewState.mode === "session") {
-    const displaySessionId = (currentSessionInfo?.id || activeSessionPath || "")
-      .replace(/[^a-zA-Z0-9]/g, "")
-      .slice(0, 8);
-    const updatedTime = currentSessionInfo?.time_updated || currentSessionInfo?.time_created;
-    title = currentSessionInfo?.title || "Conversation";
-    subtitle = `ID: #${displaySessionId || "UNKNOWN"} · Last updated ${formatRelativeTime(updatedTime)}`;
+    if (sessionError) {
+      title = "Session Not Found";
+      subtitle = activeSessionPath ? `Requested /${activeSessionPath}` : "Requested session path";
+    } else {
+      const displaySessionId = (currentSessionInfo?.id || activeSessionPath || "")
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .slice(0, 8);
+      const updatedTime = currentSessionInfo?.time_updated || currentSessionInfo?.time_created;
+      title = currentSessionInfo?.title || "Conversation";
+      subtitle = `ID: #${displaySessionId || "UNKNOWN"} · Last updated ${formatRelativeTime(updatedTime)}`;
+    }
   }
 
-  if (viewState.mode === "notFound") {
-    title = "Not Found";
-    subtitle = "Invalid route";
+  if (viewState.mode === "missingAgent") {
+    title = "Agent Not Found";
+    subtitle = `Requested /${viewState.attemptedAgentKey}${viewState.attemptedSessionSlug ? `/${viewState.attemptedSessionSlug}` : ""}`;
+  }
+
+  if (viewState.mode === "invalidRoute") {
+    title = "Invalid Route";
+    subtitle = "路径结构无效，请从左侧选择 Agent。";
   }
 
   return {
@@ -218,13 +250,29 @@ export function renderMainContent({
 
     if (sessionError || !session) {
       return (
-        <div className="mx-auto max-w-4xl rounded-sm border border-[var(--console-error-border)] bg-[var(--console-error-bg)] p-6 text-sm text-[var(--console-error)]">
-          {sessionError || "会话不存在"}
-        </div>
+        <DetailLanding
+          type="missing-session"
+          activeAgentKey={activeAgentKey ?? undefined}
+          attemptedSessionSlug={viewState.activeSessionSlug}
+          sessions={sidebarSessions}
+          agentItems={agentItems}
+        />
       );
     }
 
     return <SessionDetail session={session} />;
+  }
+
+  if (viewState.mode === "missingAgent") {
+    return (
+      <DetailLanding
+        type="missing-agent"
+        sessions={normalizedSessions}
+        agentItems={agentItems}
+        attemptedAgentKey={viewState.attemptedAgentKey}
+        attemptedSessionSlug={viewState.attemptedSessionSlug}
+      />
+    );
   }
 
   return (
@@ -388,6 +436,7 @@ export default function App() {
     sidebarSessions,
     currentSessionInfo,
     activeSessionPath,
+    sessionError,
   });
   const content = renderMainContent({
     loading,

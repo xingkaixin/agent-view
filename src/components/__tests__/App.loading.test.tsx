@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
-import { renderMainContent, resolveHeaderContent } from "../../App";
+import { parseViewState, renderMainContent, resolveHeaderContent } from "../../App";
 import type { LandingAgentItem, LandingSession } from "../DetailLanding";
 
 const agentItems: LandingAgentItem[] = [
@@ -34,6 +34,34 @@ const sessions: LandingSession[] = [
 ];
 
 describe("App loading states", () => {
+  it("未知 agent 路径会解析为 missingAgent", () => {
+    expect(parseViewState("/df", new Set(["codex"]))).toEqual({
+      mode: "missingAgent",
+      activeAgentKey: null,
+      activeSessionSlug: null,
+      attemptedAgentKey: "df",
+      attemptedSessionSlug: null,
+    });
+  });
+
+  it("未知 agent 带 session 的路径仍解析为 missingAgent", () => {
+    expect(parseViewState("/df/123", new Set(["codex"]))).toEqual({
+      mode: "missingAgent",
+      activeAgentKey: null,
+      activeSessionSlug: null,
+      attemptedAgentKey: "df",
+      attemptedSessionSlug: "123",
+    });
+  });
+
+  it("已知 agent 带 session 的路径保持 session 语义", () => {
+    expect(parseViewState("/codex/123", new Set(["codex"]))).toEqual({
+      mode: "session",
+      activeAgentKey: "codex",
+      activeSessionSlug: "123",
+    });
+  });
+
   it("会话详情加载中返回 skeleton 内容分支", () => {
     const html = renderToStaticMarkup(
       <>
@@ -72,6 +100,7 @@ describe("App loading states", () => {
       sidebarSessions: sessions,
       currentSessionInfo: sessions[0] ?? null,
       activeSessionPath: "codex/test-session",
+      sessionError: null,
     });
 
     expect(header.title).toBe("Test Session");
@@ -191,5 +220,102 @@ describe("App loading states", () => {
 
     expect(html).toContain("Tokens");
     expect(html).toContain("22");
+  });
+
+  it("missingAgent 内容分支渲染 agent 404 landing", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        {renderMainContent({
+          loading: false,
+          error: null,
+          viewState: {
+            mode: "missingAgent",
+            activeAgentKey: null,
+            activeSessionSlug: null,
+            attemptedAgentKey: "df",
+            attemptedSessionSlug: "123",
+          },
+          normalizedSessions: sessions,
+          agentItems,
+          activeAgentKey: null,
+          sidebarSessions: [],
+          sessionLoading: false,
+          sessionError: null,
+          session: null,
+        })}
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("404 / AGENT");
+    expect(html).toContain("这个 Agent 还没来上班");
+    expect(html).toContain("Requested Agent");
+    expect(html).toContain("Known Agents");
+    expect(html).not.toContain("路径无效。请从左侧选择 Agent。");
+  });
+
+  it("缺失 session 时渲染 session 404 landing", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        {renderMainContent({
+          loading: false,
+          error: null,
+          viewState: {
+            mode: "session",
+            activeAgentKey: "codex",
+            activeSessionSlug: "missing-session",
+          },
+          normalizedSessions: sessions,
+          agentItems,
+          activeAgentKey: "codex",
+          sidebarSessions: sessions,
+          sessionLoading: false,
+          sessionError: "会话不存在",
+          session: null,
+        })}
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("404 / SESSION");
+    expect(html).toContain("这段会话压根没在名册里");
+    expect(html).toContain("Recent Sessions");
+    expect(html).not.toContain("会话不存在</div>");
+  });
+
+  it("missingAgent header 使用请求路径信息", () => {
+    const header = resolveHeaderContent({
+      viewState: {
+        mode: "missingAgent",
+        activeAgentKey: null,
+        activeSessionSlug: null,
+        attemptedAgentKey: "df",
+        attemptedSessionSlug: "123",
+      },
+      activeAgentKey: null,
+      sidebarSessions: [],
+      currentSessionInfo: null,
+      activeSessionPath: null,
+      sessionError: null,
+    });
+
+    expect(header.title).toBe("Agent Not Found");
+    expect(header.subtitle).toBe("Requested /df/123");
+  });
+
+  it("缺失 session 的 header 使用 Session Not Found 语义", () => {
+    const header = resolveHeaderContent({
+      viewState: {
+        mode: "session",
+        activeAgentKey: "codex",
+        activeSessionSlug: "missing-session",
+      },
+      activeAgentKey: "codex",
+      sidebarSessions: sessions,
+      currentSessionInfo: null,
+      activeSessionPath: "codex/missing-session",
+      sessionError: "会话不存在",
+    });
+
+    expect(header.title).toBe("Session Not Found");
+    expect(header.subtitle).toBe("Requested /codex/missing-session");
   });
 });
