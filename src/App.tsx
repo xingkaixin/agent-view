@@ -7,6 +7,7 @@ import {
   type LandingSession,
 } from "./components/DetailLanding";
 import { SessionDetail } from "./components/SessionDetail";
+import { SessionDetailSkeleton } from "./components/SessionDetailSkeleton";
 import { ModelConfig } from "./config";
 import { IndexData, Session, SessionInfo } from "./types";
 
@@ -105,6 +106,132 @@ function normalizeSession(session: SessionInfo): LandingSession | null {
     sessionSlug,
     fullPath,
   };
+}
+
+interface ResolvedHeader {
+  title: string;
+  subtitle: string;
+}
+
+interface RenderContentParams {
+  loading: boolean;
+  error: string | null;
+  viewState: ViewState;
+  normalizedSessions: LandingSession[];
+  agentItems: LandingAgentItem[];
+  activeAgentKey: string | null;
+  sidebarSessions: LandingSession[];
+  sessionLoading: boolean;
+  sessionError: string | null;
+  session: Session | null;
+}
+
+export function resolveHeaderContent({
+  viewState,
+  activeAgentKey,
+  sidebarSessions,
+  currentSessionInfo,
+  activeSessionPath,
+}: {
+  viewState: ViewState;
+  activeAgentKey: string | null;
+  sidebarSessions: LandingSession[];
+  currentSessionInfo: LandingSession | null;
+  activeSessionPath: string | null;
+}): ResolvedHeader {
+  let title = "Welcome";
+  let subtitle = "Select an agent to continue";
+
+  if (viewState.mode === "agent" && activeAgentKey) {
+    const name = ModelConfig.getAgentName(activeAgentKey);
+    title = name;
+    subtitle = `${sidebarSessions.length} sessions`;
+  }
+
+  if (viewState.mode === "session") {
+    const displaySessionId = (currentSessionInfo?.id || activeSessionPath || "")
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .slice(0, 8);
+    const updatedTime = currentSessionInfo?.time_updated || currentSessionInfo?.time_created;
+    title = currentSessionInfo?.title || "Conversation";
+    subtitle = `ID: #${displaySessionId || "UNKNOWN"} · Last updated ${formatRelativeTime(updatedTime)}`;
+  }
+
+  if (viewState.mode === "notFound") {
+    title = "Not Found";
+    subtitle = "Invalid route";
+  }
+
+  return {
+    title,
+    subtitle,
+  };
+}
+
+export function renderMainContent({
+  loading,
+  error,
+  viewState,
+  normalizedSessions,
+  agentItems,
+  activeAgentKey,
+  sidebarSessions,
+  sessionLoading,
+  sessionError,
+  session,
+}: RenderContentParams): ReactNode {
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-4xl rounded-sm border border-[var(--console-border)] bg-white p-6 text-sm text-[var(--console-muted)]">
+        加载会话索引中...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-4xl rounded-sm border border-[var(--console-error-border)] bg-[var(--console-error-bg)] p-6 text-sm text-[var(--console-error)]">
+        {error}
+      </div>
+    );
+  }
+
+  if (viewState.mode === "root") {
+    return <DetailLanding type="global" sessions={normalizedSessions} agentItems={agentItems} />;
+  }
+
+  if (viewState.mode === "agent" && activeAgentKey) {
+    return (
+      <DetailLanding
+        type="agent"
+        activeAgentKey={activeAgentKey}
+        sessions={sidebarSessions}
+        agentItems={agentItems}
+      />
+    );
+  }
+
+  if (viewState.mode === "session") {
+    if (sessionLoading) {
+      return <SessionDetailSkeleton />;
+    }
+
+    if (sessionError || !session) {
+      return (
+        <div className="mx-auto max-w-4xl rounded-sm border border-[var(--console-error-border)] bg-[var(--console-error-bg)] p-6 text-sm text-[var(--console-error)]">
+          {sessionError || "会话不存在"}
+        </div>
+      );
+    }
+
+    return <SessionDetail session={session} />;
+  }
+
+  return (
+    <div className="mx-auto max-w-4xl rounded-sm border border-[var(--console-error-border)] bg-[var(--console-error-bg)] p-6 text-sm text-[var(--console-error)]">
+      路径无效。请从左侧选择 Agent。
+    </div>
+  );
 }
 
 export default function App() {
@@ -255,77 +382,25 @@ export default function App() {
     };
   }, [activeSessionPath]);
 
-  let title = "Welcome";
-  let subtitle = "Select an agent to continue";
-
-  if (viewState.mode === "agent" && activeAgentKey) {
-    const name = ModelConfig.getAgentName(activeAgentKey);
-    title = name;
-    subtitle = `${sidebarSessions.length} sessions`;
-  }
-
-  if (viewState.mode === "session") {
-    const displaySessionId = (currentSessionInfo?.id || activeSessionPath || "")
-      .replace(/[^a-zA-Z0-9]/g, "")
-      .slice(0, 8);
-    const updatedTime = currentSessionInfo?.time_updated || currentSessionInfo?.time_created;
-    title = currentSessionInfo?.title || "Conversation";
-    subtitle = `ID: #${displaySessionId || "UNKNOWN"} · Last updated ${formatRelativeTime(updatedTime)}`;
-  }
-
-  if (viewState.mode === "notFound") {
-    title = "Not Found";
-    subtitle = "Invalid route";
-  }
-
-  let content: ReactNode;
-
-  if (loading) {
-    content = (
-      <div className="mx-auto max-w-4xl rounded-sm border border-[var(--console-border)] bg-white p-6 text-sm text-[var(--console-muted)]">
-        加载会话索引中...
-      </div>
-    );
-  } else if (error) {
-    content = (
-      <div className="mx-auto max-w-4xl rounded-sm border border-[var(--console-error-border)] bg-[var(--console-error-bg)] p-6 text-sm text-[var(--console-error)]">
-        {error}
-      </div>
-    );
-  } else if (viewState.mode === "root") {
-    content = <DetailLanding type="global" sessions={normalizedSessions} agentItems={agentItems} />;
-  } else if (viewState.mode === "agent" && activeAgentKey) {
-    content = (
-      <DetailLanding
-        type="agent"
-        activeAgentKey={activeAgentKey}
-        sessions={sidebarSessions}
-        agentItems={agentItems}
-      />
-    );
-  } else if (viewState.mode === "session") {
-    if (sessionLoading) {
-      content = (
-        <div className="mx-auto max-w-4xl rounded-sm border border-[var(--console-border)] bg-white p-6 text-sm text-[var(--console-muted)]">
-          加载会话内容中...
-        </div>
-      );
-    } else if (sessionError || !session) {
-      content = (
-        <div className="mx-auto max-w-4xl rounded-sm border border-[var(--console-error-border)] bg-[var(--console-error-bg)] p-6 text-sm text-[var(--console-error)]">
-          {sessionError || "会话不存在"}
-        </div>
-      );
-    } else {
-      content = <SessionDetail session={session} />;
-    }
-  } else {
-    content = (
-      <div className="mx-auto max-w-4xl rounded-sm border border-[var(--console-error-border)] bg-[var(--console-error-bg)] p-6 text-sm text-[var(--console-error)]">
-        路径无效。请从左侧选择 Agent。
-      </div>
-    );
-  }
+  const { title, subtitle } = resolveHeaderContent({
+    viewState,
+    activeAgentKey,
+    sidebarSessions,
+    currentSessionInfo,
+    activeSessionPath,
+  });
+  const content = renderMainContent({
+    loading,
+    error,
+    viewState,
+    normalizedSessions,
+    agentItems,
+    activeAgentKey,
+    sidebarSessions,
+    sessionLoading,
+    sessionError,
+    session,
+  });
 
   return (
     <div className="console-ui h-screen overflow-hidden bg-[var(--console-bg)] text-[var(--console-text)]">
