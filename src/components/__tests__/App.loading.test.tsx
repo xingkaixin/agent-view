@@ -247,7 +247,7 @@ describe("App loading states", () => {
     );
 
     expect(html).toContain("404 / AGENT");
-    expect(html).toContain("这个 Agent 还没来上班");
+    expect(html).toContain("This agent isn&#x27;t on the roster.");
     expect(html).toContain("Requested Agent");
     expect(html).toContain("Known Agents");
     expect(html).not.toContain("路径无效。请从左侧选择 Agent。");
@@ -269,14 +269,14 @@ describe("App loading states", () => {
           activeAgentKey: "codex",
           sidebarSessions: sessions,
           sessionLoading: false,
-          sessionError: "会话不存在",
+          sessionError: "Session not found",
           session: null,
         })}
       </MemoryRouter>,
     );
 
     expect(html).toContain("404 / SESSION");
-    expect(html).toContain("这段会话压根没在名册里");
+    expect(html).toContain("This session isn&#x27;t in the index.");
     expect(html).toContain("Recent Sessions");
     expect(html).not.toContain("会话不存在</div>");
   });
@@ -312,10 +312,60 @@ describe("App loading states", () => {
       sidebarSessions: sessions,
       currentSessionInfo: null,
       activeSessionPath: "codex/missing-session",
-      sessionError: "会话不存在",
+      sessionError: "Session not found",
     });
 
     expect(header.title).toBe("Session Not Found");
     expect(header.subtitle).toBe("Requested /codex/missing-session");
+  });
+
+  it("agent landing 显示英文引导文案", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        {renderMainContent({
+          loading: false,
+          error: null,
+          viewState: {
+            mode: "agent",
+            activeAgentKey: "codex",
+            activeSessionSlug: null,
+          },
+          normalizedSessions: sessions,
+          agentItems,
+          activeAgentKey: "codex",
+          sidebarSessions: sessions,
+          sessionLoading: false,
+          sessionError: null,
+          session: null,
+        })}
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("Select a session from the left to view details");
+  });
+
+  it("agent landing 空会话列表显示英文空态", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        {renderMainContent({
+          loading: false,
+          error: null,
+          viewState: {
+            mode: "agent",
+            activeAgentKey: "codex",
+            activeSessionSlug: null,
+          },
+          normalizedSessions: [],
+          agentItems,
+          activeAgentKey: "codex",
+          sidebarSessions: [],
+          sessionLoading: false,
+          sessionError: null,
+          session: null,
+        })}
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("No sessions yet");
   });
 });

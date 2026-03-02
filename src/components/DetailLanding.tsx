@@ -165,7 +165,7 @@ function RecentSessions({ sessions }: { sessions: LandingSession[] }) {
   if (sessions.length === 0) {
     return (
       <div className="rounded-sm border border-[var(--console-border)] bg-white p-4 text-sm text-[var(--console-muted)]">
-        暂无会话
+        No sessions yet
       </div>
     );
   }
@@ -224,9 +224,9 @@ export function DetailLanding({
       <div className="mx-auto max-w-4xl space-y-4">
         <MissingStateHero
           code="404 / AGENT"
-          title="这个 Agent 还没来上班。"
-          description="你请求的路径已经敲门了，但值班表里没有这个 Agent。它可能还没接入，也可能只是名字写得比系统认识的更有个性。"
-          aside="建议先从已接入的 Agent 里挑一个继续，别让地址栏单独承担产品决策。"
+          title="This agent isn't on the roster."
+          description="The path you requested is valid in shape, but there is no matching agent in the current registry. It may not be connected yet, or its name may not match what the system recognizes."
+          aside="Choose one of the available agents to continue."
         />
 
         <div className="grid gap-3 md:grid-cols-3">
@@ -253,9 +253,9 @@ export function DetailLanding({
       <div className="mx-auto max-w-4xl space-y-4">
         <MissingStateHero
           code="404 / SESSION"
-          title="这段会话压根没在名册里。"
-          description={`${displayName} 这个 Agent 是在岗的，但你要找的会话并不在当前索引里。也许 slug 记错了，也许这条记录从一开始就不在这里。`}
-          aside="系统已经试图按当前路径查档，但这次检索只找回了空气。好消息是左侧列表还在。"
+          title="This session isn't in the index."
+          description={`${displayName} is available, but the session you're looking for does not exist in the current index. The slug may be incorrect, or the record may never have been part of this dataset.`}
+          aside="We checked the current path, but nothing matched. The session list on the left is still available."
           iconSrc={agentIcon}
           iconAlt={displayName}
         />
@@ -339,7 +339,7 @@ export function DetailLanding({
               {displayName}
             </h3>
             <p className="console-mono text-xs text-[var(--console-muted)]">
-              请选择左侧会话进入详情
+              Select a session from the left to view details
             </p>
           </div>
         </div>

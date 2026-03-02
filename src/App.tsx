@@ -416,7 +416,7 @@ export default function App() {
           return;
         }
         console.error("Failed to load session:", e);
-        setSessionError("会话不存在");
+        setSessionError("Session not found");
         setSession(null);
       } finally {
         setSessionLoading(false);
@@ -517,13 +517,13 @@ export default function App() {
                 {!activeAgentKey ? (
                   <li>
                     <span className="console-mono block rounded-sm px-3 py-1.5 text-xs text-[var(--console-muted)]">
-                      请选择 Agent
+                      Select an agent
                     </span>
                   </li>
                 ) : sidebarSessions.length === 0 ? (
                   <li>
                     <span className="console-mono block rounded-sm px-3 py-1.5 text-xs text-[var(--console-muted)]">
-                      暂无会话
+                      No sessions yet
                     </span>
                   </li>
                 ) : (
