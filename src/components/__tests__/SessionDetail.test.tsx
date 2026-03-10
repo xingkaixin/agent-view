@@ -4,13 +4,18 @@ import type { Session } from "../../types";
 import { CODEX_TURN_ABORTED_TEXT } from "../session-detail/codex-abort";
 import { SessionDetail } from "../SessionDetail";
 
-function renderSessionDetail(messages: Session["messages"], slug = "codex/test-session") {
+function renderSessionDetail(
+  messages: Session["messages"],
+  slug = "codex/test-session",
+  summary?: string,
+) {
   return renderToStaticMarkup(
     <SessionDetail
       session={{
         id: "session-1",
         slug,
         title: "Test Session",
+        summary,
         directory: "/tmp",
         time_created: "2026-03-01T00:00:00.000Z",
         stats: {
@@ -229,5 +234,23 @@ describe("SessionDetail markdown rendering", () => {
     expect(html).toContain("The user interrupted the previous turn on purpose.");
     expect(html).toContain("&lt;turn_aborted&gt;");
     expect(html).not.toContain(">abort<");
+  });
+
+  it("会话存在 summary 时在详情顶部显示摘要入口，但默认不展开正文", () => {
+    const html = renderSessionDetail(
+      [
+        {
+          role: "assistant",
+          time_created: "2026-03-01T00:00:00.000Z",
+          parts: [{ type: "text", text: "普通消息" }],
+        },
+      ],
+      "codex/test-session",
+      "## Summary\n\n- item one",
+    );
+
+    expect(html).toContain("Session Summary");
+    expect(html).toContain("普通消息");
+    expect(html).not.toContain("<h2>Summary</h2>");
   });
 });

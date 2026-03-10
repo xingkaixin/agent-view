@@ -41,6 +41,7 @@ export interface SessionInfo {
   id: string;
   slug: string;
   title: string;
+  summary?: string;
   directory: string;
   time_created: number;
   time_updated?: number;
@@ -52,6 +53,7 @@ export interface Session {
   slug: string;
   _urlSlug?: string;
   title: string;
+  summary?: string;
   directory: string;
   time_created: string;
   stats: SessionStats;

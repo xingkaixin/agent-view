@@ -10,6 +10,7 @@ import {
   ChevronUp,
   FilePenLine,
   FileSearch,
+  FileText,
   LoaderCircle,
   Lightbulb,
   MessageCircleX,
@@ -20,9 +21,9 @@ import {
   XCircle,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import ReactMarkdown, { type Components } from "react-markdown";
 import { ModelConfig } from "../config";
 import { Session, Message, MessagePart } from "../types";
+import { MarkdownContent } from "./MarkdownContent";
 import { buildMessageBlocks, extractMessageText, hasVisibleContent } from "./session-detail/blocks";
 import { isCodexTurnAbortedMessage } from "./session-detail/codex-abort";
 import {
@@ -91,12 +92,8 @@ const TOOL_STATUS_META: Record<
   },
 };
 
-const messageMarkdownComponents: Components = {
-  a: ({ children }) => <span className="console-markdown-link">{children}</span>,
-};
-
 function MessageMarkdown({ text }: { text: string }) {
-  return <ReactMarkdown components={messageMarkdownComponents}>{text}</ReactMarkdown>;
+  return <MarkdownContent text={text} />;
 }
 
 function toDisplayText(value: unknown) {
@@ -870,6 +867,7 @@ export function SessionDetail({ session }: SessionDetailProps) {
 
   return (
     <div className="mx-auto w-full max-w-5xl space-y-8 px-2 md:px-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+      <SessionSummarySection summary={session.summary} />
       <div className="flex flex-col gap-8">
         {visibleMessages.map((msg, index) => (
           <MessageItem
@@ -881,6 +879,48 @@ export function SessionDetail({ session }: SessionDetailProps) {
         ))}
       </div>
     </div>
+  );
+}
+
+export function SessionSummarySection({
+  summary,
+  defaultExpanded = false,
+}: {
+  summary?: string;
+  defaultExpanded?: boolean;
+}) {
+  const content = summary?.trim();
+  const [expanded, setExpanded] = useState(defaultExpanded);
+
+  if (!content) {
+    return null;
+  }
+
+  return (
+    <section className="rounded-sm border border-[var(--console-border)] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+      <button
+        type="button"
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+        onClick={() => setExpanded((value) => !value)}
+      >
+        <span className="console-mono inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--console-text)]">
+          <FileText className="size-3.5 text-[var(--console-accent)]" />
+          Session Summary
+        </span>
+        {expanded ? (
+          <ChevronUp className="size-3.5 text-[var(--console-muted)]" />
+        ) : (
+          <ChevronDown className="size-3.5 text-[var(--console-muted)]" />
+        )}
+      </button>
+      {expanded ? (
+        <div className="border-t border-[var(--console-border)] px-4 py-4">
+          <div className="console-markdown text-sm leading-relaxed text-[var(--console-text)]">
+            <MarkdownContent text={content} />
+          </div>
+        </div>
+      ) : null}
+    </section>
   );
 }
 

@@ -21,6 +21,7 @@ const sessions: LandingSession[] = [
     agentKey: "codex",
     sessionSlug: "test-session",
     title: "Test Session",
+    summary: "## Summary\n\n- item one",
     directory: "/tmp/project",
     time_created: Date.parse("2026-03-01T00:00:00.000Z"),
     time_updated: Date.parse("2026-03-02T00:00:00.000Z"),
@@ -29,6 +30,23 @@ const sessions: LandingSession[] = [
       total_input_tokens: 10,
       total_output_tokens: 12,
       total_cost: 0.01,
+    },
+  },
+  {
+    id: "session-2",
+    slug: "codex/no-summary-session",
+    fullPath: "codex/no-summary-session",
+    agentKey: "codex",
+    sessionSlug: "no-summary-session",
+    title: "No Summary Session",
+    directory: "/tmp/project",
+    time_created: Date.parse("2026-02-28T00:00:00.000Z"),
+    time_updated: Date.parse("2026-02-28T12:00:00.000Z"),
+    stats: {
+      message_count: 1,
+      total_input_tokens: 2,
+      total_output_tokens: 3,
+      total_cost: 0,
     },
   },
 ];
@@ -207,10 +225,10 @@ describe("App loading states", () => {
             activeAgentKey: "codex",
             activeSessionSlug: null,
           },
-          normalizedSessions: sessions,
+          normalizedSessions: [sessions[0]!],
           agentItems,
           activeAgentKey: "codex",
-          sidebarSessions: sessions,
+          sidebarSessions: [sessions[0]!],
           sessionLoading: false,
           sessionError: null,
           session: null,
@@ -342,6 +360,9 @@ describe("App loading states", () => {
     );
 
     expect(html).toContain("Select a session from the left to view details");
+    expect(html).toContain("Recent Sessions");
+    expect(html).not.toContain("Session Summary");
+    expect(html).not.toContain("View Details");
   });
 
   it("agent landing 空会话列表显示英文空态", () => {
@@ -367,5 +388,32 @@ describe("App loading states", () => {
     );
 
     expect(html).toContain("No sessions yet");
+  });
+
+  it("global landing 继续使用轻量 recent sessions，不显示摘要区块", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        {renderMainContent({
+          loading: false,
+          error: null,
+          viewState: {
+            mode: "root",
+            activeAgentKey: null,
+            activeSessionSlug: null,
+          },
+          normalizedSessions: sessions,
+          agentItems,
+          activeAgentKey: null,
+          sidebarSessions: [],
+          sessionLoading: false,
+          sessionError: null,
+          session: null,
+        })}
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("Recent Sessions");
+    expect(html).not.toContain("Session Summary");
+    expect(html).not.toContain("View Details");
   });
 });

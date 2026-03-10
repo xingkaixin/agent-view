@@ -1025,5 +1025,6 @@
         }
       ]
     }
-  ]
+  ],
+  "summary": "# 会话总结\n\n## 关键目标\n修复 Codex 和 Kimi 会话详情页中，Assistant 消息内部 `reasoning`、`text`、`tool` 组件渲染顺序错误的问题。当前页面固定按 `reasoning -> tool -> text` 的顺序渲染，破坏了原始 `parts` 数组的时序。\n\n## 主要改动\n1.  **核心逻辑**：在 `SessionDetail.tsx` 中引入 `buildMessageBlocks` 函数，将 `msg.parts` 按原始顺序归一化为连续的渲染块 (`MessageBlock`)，并合并相邻的同类型 part。\n2.  **渲染流程**：将原有的三段式固定顺序渲染 (`reasoningParts` -> `toolParts` -> `textParts`) 改为按 `buildMessageBlocks` 生成的块顺序进行渲染。\n3.  **可见性判断**：统一 `hasVisibleContent` 函数与 `MessageItem` 的可见性逻辑，均基于 `buildMessageBlocks` 的结果。\n4.  **代码组织**：将分组逻辑提取到独立的 `blocks.ts` 文件中。\n5.  **测试覆盖**：新增单元测试文件 `SessionDetail.blocks.test.ts`，覆盖了10种关键的消息模式与边缘场景。\n\n## 风险/异常\n1.  **假设依赖**：方案假设 `msg.parts` 的原始顺序即为上游会话的真实语义顺序。若此假设不成立，修复可能无效。\n2.  **范围限定**：改动仅限于消息详情页 (`SessionDetail.tsx`) 的展示层逻辑，不修改底层数据结构 (`Message`, `MessagePart`, `Session`) 或其他模块。\n3.  **新增形态支持**：明确将 `thinking + tool` 识别为合法且必须支持的消息模式（会话中提及 Kimi 数据中常见此模式）。\n\n## 结果\n1.  **功能实现**：Assistant 消息内的 `thinking`、`text`、`tool` 组件现在严格按原始 `parts` 顺序渲染。\n2.  **兼容性**：支持了用户列出的4种模式及 `thinking + tool` 模式，并会合并连续的同类型 part。\n3.  **非侵入性**：保持了现有的视觉样式、交互逻辑（如 thinking 折叠、tool 卡片）及工具渲染策略。\n4.  **质量保证**：通过了新增的单元测试、代码风格检查 (`lint`) 和项目构建 (`build`)，未引入新的编译错误或警告。\n\n**信息充足性说明**：会话内容提供了完整的问题背景、分析过程、详细的实施方案、具体的代码改动文件以及最终的验证结果，信息充足，无需额外补充。"
 }

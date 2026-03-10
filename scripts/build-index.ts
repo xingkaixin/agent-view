@@ -9,6 +9,7 @@ interface SessionIndexItem {
   id: string;
   slug: string;
   title: string;
+  summary?: string;
   directory: string;
   time_created: number;
   time_updated?: number;
@@ -72,6 +73,7 @@ function buildIndex() {
       id: session.id,
       slug: slug,
       title: session.title,
+      summary: typeof session.summary === "string" ? session.summary : undefined,
       directory: session.directory,
       time_created: session.time_created,
       time_updated: session.time_updated,
