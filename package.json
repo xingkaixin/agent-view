@@ -11,7 +11,9 @@
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
     "lint:format": "oxfmt --write",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "wrangler": "wrangler pages deploy dist --project-name=agent",
+    "deploy": "bun run build && bun run wrangler"
   },
   "dependencies": {
     "@radix-ui/react-scroll-area": "^1.2.10",
