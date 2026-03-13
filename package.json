@@ -1,19 +1,19 @@
 {
   "name": "agent-view",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A tool for visualizing and browsing AI Agent sessions.",
   "type": "module",
   "scripts": {
     "build": "bun run build:index && vite build && cp -r data dist/data",
     "build:index": "bun run scripts/build-index.ts",
     "build:logo": "bun run scripts/build-logo.ts",
+    "deploy": "bun run build && bun run wrangler",
     "dev": "vite",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
     "lint:format": "oxfmt --write",
     "preview": "vite preview",
-    "wrangler": "wrangler pages deploy dist --project-name=agent",
-    "deploy": "bun run build && bun run wrangler"
+    "wrangler": "wrangler pages deploy dist --project-name=agent"
   },
   "dependencies": {
     "@radix-ui/react-scroll-area": "^1.2.10",
@@ -23,31 +23,31 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "diff": "^8.0.3",
-    "lucide-react": "^0.575.0",
+    "lucide-react": "^0.577.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.13.0",
+    "react-router-dom": "^7.13.1",
     "react-syntax-highlighter": "^16.1.1",
-    "sharp": "^0.33.0",
+    "sharp": "^0.34.5",
     "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.2.0",
-    "@tailwindcss/vite": "^4.2.0",
-    "@types/node": "^25.3.0",
+    "@tailwindcss/postcss": "^4.2.1",
+    "@tailwindcss/vite": "^4.2.1",
+    "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.4",
-    "autoprefixer": "^10.4.24",
-    "oxfmt": "^0.34.0",
-    "oxlint": "^1.49.0",
-    "oxlint-tsgolint": "^0.14.2",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.2.0",
+    "@vitejs/plugin-react": "^6.0.0",
+    "autoprefixer": "^10.4.27",
+    "oxfmt": "^0.40.0",
+    "oxlint": "^1.55.0",
+    "oxlint-tsgolint": "^0.16.0",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1"
+    "vite": "^8.0.0"
   },
   "engines": {
     "bun": ">=1.0.0"
