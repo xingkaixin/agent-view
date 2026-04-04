@@ -1,6 +1,7 @@
 import { diffLines, type Change } from "diff";
 /* eslint-disable react/no-array-index-key */
 import {
+  Funnel,
   BookOpenText,
   Bot,
   CalendarRange,
@@ -20,11 +21,17 @@ import {
   Wrench,
   XCircle,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ModelConfig } from "../config";
+import { cn } from "../lib/utils";
 import { Session, Message, MessagePart } from "../types";
 import { MarkdownContent } from "./MarkdownContent";
-import { buildMessageBlocks, extractMessageText, hasVisibleContent } from "./session-detail/blocks";
+import {
+  MessageBlock,
+  buildMessageBlocks,
+  extractMessageText,
+  hasVisibleContent,
+} from "./session-detail/blocks";
 import { isCodexTurnAbortedMessage } from "./session-detail/codex-abort";
 import {
   buildCodexPatchOutputContent,
@@ -38,6 +45,12 @@ import {
   buildCodexWriteStdinDisplay,
   ToolDetailItem,
 } from "./session-detail/codex-tool";
+import {
+  buildSessionDetailToc,
+  filterSessionMessages,
+  SessionDetailToc,
+  TocFilterId,
+} from "./session-detail/toc";
 import { detectLanguageByFilePath } from "./tool-output/language";
 import { ToolOutputRenderer } from "./tool-output/ToolOutputRenderer";
 import { DiffBlock, DiffLineItem, ToolOutputContent } from "./tool-output/types";
@@ -915,6 +928,17 @@ export function SessionDetail({ session }: SessionDetailProps) {
     () => session.messages.filter((msg) => hasVisibleContent(msg)),
     [session.messages],
   );
+  const toc = useMemo(() => buildSessionDetailToc(visibleMessages), [visibleMessages]);
+  const [selectedFilters, setSelectedFilters] = useState<Set<string>>(() => new Set(toc.filterIds));
+  const tocSignature = useMemo(() => [...toc.filterIds].toSorted().join("|"), [toc.filterIds]);
+  const filteredMessages = useMemo(
+    () => filterSessionMessages(visibleMessages, selectedFilters),
+    [visibleMessages, selectedFilters],
+  );
+
+  useEffect(() => {
+    setSelectedFilters(new Set(toc.filterIds));
+  }, [tocSignature, toc.filterIds]);
 
   if (visibleMessages.length === 0) {
     return (
@@ -925,19 +949,135 @@ export function SessionDetail({ session }: SessionDetailProps) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-8 px-2 md:px-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="mx-auto w-full max-w-6xl space-y-8 px-2 md:px-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
       <SessionSummarySection summary={session.summary} />
-      <div className="flex flex-col gap-8">
-        {visibleMessages.map((msg, index) => (
-          <MessageItem
-            key={index}
-            msg={msg}
-            formatTokens={formatTokens}
-            sessionAgentKey={sessionAgentKey}
-          />
-        ))}
+      <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:items-start">
+        <SessionToc
+          toc={toc}
+          selectedFilters={selectedFilters}
+          onToggle={(filterId) =>
+            setSelectedFilters((current) => {
+              const next = new Set(current);
+              if (filterId === "tools_all") {
+                if (next.has("tools_all")) {
+                  next.delete("tools_all");
+                } else {
+                  next.add("tools_all");
+                }
+                return next;
+              }
+
+              if (next.has(filterId)) {
+                next.delete(filterId);
+              } else {
+                next.add(filterId);
+              }
+              return next;
+            })
+          }
+        />
+        <div className="flex min-w-0 flex-col gap-8">
+          {filteredMessages.length > 0 ? (
+            filteredMessages.map(({ msg, blocks }, index) => (
+              <MessageItem
+                key={index}
+                msg={msg}
+                blocks={blocks}
+                formatTokens={formatTokens}
+                sessionAgentKey={sessionAgentKey}
+              />
+            ))
+          ) : (
+            <div className="rounded-sm border border-[var(--console-border)] bg-white p-6 text-sm text-[var(--console-muted)]">
+              当前筛选条件下暂无可展示的消息内容。
+            </div>
+          )}
+        </div>
       </div>
     </div>
+  );
+}
+
+const TOC_META: Array<{ id: TocFilterId; label: string }> = [
+  { id: "user", label: "User" },
+  { id: "agent_message", label: "Agent Responses" },
+  { id: "thinking", label: "Thinking" },
+  { id: "plan", label: "Plans" },
+  { id: "tools_all", label: "Tools" },
+];
+
+function SessionToc({
+  toc,
+  selectedFilters,
+  onToggle,
+}: {
+  toc: SessionDetailToc;
+  selectedFilters: Set<string>;
+  onToggle: (filterId: string) => void;
+}) {
+  const toolsEnabled = selectedFilters.has("tools_all");
+
+  return (
+    <aside className="lg:sticky lg:top-4">
+      <div className="rounded-sm border border-[var(--console-border)] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+        <div className="flex items-center gap-2 border-b border-[var(--console-border)] px-4 py-3">
+          <Funnel className="size-3.5 text-[var(--console-accent)]" />
+          <span className="console-mono text-xs font-semibold uppercase tracking-[0.16em] text-[var(--console-text)]">
+            Session TOC
+          </span>
+        </div>
+        <div className="space-y-1 p-3">
+          {TOC_META.filter(({ id }) => toc.counts[id] > 0).map(({ id, label }) => (
+            <label
+              key={id}
+              className="flex cursor-pointer items-center gap-3 rounded-sm px-2 py-2 transition-colors hover:bg-[var(--console-surface-muted)]"
+            >
+              <input
+                type="checkbox"
+                checked={selectedFilters.has(id)}
+                onChange={() => onToggle(id)}
+                className="size-3.5 rounded border-[var(--console-border-strong)] accent-[var(--console-accent-strong)]"
+              />
+              <span className="console-mono min-w-0 flex-1 text-xs text-[var(--console-text)]">
+                {label}
+              </span>
+              <span className="console-mono text-[11px] text-[var(--console-muted)]">
+                {toc.counts[id]}
+              </span>
+            </label>
+          ))}
+          {toc.tools.length > 0 ? (
+            <div className="space-y-1 border-t border-[var(--console-border)] pt-2">
+              {toc.tools.map((tool) => (
+                <label
+                  key={tool.id}
+                  className={cn(
+                    "flex items-center gap-3 rounded-sm px-2 py-2 transition-colors",
+                    toolsEnabled
+                      ? "cursor-pointer hover:bg-[var(--console-surface-muted)]"
+                      : "cursor-not-allowed opacity-50",
+                  )}
+                >
+                  <input
+                    type="checkbox"
+                    checked={toolsEnabled && selectedFilters.has(tool.id)}
+                    disabled={!toolsEnabled}
+                    onChange={() => onToggle(tool.id)}
+                    className="size-3.5 rounded border-[var(--console-border-strong)] accent-[var(--console-accent-strong)]"
+                  />
+                  <span className="console-mono min-w-0 flex-1 text-xs text-[var(--console-muted)]">
+                    {tool.label}
+                  </span>
+                  <span className="console-mono text-[11px] text-[var(--console-muted)]">
+                    {tool.count}
+                  </span>
+                </label>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </aside>
   );
 }
 
@@ -985,10 +1125,12 @@ export function SessionSummarySection({
 
 function MessageItem({
   msg,
+  blocks,
   formatTokens,
   sessionAgentKey,
 }: {
   msg: Message;
+  blocks?: MessageBlock[];
   formatTokens: (n: number) => string;
   sessionAgentKey: string;
 }) {
@@ -996,7 +1138,7 @@ function MessageItem({
   const time = formatMessageTime(msg.time_created);
   const isUser = role === "user";
   const isAbortMessage = isCodexTurnAbortedMessage(msg, sessionAgentKey);
-  const blocks = buildMessageBlocks(msg.parts);
+  const renderedBlocks = blocks || buildMessageBlocks(msg.parts);
 
   const getAgentAvatar = () => {
     const agentKey = sessionAgentKey.toLowerCase();
@@ -1050,7 +1192,7 @@ function MessageItem({
           {isAbortMessage ? (
             <AbortToolItem />
           ) : (
-            blocks.map((block, index) => {
+            renderedBlocks.map((block, index) => {
               if (block.type === "reasoning") {
                 return <ReasoningSection key={index} parts={block.parts} />;
               }
