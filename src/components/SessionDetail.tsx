@@ -209,6 +209,46 @@ function extractCommand(inputValue: unknown) {
   return "";
 }
 
+function compactText(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+export function getSubagentToolTitle(part: MessagePart) {
+  const state = toRecord(part.state);
+  const argumentsValue = toRecord(state.arguments);
+  const agentType = compactText(argumentsValue.agent_type);
+  const nickname = compactText((part as { nickname?: unknown }).nickname);
+  const model = compactText(argumentsValue.model);
+  const reasoningEffort = compactText(argumentsValue.reasoning_effort);
+  const modelSuffix = [model, reasoningEffort].filter(Boolean).join("-");
+  const left = [agentType, nickname].filter(Boolean).join(" - ");
+  return [left, modelSuffix].filter(Boolean).join(" ");
+}
+
+export function getSubagentPrompt(part: MessagePart) {
+  const state = toRecord(part.state);
+  const prompt = compactText(state.prompt);
+  if (prompt) {
+    return prompt;
+  }
+
+  const argumentsValue = toRecord(state.arguments);
+  const message = compactText(argumentsValue.message);
+  if (message) {
+    return message;
+  }
+
+  return "";
+}
+
+export function getAssistantDisplayLabel(msg: Message) {
+  const nickname = compactText(msg.nickname);
+  if (msg.role === "assistant" && nickname) {
+    return `AGENT (${nickname})`;
+  }
+  return msg.role === "user" ? "USER" : "AGENT";
+}
+
 function normalizeToolState(part: MessagePart): NormalizedToolState {
   const rawState = (part.state || {}) as Record<string, unknown>;
   const rawStatus = rawState.status;
@@ -659,6 +699,25 @@ function buildCodexToolStrategy(
     };
   }
 
+  if (toolKey === "subagent") {
+    const prompt = getSubagentPrompt(tool);
+    const fallbackText = getOutputOrErrorText(state);
+    return {
+      ...defaultStrategy,
+      Icon: Bot,
+      title: getSubagentToolTitle(tool) || tool.title || "subagent",
+      secondaryText: undefined,
+      details: [],
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: prompt || fallbackText,
+        language: "markdown",
+        isCode: false,
+      },
+    };
+  }
+
   return defaultStrategy;
 }
 
@@ -956,6 +1015,7 @@ function MessageItem({
 
   const modeLabel = msg.mode ? msg.mode.toUpperCase() : null;
   const modelLabel = msg.model || null;
+  const roleLabel = getAssistantDisplayLabel(msg);
 
   return (
     <article className="w-full border-l-2 border-[var(--console-thread)] pl-4 pr-3 md:pr-5">
@@ -972,7 +1032,7 @@ function MessageItem({
         <div className="min-w-0 flex-1 space-y-3">
           <div className="flex items-baseline gap-3">
             <span className="console-mono text-sm font-bold tracking-wide text-[var(--console-text)]">
-              {isUser ? "USER" : "AGENT"}
+              {roleLabel}
             </span>
             <time className="console-mono text-xs text-[var(--console-muted)]">{time}</time>
             {modeLabel && (

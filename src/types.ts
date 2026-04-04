@@ -17,21 +17,34 @@ export interface MessagePart {
   text?: unknown;
   tool?: string;
   title?: string;
+  nickname?: string;
+  subagent_id?: string;
   input?: unknown;
   output?: unknown;
   approval_status?: "success" | "fail";
   state?: {
     status?: "running" | "completed" | "error";
     input?: unknown;
+    arguments?: unknown;
     output?: unknown;
+    result?: unknown;
+    error?: unknown;
+    metadata?: unknown;
+    prompt?: unknown;
+    [key: string]: unknown;
   };
 }
 
 export interface Message {
   role: "user" | "assistant";
+  agent?: string | null;
   time_created: string;
   mode?: string;
   model?: string;
+  model_name?: string;
+  reasoning_effort?: string;
+  subagent_id?: string;
+  nickname?: string;
   parts: MessagePart[];
   tokens?: MessageTokens;
   cost?: number;

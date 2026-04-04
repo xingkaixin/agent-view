@@ -2,7 +2,12 @@ import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { Session } from "../../types";
 import { CODEX_TURN_ABORTED_TEXT } from "../session-detail/codex-abort";
-import { SessionDetail } from "../SessionDetail";
+import {
+  getAssistantDisplayLabel,
+  getSubagentPrompt,
+  getSubagentToolTitle,
+  SessionDetail,
+} from "../SessionDetail";
 
 function renderSessionDetail(
   messages: Session["messages"],
@@ -31,6 +36,65 @@ function renderSessionDetail(
 }
 
 describe("SessionDetail markdown rendering", () => {
+  it("codex subagent tool 标题按 agent type、nickname、model 与 reasoning_effort 组合", () => {
+    expect(
+      getSubagentToolTitle({
+        type: "tool",
+        tool: "subagent",
+        nickname: "Carver",
+        state: {
+          arguments: {
+            agent_type: "explorer",
+            model: "gpt-5.4-mini",
+            reasoning_effort: "medium",
+          },
+        },
+      } as Session["messages"][number]["parts"][number]),
+    ).toBe("explorer - Carver gpt-5.4-mini-medium");
+  });
+
+  it("codex subagent tool 标题缺字段时会自然收缩", () => {
+    expect(
+      getSubagentToolTitle({
+        type: "tool",
+        tool: "subagent",
+        nickname: "Carver",
+        state: {
+          arguments: {
+            agent_type: "explorer",
+            model: "gpt-5.4-mini",
+          },
+        },
+      } as Session["messages"][number]["parts"][number]),
+    ).toBe("explorer - Carver gpt-5.4-mini");
+  });
+
+  it("codex subagent prompt 优先使用 state.prompt", () => {
+    expect(
+      getSubagentPrompt({
+        type: "tool",
+        tool: "subagent",
+        state: {
+          prompt: "检查 Zustand 迁移完成度",
+          arguments: {
+            message: "备用 message",
+          },
+        },
+      } as Session["messages"][number]["parts"][number]),
+    ).toBe("检查 Zustand 迁移完成度");
+  });
+
+  it("assistant 消息带 nickname 时显示 AGENT (nickname)", () => {
+    expect(
+      getAssistantDisplayLabel({
+        role: "assistant",
+        nickname: "Carver",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [],
+      }),
+    ).toBe("AGENT (Carver)");
+  });
+
   it("将显式 markdown 链接渲染为不可点击的纯文本", () => {
     const html = renderSessionDetail([
       {
@@ -126,6 +190,53 @@ describe("SessionDetail markdown rendering", () => {
     expect(html).toContain("frontend-design");
     expect(html).not.toContain('"name"');
     expect(html).not.toContain('{"name"');
+  });
+
+  it("codex subagent tool 显示格式化标题，不显示 spawn 返回 JSON", () => {
+    const html = renderSessionDetail([
+      {
+        role: "assistant",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [
+          {
+            type: "tool",
+            tool: "subagent",
+            title: "subagent",
+            nickname: "Carver",
+            state: {
+              status: "completed",
+              arguments: {
+                agent_type: "explorer",
+                model: "gpt-5.4-mini",
+                reasoning_effort: "medium",
+                message: "检查 Zustand 迁移完成度",
+              },
+              output: [{ type: "text", text: '{"agent_id":"a1","nickname":"Carver"}' }],
+            },
+          },
+        ],
+      },
+    ]);
+
+    expect(html).toContain("explorer - Carver gpt-5.4-mini-medium");
+    expect(html).not.toContain("&quot;agent_id&quot;");
+    expect(html).not.toContain(
+      "{&quot;agent_id&quot;:&quot;a1&quot;,&quot;nickname&quot;:&quot;Carver&quot;}",
+    );
+  });
+
+  it("subagent assistant message 头部显示 nickname", () => {
+    const html = renderSessionDetail([
+      {
+        role: "assistant",
+        nickname: "Carver",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [{ type: "text", text: "这是 subagent 的结果" }],
+      },
+    ]);
+
+    expect(html).toContain("AGENT (Carver)");
+    expect(html).toContain("这是 subagent 的结果");
   });
 
   it("plan block 会出现在静态渲染结果中", () => {
