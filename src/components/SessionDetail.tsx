@@ -259,7 +259,44 @@ export function getAssistantDisplayLabel(msg: Message) {
   if (msg.role === "assistant" && nickname) {
     return `AGENT (${nickname})`;
   }
-  return msg.role === "user" ? "USER" : "AGENT";
+  if (msg.role === "user") {
+    return "USER";
+  }
+  if (msg.role === "tool") {
+    return "TOOL";
+  }
+  return "AGENT";
+}
+
+export function normalizeMessagesForDisplay(messages: Message[], sessionAgentKey: string) {
+  if (sessionAgentKey.toLowerCase() !== "cursor") {
+    return messages;
+  }
+
+  const normalized: Message[] = [];
+
+  for (const msg of messages) {
+    if (msg.role !== "tool") {
+      normalized.push({
+        ...msg,
+        parts: [...msg.parts],
+      });
+      continue;
+    }
+
+    const previous = normalized.at(-1);
+    if (previous?.role === "assistant") {
+      previous.parts.push(...msg.parts);
+      continue;
+    }
+
+    normalized.push({
+      ...msg,
+      parts: [...msg.parts],
+    });
+  }
+
+  return normalized;
 }
 
 function normalizeToolState(part: MessagePart): NormalizedToolState {
@@ -924,9 +961,13 @@ export function SessionDetail({ session }: SessionDetailProps) {
   const sessionSlug = session._urlSlug || session.slug || "";
   const sessionAgentKey =
     sessionSlug.split("/")[0] || ModelConfig.getDefaultAgentKey() || "opencode";
+  const normalizedMessages = useMemo(
+    () => normalizeMessagesForDisplay(session.messages, sessionAgentKey),
+    [session.messages, sessionAgentKey],
+  );
   const visibleMessages = useMemo(
-    () => session.messages.filter((msg) => hasVisibleContent(msg)),
-    [session.messages],
+    () => normalizedMessages.filter((msg) => hasVisibleContent(msg)),
+    [normalizedMessages],
   );
   const toc = useMemo(() => buildSessionDetailToc(visibleMessages), [visibleMessages]);
   const [selectedFilters, setSelectedFilters] = useState<Set<string>>(() => new Set(toc.filterIds));

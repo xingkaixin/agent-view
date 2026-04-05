@@ -80,6 +80,14 @@ describe("App loading states", () => {
     });
   });
 
+  it("cursor 路径在注册后会被识别为有效 agent", () => {
+    expect(parseViewState("/cursor/123", new Set(["codex", "cursor"]))).toEqual({
+      mode: "session",
+      activeAgentKey: "cursor",
+      activeSessionSlug: "123",
+    });
+  });
+
   it("会话详情加载中返回 skeleton 内容分支", () => {
     const html = renderToStaticMarkup(
       <>

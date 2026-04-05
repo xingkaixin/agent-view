@@ -6,6 +6,7 @@ import {
   getAssistantDisplayLabel,
   getSubagentPrompt,
   getSubagentToolTitle,
+  normalizeMessagesForDisplay,
   SessionDetail,
 } from "../SessionDetail";
 
@@ -95,6 +96,87 @@ describe("SessionDetail markdown rendering", () => {
     ).toBe("AGENT (Carver)");
   });
 
+  it("tool 消息标签显示为 TOOL", () => {
+    expect(
+      getAssistantDisplayLabel({
+        role: "tool",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [],
+      }),
+    ).toBe("TOOL");
+  });
+
+  it("cursor 会把紧随 assistant 的 tool 消息归并回上一条 assistant", () => {
+    const messages: Session["messages"] = [
+      {
+        role: "assistant",
+        agent: "cursor",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [{ type: "text", text: "我先搜索一下。" }],
+      },
+      {
+        role: "tool",
+        agent: "cursor",
+        time_created: "2026-03-01T00:00:01.000Z",
+        parts: [
+          {
+            type: "tool",
+            tool: "ripgrep_raw_search",
+            title: "ripgrep_raw_search",
+            state: {
+              status: "completed",
+              arguments: {
+                pattern: "询问小灵",
+              },
+            },
+          },
+        ],
+      },
+      {
+        role: "assistant",
+        agent: "cursor",
+        time_created: "2026-03-01T00:00:02.000Z",
+        parts: [{ type: "text", text: "已经定位到相关文件。" }],
+      },
+    ];
+
+    const normalized = normalizeMessagesForDisplay(messages, "cursor");
+
+    expect(normalized).toHaveLength(2);
+    expect(normalized[0]?.role).toBe("assistant");
+    expect(normalized[0]?.parts.map((part) => part.type)).toEqual(["text", "tool"]);
+    expect(normalized[1]?.role).toBe("assistant");
+  });
+
+  it("cursor 不会把没有前置 assistant 的 tool 消息强行归并", () => {
+    const messages: Session["messages"] = [
+      {
+        role: "tool",
+        agent: "cursor",
+        time_created: "2026-03-01T00:00:00.000Z",
+        parts: [
+          {
+            type: "tool",
+            tool: "read_file_v2",
+            title: "read_file_v2",
+          },
+        ],
+      },
+      {
+        role: "user",
+        agent: "cursor",
+        time_created: "2026-03-01T00:00:01.000Z",
+        parts: [{ type: "text", text: "继续" }],
+      },
+    ];
+
+    const normalized = normalizeMessagesForDisplay(messages, "cursor");
+
+    expect(normalized).toHaveLength(2);
+    expect(normalized[0]?.role).toBe("tool");
+    expect(normalized[1]?.role).toBe("user");
+  });
+
   it("将显式 markdown 链接渲染为不可点击的纯文本", () => {
     const html = renderSessionDetail([
       {
@@ -163,6 +245,43 @@ describe("SessionDetail markdown rendering", () => {
     expect(html).not.toMatch(/<a(?=[\s>])/);
     expect(html).not.toContain("example.com/one");
     expect(html).not.toContain("example.com/two");
+  });
+
+  it("cursor 渲染时会把独立 tool message 展示在前一条 assistant 下", () => {
+    const html = renderSessionDetail(
+      [
+        {
+          role: "assistant",
+          agent: "cursor",
+          time_created: "2026-03-01T00:00:00.000Z",
+          parts: [{ type: "text", text: "我先查一下。" }],
+        },
+        {
+          role: "tool",
+          agent: "cursor",
+          time_created: "2026-03-01T00:00:01.000Z",
+          parts: [
+            {
+              type: "tool",
+              tool: "ripgrep_raw_search",
+              title: "ripgrep_raw_search",
+              state: {
+                status: "completed",
+                arguments: {
+                  pattern: "询问小灵",
+                },
+              },
+            },
+          ],
+        },
+      ],
+      "cursor/test-session",
+    );
+
+    expect(html).toContain("我先查一下。");
+    expect(html).toContain("ripgrep_raw_search");
+    expect(html).toContain("/icon/agent/cursor.svg");
+    expect(html.match(/AGENT/g)?.length).toBe(1);
   });
 
   it("codex skill 显示技能名，不显示原始 JSON 输入", () => {

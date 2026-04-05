@@ -10,6 +10,10 @@ export const ModelConfig = {
       name: "Codex",
       icon: "/icon/agent/codex.svg",
     },
+    cursor: {
+      name: "Cursor",
+      icon: "/icon/agent/cursor.svg",
+    },
     kimi: {
       name: "Kimi-Cli",
       icon: "/icon/agent/kimi.svg",

@@ -16,6 +16,7 @@
 - OpenCode
 - Claude Code
 - Codex
+- Cursor
 - Kimi-Cli
 
 ## 目录结构

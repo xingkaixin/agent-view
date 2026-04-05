@@ -36,7 +36,7 @@ export interface MessagePart {
 }
 
 export interface Message {
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "tool";
   agent?: string | null;
   time_created: string;
   mode?: string;
