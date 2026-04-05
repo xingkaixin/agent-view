@@ -23,7 +23,7 @@ export interface FilteredSessionMessage {
 
 function buildToolLabel(part: MessagePart) {
   if (typeof part.title === "string" && part.title.trim()) {
-    return part.title.trim();
+    return part.title.trim().replace(/^tool:\s*/i, "");
   }
   if (typeof part.tool === "string" && part.tool.trim()) {
     return part.tool.trim();

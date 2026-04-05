@@ -339,8 +339,28 @@ function toStringValue(value: unknown) {
   return typeof value === "string" ? value : "";
 }
 
+function parseJsonText<T>(value: string): T | null {
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    return null;
+  }
+}
+
 function normalizeEscapedNewlines(text: string) {
   return text.replace(/\\n/g, "\n");
+}
+
+function cleanToolTitle(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return "";
+  }
+  return trimmed.replace(/^tool:\s*/i, "");
+}
+
+function getToolTitle(tool: MessagePart, fallback = "Tool") {
+  return cleanToolTitle(toPlainText(tool.title)) || toPlainText(tool.tool) || fallback;
 }
 
 function formatToolOutput(value: unknown) {
@@ -366,8 +386,30 @@ function getOutputOrErrorText(state: NormalizedToolState) {
 
 function getFilePathFromInput(inputValue: unknown) {
   const input = toRecord(inputValue);
-  const filePath = toPlainText(input.filePath) || toPlainText(input.path);
+  const filePath =
+    toPlainText(input.filePath) ||
+    toPlainText(input.file_path) ||
+    toPlainText(input.path) ||
+    toPlainText(input.targetFile) ||
+    toPlainText(input.effectiveUri) ||
+    toPlainText(input.relativeWorkspacePath);
   return filePath || "";
+}
+
+function getCursorOutputRecord(rawOutput: unknown) {
+  if (rawOutput && typeof rawOutput === "object" && !Array.isArray(rawOutput)) {
+    return rawOutput as Record<string, unknown>;
+  }
+
+  if (typeof rawOutput === "string") {
+    return parseJsonText<Record<string, unknown>>(rawOutput) || {};
+  }
+
+  return {};
+}
+
+function stripClaudeReadNoise(text: string) {
+  return text.replace(/\n*<system-reminder>[\s\S]*$/i, "").trimEnd();
 }
 
 function extractReadContent(rawOutput: unknown) {
@@ -376,13 +418,63 @@ function extractReadContent(rawOutput: unknown) {
     return rawText;
   }
 
-  const withoutWrapper = rawText.replace(/^<file>\s*/i, "").replace(/\s*<\/file>\s*$/i, "");
+  const withoutWrapper = stripClaudeReadNoise(
+    rawText.replace(/^<file>\s*/i, "").replace(/\s*<\/file>\s*$/i, ""),
+  );
   const lines = withoutWrapper
     .split("\n")
     .filter((line) => !/^\(End of file - total \d+ lines\)$/.test(line.trim()))
     .map((line) => line.replace(/^\d+\|\s?/, "").replace(/^\s*\d+\t/, ""));
   const cleaned = lines.join("\n").trimEnd();
   return cleaned || "No output captured.";
+}
+
+function extractCursorReadContent(rawOutput: unknown) {
+  const output = getCursorOutputRecord(rawOutput);
+  const contents = toStringValue(output.contents);
+  if (contents) {
+    return normalizeEscapedNewlines(contents);
+  }
+  return "No output captured.";
+}
+
+function formatCursorSearchOutput(rawOutput: unknown) {
+  const output = getCursorOutputRecord(rawOutput);
+  const directories = Array.isArray(output.directories) ? output.directories : [];
+  if (directories.length === 0) {
+    return formatToolOutput(rawOutput);
+  }
+
+  const lines = directories.flatMap((entry) => {
+    const record = toRecord(entry);
+    const directoryPath = toPlainText(record.absPath);
+    const files = Array.isArray(record.files) ? record.files : [];
+    const fileLines = files
+      .map((file) => {
+        const fileRecord = toRecord(file);
+        return toPlainText(fileRecord.relPath) || toPlainText(fileRecord.absPath);
+      })
+      .filter(Boolean);
+
+    return [directoryPath, ...fileLines.map((file) => `  ${file}`)].filter(Boolean);
+  });
+
+  return lines.length > 0 ? lines.join("\n") : "No output captured.";
+}
+
+function buildStructuredDiffFromTexts(filePath: string, oldValue: string, newValue: string): DiffBlock[] {
+  if (!oldValue.trim() && !newValue.trim()) {
+    return [];
+  }
+
+  return [
+    {
+      label: getDiffBlockLabel(filePath),
+      lines: diffPartsToLines(
+        diffLines(normalizeEscapedNewlines(oldValue), normalizeEscapedNewlines(newValue)),
+      ),
+    },
+  ];
 }
 
 function createDiffBlock(oldValue: string, newValue: string) {
@@ -628,7 +720,7 @@ function buildDefaultToolStrategy(
 
   return {
     Icon: SquareTerminal,
-    title: tool.title || tool.tool || "Tool",
+    title: getToolTitle(tool),
     secondaryText: previewText ? `(${previewText})` : undefined,
     details: [],
     expandable: true,
@@ -653,7 +745,7 @@ function buildSkillToolStrategy(
   return {
     ...defaultStrategy,
     Icon: Wrench,
-    title: tool.tool || "skill",
+    title: toPlainText(tool.tool) || "skill",
     secondaryText: name || undefined,
     expandable: false,
     showInputPreview: false,
@@ -737,7 +829,7 @@ function buildCodexToolStrategy(
     return {
       ...defaultStrategy,
       Icon: FilePenLine,
-      title: tool.title || "patch",
+      title: getToolTitle(tool, "patch"),
       secondaryText: summary || undefined,
       details: [],
       showInputPreview: false,
@@ -755,7 +847,7 @@ function buildCodexToolStrategy(
     return {
       ...defaultStrategy,
       Icon: Bot,
-      title: getSubagentToolTitle(tool) || tool.title || "subagent",
+      title: getSubagentToolTitle(tool) || getToolTitle(tool, "subagent"),
       secondaryText: undefined,
       details: [],
       showInputPreview: false,
@@ -769,6 +861,79 @@ function buildCodexToolStrategy(
   }
 
   return defaultStrategy;
+}
+
+function buildClaudeToolStrategy(
+  tool: MessagePart,
+  state: NormalizedToolState,
+): ToolDisplayStrategy {
+  const defaultStrategy = buildDefaultToolStrategy(tool, state);
+  const toolKey = (tool.tool || "").toLowerCase();
+  const input = toRecord(state.inputValue);
+  const filePath = getFilePathFromInput(state.inputValue);
+
+  if (toolKey === "read") {
+    return {
+      ...defaultStrategy,
+      Icon: BookOpenText,
+      title: "read",
+      secondaryText: filePath || undefined,
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: extractReadContent(state.outputValue),
+        language: detectLanguageByFilePath(filePath),
+        isCode: true,
+      },
+    };
+  }
+
+  if (toolKey === "edit") {
+    const oldValue = toStringValue(input.old_string);
+    const newValue = toStringValue(input.new_string);
+    const diffBlocks = buildStructuredDiffFromTexts(filePath, oldValue, newValue);
+
+    return {
+      ...defaultStrategy,
+      Icon: FilePenLine,
+      title: "edit",
+      secondaryText: filePath || undefined,
+      showInputPreview: false,
+      outputContent:
+        diffBlocks.length > 0
+          ? {
+              kind: "structured-diff",
+              blocks: diffBlocks,
+            }
+          : {
+              kind: "plain",
+              text: getOutputOrErrorText(state),
+              language: "text",
+              isCode: false,
+            },
+    };
+  }
+
+  if (toolKey === "write") {
+    return {
+      ...defaultStrategy,
+      Icon: NotebookPen,
+      title: "write",
+      secondaryText: filePath || undefined,
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: extractWriteContent(state),
+        language: detectLanguageByFilePath(filePath),
+        isCode: true,
+      },
+    };
+  }
+
+  return {
+    ...defaultStrategy,
+    title: getToolTitle(tool),
+  };
 }
 
 function buildOpencodeToolStrategy(
@@ -897,6 +1062,120 @@ function buildOpencodeToolStrategy(
   return defaultStrategy;
 }
 
+function buildCursorToolStrategy(
+  tool: MessagePart,
+  state: NormalizedToolState,
+): ToolDisplayStrategy {
+  const defaultStrategy = buildDefaultToolStrategy(tool, state);
+  const toolKey = (tool.tool || "").toLowerCase();
+  const input = toRecord(state.inputValue);
+  const filePath = getFilePathFromInput(state.inputValue);
+
+  if (toolKey === "read_file_v2") {
+    const content = extractCursorReadContent(state.outputValue);
+    return {
+      ...defaultStrategy,
+      Icon: BookOpenText,
+      title: "read",
+      secondaryText: filePath || undefined,
+      details: content === "No output captured." ? [{ label: "Lines", value: toPlainText(getCursorOutputRecord(state.outputValue).totalLinesInFile) }] : [],
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: content,
+        language: detectLanguageByFilePath(filePath),
+        isCode: content !== "No output captured.",
+      },
+    };
+  }
+
+  if (toolKey === "edit_file_v2") {
+    const diffText = normalizeEscapedNewlines(toStringValue(input.streamingContent));
+    return {
+      ...defaultStrategy,
+      Icon: FilePenLine,
+      title: "edit",
+      secondaryText: filePath || undefined,
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: diffText || getOutputOrErrorText(state),
+        language: diffText ? "diff" : "text",
+        isCode: Boolean(diffText),
+      },
+    };
+  }
+
+  if (toolKey === "ripgrep_raw_search") {
+    const pattern = toPlainText(input.pattern);
+    const path = toPlainText(input.path);
+    const summary = [path, pattern].filter(Boolean).join(" · ");
+    return {
+      ...defaultStrategy,
+      Icon: FileSearch,
+      title: "grep",
+      secondaryText: summary || undefined,
+      details: [],
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: getOutputOrErrorText(state),
+        language: "text",
+        isCode: false,
+      },
+    };
+  }
+
+  if (toolKey === "glob_file_search") {
+    const pattern = toPlainText(input.globPattern);
+    const targetDirectory = toPlainText(input.targetDirectory);
+    const summary = [targetDirectory, pattern].filter(Boolean).join(" · ");
+    return {
+      ...defaultStrategy,
+      Icon: FileSearch,
+      title: "glob",
+      secondaryText: summary || undefined,
+      details: [],
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: formatCursorSearchOutput(state.outputValue),
+        language: "text",
+        isCode: false,
+      },
+    };
+  }
+
+  if (toolKey === "run_terminal_command_v2") {
+    const command = toPlainText(input.command);
+    const description = toPlainText(input.commandDescription);
+    const secondaryText = description
+      ? `${description}${command ? ` (${command})` : ""}`
+      : command
+        ? `(${command})`
+        : undefined;
+    return {
+      ...defaultStrategy,
+      Icon: SquareTerminal,
+      title: "bash",
+      secondaryText,
+      details: [],
+      showInputPreview: false,
+      outputContent: {
+        kind: "plain",
+        text: getOutputOrErrorText(state),
+        language: "text",
+        isCode: false,
+      },
+    };
+  }
+
+  return {
+    ...defaultStrategy,
+    title: getToolTitle(tool),
+  };
+}
+
 function getToolDisplayStrategy(
   sessionAgentKey: string,
   tool: MessagePart,
@@ -912,7 +1191,17 @@ function getToolDisplayStrategy(
   if (normalizedAgentKey === "kimi") {
     return buildKimiToolStrategy(tool, state);
   }
+  if (normalizedAgentKey === "claudecode") {
+    return buildClaudeToolStrategy(tool, state);
+  }
+  if (normalizedAgentKey === "cursor") {
+    return buildCursorToolStrategy(tool, state);
+  }
   return buildDefaultToolStrategy(tool, state);
+}
+
+export function getToolDisplayStrategyForTest(sessionAgentKey: string, tool: MessagePart) {
+  return getToolDisplayStrategy(sessionAgentKey, tool, normalizeToolState(tool));
 }
 
 function formatTokens(n: number) {

@@ -6,6 +6,7 @@ import {
   getAssistantDisplayLabel,
   getSubagentPrompt,
   getSubagentToolTitle,
+  getToolDisplayStrategyForTest,
   normalizeMessagesForDisplay,
   SessionDetail,
 } from "../SessionDetail";
@@ -282,6 +283,157 @@ describe("SessionDetail markdown rendering", () => {
     expect(html).toContain("ripgrep_raw_search");
     expect(html).toContain("/icon/agent/cursor.svg");
     expect(html.match(/AGENT/g)?.length).toBe(1);
+  });
+
+  it("claudecode read 会去掉 Tool 前缀并展示文件内容", () => {
+    const tool = {
+      type: "tool",
+      tool: "Read",
+      title: "Tool: Read",
+      state: {
+        status: "completed",
+        input: {
+          file_path: "/tmp/example.ts",
+        },
+        output: [
+          {
+            type: "text",
+            text: "1\tconst answer = 42;\n2\texport default answer;\n\n<system-reminder>\nignore me\n</system-reminder>\n",
+          },
+        ],
+      },
+    } as Session["messages"][number]["parts"][number];
+    const display = getToolDisplayStrategyForTest("claudecode", tool);
+    const html = renderSessionDetail(
+      [
+        {
+          role: "assistant",
+          agent: "claude",
+          time_created: "2026-03-01T00:00:00.000Z",
+          parts: [tool],
+        },
+      ],
+      "claudecode/test-session",
+    );
+
+    expect(display.title).toBe("read");
+    expect(display.secondaryText).toBe("/tmp/example.ts");
+    expect(display.outputContent.kind).toBe("plain");
+    if (display.outputContent.kind === "plain") {
+      expect(display.outputContent.text).toContain("const answer = 42;");
+      expect(display.outputContent.text).toContain("export default answer;");
+      expect(display.outputContent.text).not.toContain("system-reminder");
+    }
+    expect(html).not.toContain("Tool: Read");
+  });
+
+  it("claudecode edit 会显示结构化 diff 而不是成功提示", () => {
+    const tool = {
+      type: "tool",
+      tool: "Edit",
+      title: "Tool: Edit",
+      state: {
+        status: "completed",
+        input: {
+          file_path: "/tmp/example.ts",
+          old_string: "const answer = 41;",
+          new_string: "const answer = 42;",
+        },
+        output: [
+          {
+            type: "text",
+            text: "The file /tmp/example.ts has been updated successfully.",
+          },
+        ],
+      },
+    } as Session["messages"][number]["parts"][number];
+    const display = getToolDisplayStrategyForTest("claudecode", tool);
+    const html = renderSessionDetail(
+      [
+        {
+          role: "assistant",
+          agent: "claude",
+          time_created: "2026-03-01T00:00:00.000Z",
+          parts: [tool],
+        },
+      ],
+      "claudecode/test-session",
+    );
+
+    expect(display.title).toBe("edit");
+    expect(display.secondaryText).toBe("/tmp/example.ts");
+    expect(display.outputContent.kind).toBe("structured-diff");
+    if (display.outputContent.kind === "structured-diff") {
+      expect(display.outputContent.blocks[0]?.lines).toEqual([
+        { type: "remove", text: "const answer = 41;" },
+        { type: "add", text: "const answer = 42;" },
+      ]);
+    }
+    expect(html).not.toContain("Tool: Edit");
+    expect(html).not.toContain("updated successfully.");
+  });
+
+  it("cursor read_file_v2 会解析 JSON output 并展示文件内容", () => {
+    const tool = {
+      type: "tool",
+      tool: "read_file_v2",
+      title: "read_file_v2",
+      state: {
+        status: "completed",
+        arguments: {
+          targetFile: "/tmp/example.ts",
+        },
+        output: "{\"contents\":\"const answer = 42;\\nexport default answer;\",\"totalLinesInFile\":2}",
+      },
+    } as Session["messages"][number]["parts"][number];
+    const display = getToolDisplayStrategyForTest("cursor", tool);
+    const html = renderSessionDetail(
+      [
+        {
+          role: "assistant",
+          agent: "cursor",
+          time_created: "2026-03-01T00:00:00.000Z",
+          parts: [tool],
+        },
+      ],
+      "cursor/test-session",
+    );
+
+    expect(display.title).toBe("read");
+    expect(display.secondaryText).toBe("/tmp/example.ts");
+    expect(display.outputContent.kind).toBe("plain");
+    if (display.outputContent.kind === "plain") {
+      expect(display.outputContent.text).toContain("const answer = 42;");
+      expect(display.outputContent.text).toContain("export default answer;");
+    }
+    expect(html).not.toContain("&quot;contents&quot;");
+  });
+
+  it("cursor edit_file_v2 会显示 patch diff", () => {
+    const tool = {
+      type: "tool",
+      tool: "edit_file_v2",
+      title: "edit_file_v2",
+      state: {
+        status: "completed",
+        arguments: {
+          relativeWorkspacePath: "/tmp/example.ts",
+          streamingContent: "@@\n-const answer = 41;\n+const answer = 42;\n*** End Patch",
+        },
+        output: "{\"beforeContentId\":\"a\",\"afterContentId\":\"b\"}",
+      },
+    } as Session["messages"][number]["parts"][number];
+    const display = getToolDisplayStrategyForTest("cursor", tool);
+
+    expect(display.title).toBe("edit");
+    expect(display.secondaryText).toBe("/tmp/example.ts");
+    expect(display.outputContent.kind).toBe("plain");
+    if (display.outputContent.kind === "plain") {
+      expect(display.outputContent.language).toBe("diff");
+      expect(display.outputContent.text).toContain("@@");
+      expect(display.outputContent.text).toContain("-const answer = 41;");
+      expect(display.outputContent.text).toContain("+const answer = 42;");
+    }
   });
 
   it("codex skill 显示技能名，不显示原始 JSON 输入", () => {
