@@ -438,6 +438,12 @@ export default function App() {
     activeSessionPath,
     sessionError,
   });
+
+  useEffect(() => {
+    const pageTitle =
+      viewState.mode === "root" ? "Agent View" : `${title} | Agent View`;
+    document.title = pageTitle;
+  }, [title, viewState.mode]);
   const content = renderMainContent({
     loading,
     error,
